@@ -8,7 +8,7 @@ interface ShareSectionProps {
   locale: string
 }
 
-export function ShareSection({ shareUrl: initialUrl, clientId, locale }: ShareSectionProps) {
+export function ShareSection({ shareUrl: initialUrl, clientId }: ShareSectionProps) {
   const [shareUrl, setShareUrl] = useState(initialUrl)
   const [copied, setCopied] = useState(false)
 

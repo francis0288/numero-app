@@ -158,7 +158,7 @@ export default function EditClientPage() {
       <main className="max-w-[640px] mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-medium text-[#2C2C2C]">Edit Client</h1>
-          <p className="text-[#888888] text-sm mt-1">Update the client's details.</p>
+          <p className="text-[#888888] text-sm mt-1">Update the client&apos;s details.</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
