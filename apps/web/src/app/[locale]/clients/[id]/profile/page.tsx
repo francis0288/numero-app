@@ -151,7 +151,7 @@ export default async function ProfilePage({
   const interpretations = await prisma.interpretation.findMany({
     where: { numberKey: { in: numberKeys }, locale: client.preferredLanguage },
   })
-  const interpMap = Object.fromEntries(interpretations.map((i) => [i.numberKey, i]))
+  const interpMap = Object.fromEntries(interpretations.map((i: typeof interpretations[number]) => [i.numberKey, i]))
 
   const today = new Date()
   const personalYear = calculatePersonalYear(birthDateStr, today.getFullYear())
