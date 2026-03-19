@@ -1,2 +1,2 @@
-// Utility functions
-export {}
+export * from './reduce'
+export * from './letterMap'

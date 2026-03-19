@@ -3,79 +3,75 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  name         String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  sessions     Session[]
-  clients      Client[]
-  readings     Reading[]
-
-  @@map("users")
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  name            String
+  logoUrl         String?
+  brandingFooter  String?
+  defaultLanguage String   @default("en")
+  createdAt       DateTime @default(now())
+  clients         Client[]
 }
 
 model Client {
   id                String    @id @default(cuid())
-  name              String
-  dateOfBirth       DateTime?
-  preferredLanguage String    @default("en")
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  firstName         String
+  middleName        String?
+  lastName          String
+  birthCertName     String
+  currentName       String
+  dateOfBirth       DateTime
+  email             String?
+  phone             String?
+  preferredLanguage String    @default("vi")
+  shareToken        String    @unique @default(cuid())
   notes             String?
   createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  userId            String
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   readings          Reading[]
-
-  @@map("clients")
 }
 
 model Reading {
-  id               String          @id @default(cuid())
-  title            String?
-  version          String          @default("1.0")
-  language         String          @default("en")
-  inputData        Json
-  results          Json
-  notes            String?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  userId           String
-  clientId         String?
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  client           Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  interpretations  Interpretation[]
-
-  @@map("readings")
+  id              String    @id @default(cuid())
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
+  version         Int
+  language        String    @default("en")
+  profileJSON     String
+  aiNarrative     String?
+  editedNarrative String?
+  tone            String    @default("warm")
+  status          String    @default("draft")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  sessions        Session[]
 }
 
 model Session {
   id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
+  readingId String
+  reading   Reading  @relation(fields: [readingId], references: [id])
+  type      String
+  question  String?
+  answer    String?
   createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
 }
 
 model Interpretation {
-  id          String   @id @default(cuid())
-  numberKey   String
-  locale      String   @default("en")
-  baseText    String
-  editedText  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  readingId   String
-  reading     Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  numberKey  String
+  locale     String
+  category   String
+  baseText   String
+  editedText String?
+  updatedAt  DateTime @updatedAt
 
-  @@unique([readingId, numberKey, locale])
-  @@map("interpretations")
+  @@unique([numberKey, locale])
 }

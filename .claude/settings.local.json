@@ -2,7 +2,40 @@
   "permissions": {
     "allow": [
       "Bash(which node:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(cd:*)",
+      "Bash(pnpm --filter @numero-app/web prisma migrate dev --name init)",
+      "Bash(npx prisma:*)",
+      "Bash(../../node_modules/.bin/prisma migrate:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(printf '\\\\003')",
+      "Bash(find 'D:/onedrive/my projects/numero-app' -path */node_modules/.bin/prisma*)",
+      "Bash(node_modules/.bin/prisma migrate:*)",
+      "Bash(node_modules/.bin/prisma db:*)",
+      "Bash(find 'D:/onedrive/my projects/numero-app' -path */node_modules/.bin/ts-node*)",
+      "Bash(pnpm --filter @numero-app/web build)",
+      "Bash(find 'D:/onedrive/my projects/numero-app' -path */i18n/src/locales/en/common.json)",
+      "Bash(pnpm --filter @numero-app/core build)",
+      "Bash(grep -v \"^$\")",
+      "Bash(node_modules/.bin/prisma generate:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/login)",
+      "Bash(curl -s -L -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/dashboard)",
+      "Bash(curl -s http://localhost:3000/api/auth/providers)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(\"D:/onedrive/my projects/numero-app/.gitignore\":*)",
+      "Bash(pnpm add:*)",
+      "Bash(mkdir -p \"D:/onedrive/my projects/numero-app/apps/web/src/app/api/clients/[id]/followup\")",
+      "Bash(mkdir -p \"D:/onedrive/my projects/numero-app/apps/web/src/app/api/clients/[id]/readings\")",
+      "Bash(node_modules/.bin/next build:*)",
+      "Bash(node -e \":*)",
+      "Bash(netstat -ano)",
+      "Bash(pnpm --filter @numero-app/web dev)",
+      "Bash(pnpm --filter @numero-app/web add @react-pdf/renderer)",
+      "Bash(pnpm --filter @numero-app/web prisma migrate dev --name default_language_vi)",
+      "Bash(git:*)"
     ]
   }
 }
