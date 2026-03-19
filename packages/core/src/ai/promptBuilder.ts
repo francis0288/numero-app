@@ -1,0 +1,127 @@
+import type { NumerologyProfile, ForecastResult } from '../types/index.js'
+
+export interface ReadingPromptInput {
+  client: {
+    firstName: string
+    birthDate: string
+    preferredLanguage: string
+  }
+  profile: NumerologyProfile
+  forecast: {
+    personalYear: ForecastResult
+    personalMonth: ForecastResult
+    personalDay: ForecastResult
+  }
+  tone: 'warm' | 'analytical' | 'spiritual' | 'practical'
+  customFocus?: string
+}
+
+export interface FollowUpPromptInput {
+  question: string
+  firstName: string
+  profile: NumerologyProfile
+  existingReading: string
+  preferredLanguage: string
+}
+
+function getLanguageInstruction(lang: string): string {
+  if (lang === 'zh') {
+    return 'Write the entire reading in Simplified Chinese (简体中文). Use natural, warm, professional Chinese.'
+  }
+  if (lang === 'vi') {
+    return 'Write the entire reading in Vietnamese (Tiếng Việt). Use natural, warm, professional Vietnamese.'
+  }
+  return 'Write in English.'
+}
+
+function getToneInstruction(tone: 'warm' | 'analytical' | 'spiritual' | 'practical'): string {
+  switch (tone) {
+    case 'warm':       return 'Warm, encouraging, supportive, and hopeful.'
+    case 'analytical': return 'Detailed, thorough, precise, and comprehensive.'
+    case 'spiritual':  return 'Evocative, poetic, metaphorical, and soulful.'
+    case 'practical':  return 'Direct, grounded, action-oriented, and clear.'
+  }
+}
+
+function buildChartSummary(profile: NumerologyProfile, forecast: { personalYear: ForecastResult; personalMonth: ForecastResult; personalDay: ForecastResult }): string {
+  const karmicLessons = profile.karmicLessons.length > 0
+    ? profile.karmicLessons.join(', ')
+    : 'None'
+
+  return `NUMEROLOGY CHART:
+Life Path:    ${profile.lifePath.display}
+Destiny:      ${profile.destiny.display}
+Soul:         ${profile.soul.display}
+Personality:  ${profile.personality.display}
+Maturity:     ${profile.maturity.display}
+Birth Day:    ${profile.birthDay.display}
+Current Name: ${profile.currentName.display}
+Karmic Lessons: ${karmicLessons}
+
+TODAY'S FORECAST:
+Personal Year: ${forecast.personalYear.display} | Personal Month: ${forecast.personalMonth.display} | Personal Day: ${forecast.personalDay.display}`
+}
+
+export function buildReadingPrompt(input: ReadingPromptInput): { system: string; user: string } {
+  const langInstruction = getLanguageInstruction(input.client.preferredLanguage)
+  const toneInstruction = getToneInstruction(input.tone)
+
+  const system = `You are an expert numerologist trained in the Western Pythagorean system. You deliver profound, personalised readings.
+
+${langInstruction}
+
+Tone: ${toneInstruction}
+
+Do not reference any books or other numerologists. Write as if these are your own professional insights.
+
+Structure your response with exactly these 6 markdown headings and no others.`
+
+  const chartSummary = buildChartSummary(input.profile, input.forecast)
+
+  let user = `Please write a numerology reading for ${input.client.firstName}.
+
+${chartSummary}
+
+Write a reading with these 6 sections:
+## Overview
+## Your Inner World
+## Life Purpose & Gifts
+## Challenges & Growth
+## The Year Ahead
+## Closing Guidance
+Each section: 2-3 paragraphs. End with one specific, actionable piece of guidance.`
+
+  if (input.customFocus) {
+    user += `\n\nPlease particularly address: ${input.customFocus}`
+  }
+
+  return { system, user }
+}
+
+export function buildFollowUpPrompt(input: FollowUpPromptInput): { system: string; user: string } {
+  const langInstruction = getLanguageInstruction(input.preferredLanguage)
+
+  const system = `You are an expert numerologist trained in the Western Pythagorean system. You deliver profound, personalised readings.
+
+${langInstruction}`
+
+  const karmicLessons = input.profile.karmicLessons.length > 0
+    ? input.profile.karmicLessons.join(', ')
+    : 'None'
+
+  const chartSummary = `Life Path: ${input.profile.lifePath.display} | Destiny: ${input.profile.destiny.display} | Soul: ${input.profile.soul.display} | Personality: ${input.profile.personality.display} | Maturity: ${input.profile.maturity.display} | Birth Day: ${input.profile.birthDay.display} | Current Name: ${input.profile.currentName.display} | Karmic Lessons: ${karmicLessons}`
+
+  const readingSummary = input.existingReading.slice(0, 500)
+
+  const user = `Client: ${input.firstName}
+Chart: ${chartSummary}
+
+Their reading summary:
+${readingSummary}...
+
+Question from the practitioner: ${input.question}
+
+Answer in 2-3 paragraphs using only this person's chart.`
+
+  return { system, user }
+}

@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessions     Session[]
+  clients      Client[]
+  readings     Reading[]
+
+  @@map("users")
+}
+
+model Client {
+  id                String    @id @default(cuid())
+  name              String
+  dateOfBirth       DateTime?
+  preferredLanguage String    @default("en")
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readings          Reading[]
+
+  @@map("clients")
+}
+
+model Reading {
+  id               String          @id @default(cuid())
+  title            String?
+  version          String          @default("1.0")
+  language         String          @default("en")
+  inputData        Json
+  results          Json
+  notes            String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  userId           String
+  clientId         String?
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client           Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  interpretations  Interpretation[]
+
+  @@map("readings")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Interpretation {
+  id          String   @id @default(cuid())
+  numberKey   String
+  locale      String   @default("en")
+  baseText    String
+  editedText  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  readingId   String
+  reading     Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+
+  @@unique([readingId, numberKey, locale])
+  @@map("interpretations")
+}
