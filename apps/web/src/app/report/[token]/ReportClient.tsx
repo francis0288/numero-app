@@ -19,8 +19,10 @@ export interface ReportClientProps {
   clientData: { firstName: string; lastName: string; dateOfBirth: string }
   readingData: { createdAt: string; aiNarrative: string | null; editedNarrative: string | null }
   profile: NumerologyProfile
-  forecast2026: ForecastProfile
-  forecast2027: ForecastProfile
+  forecastCurr: ForecastProfile
+  forecastNext: ForecastProfile
+  currentYear: number
+  nextYear: number
   interpretations: Record<string, Interpretation>
   practitioner: { name: string; logoUrl: string | null; brandingFooter: string | null }
   token: string
@@ -249,7 +251,7 @@ function MarkdownNarrative({ text, tc }: { text: string; tc: TC }) {
 // ── Main Export ────────────────────────────────────────────────────────────────
 
 export function ReportClient({
-  clientData, readingData, profile, forecast2026, forecast2027,
+  clientData, readingData, profile, forecastCurr, forecastNext, currentYear, nextYear,
   interpretations, practitioner, token, karmicDebtNums, isolationNumber,
 }: ReportClientProps) {
   const [theme, setTheme] = useState<ThemeKey>('dark')
@@ -281,15 +283,15 @@ export function ReportClient({
   const lifePathInterp = interpretations[getNumberKey(profile.lifePath)]
   const destinyInterp = interpretations[getNumberKey(profile.destiny)]
 
-  const py2026 = forecast2026.personalYear
-  const py2027 = forecast2027.personalYear
-  const py2026Info = PY_INFO[py2026.value] ?? PY_INFO[1]
-  const py2027Info = PY_INFO[py2027.value] ?? PY_INFO[1]
+  const pyCurr = forecastCurr.personalYear
+  const pyNext = forecastNext.personalYear
+  const pyCurrInfo = PY_INFO[pyCurr.value] ?? PY_INFO[1]
+  const pyNextInfo = PY_INFO[pyNext.value] ?? PY_INFO[1]
 
-  const pin2026 = forecast2026.pinnacles.find(p => p.isCurrent)
-  const ch2026 = forecast2026.challenges.find(c => c.isCurrent)
-  const pin2027 = forecast2027.pinnacles.find(p => p.isCurrent)
-  const ch2027 = forecast2027.challenges.find(c => c.isCurrent)
+  const pinCurr = forecastCurr.pinnacles.find(p => p.isCurrent)
+  const chCurr = forecastCurr.challenges.find(c => c.isCurrent)
+  const pinNext = forecastNext.pinnacles.find(p => p.isCurrent)
+  const chNext = forecastNext.challenges.find(c => c.isCurrent)
 
   const strengthBullets: string[] = (lifePathInterp?.strengths as string[] | undefined) ?? sentences(lifePathInterp?.overview).slice(0, 3)
   const growthBullets: string[] = (lifePathInterp?.challenges as string[] | undefined) ?? sentences(lifePathInterp?.overview).slice(3, 6)
@@ -485,11 +487,11 @@ export function ReportClient({
       {/* ── SECTION 6: Annual Forecast ── */}
       <section style={{ backgroundColor: tc.altSectionBg, padding: '64px 16px', ...S_DIVIDER }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Annual Forecast" tc={tc} />
+          <SectionHeading title={`Annual Forecast ${currentYear} & ${nextYear}`} tc={tc} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             {([
-              { year: 2026, py: py2026, info: py2026Info, pin: pin2026, ch: ch2026 },
-              { year: 2027, py: py2027, info: py2027Info, pin: pin2027, ch: ch2027 },
+              { year: currentYear, py: pyCurr, info: pyCurrInfo, pin: pinCurr, ch: chCurr },
+              { year: nextYear, py: pyNext, info: pyNextInfo, pin: pinNext, ch: chNext },
             ] as const).map(({ year, py, info, pin, ch }) => (
               <div key={year} style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 16, overflow: 'hidden' }}>
 
@@ -617,7 +619,7 @@ export function ReportClient({
                     With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.display}, you carry a unique blueprint for this lifetime — a combination of gifts, lessons, and purpose that is entirely your own.
                   </p>
                   <p style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: 0 }}>
-                    As you move through Personal Year {py2026.display} in 2026, this is your invitation to step fully into your potential. Trust the wisdom of your numbers, embrace the journey, and know that every step you take is part of a perfectly orchestrated plan.
+                    As you move through Personal Year {pyCurr.display} in {currentYear}, this is your invitation to step fully into your potential. Trust the wisdom of your numbers, embrace the journey, and know that every step you take is part of a perfectly orchestrated plan.
                   </p>
                 </>
               )}

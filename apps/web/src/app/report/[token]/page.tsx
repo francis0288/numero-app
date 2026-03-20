@@ -47,18 +47,21 @@ export default async function ReportPage({ params }: { params: { token: string }
     ? JSON.parse(reading.profileJSON)
     : calculateFullProfile({ birthDate: birthDateStr, birthCertName: client.birthCertName, currentName: client.currentName })
 
-  const forecast2026 = calculateFullForecast({
+  const currentYear = new Date().getFullYear()
+  const nextYear = currentYear + 1
+
+  const forecastCurr = calculateFullForecast({
     birthDate: birthDateStr,
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
-    targetDate: '2026-06-15',
+    targetDate: `${currentYear}-06-15`,
   })
 
-  const forecast2027 = calculateFullForecast({
+  const forecastNext = calculateFullForecast({
     birthDate: birthDateStr,
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
-    targetDate: '2027-06-15',
+    targetDate: `${nextYear}-06-15`,
   })
 
   // Isolation number = |Destiny.value - Soul.value| reduced to single digit
@@ -76,16 +79,16 @@ export default async function ReportPage({ params }: { params: { token: string }
   // Single-digit life_path_N keys for isolation, personal years, pinnacles, challenges
   const numericKeys = new Set<number>()
   if (isolationNumber > 0) numericKeys.add(isolationNumber)
-  numericKeys.add(forecast2026.personalYear.value)
-  numericKeys.add(forecast2027.personalYear.value)
-  const pin2026 = forecast2026.pinnacles.find(p => p.isCurrent)
-  const ch2026 = forecast2026.challenges.find(c => c.isCurrent)
-  const pin2027 = forecast2027.pinnacles.find(p => p.isCurrent)
-  const ch2027 = forecast2027.challenges.find(c => c.isCurrent)
-  if (pin2026) numericKeys.add(pin2026.number.value)
-  if (ch2026) numericKeys.add(ch2026.number)
-  if (pin2027) numericKeys.add(pin2027.number.value)
-  if (ch2027) numericKeys.add(ch2027.number)
+  numericKeys.add(forecastCurr.personalYear.value)
+  numericKeys.add(forecastNext.personalYear.value)
+  const pinCurr = forecastCurr.pinnacles.find(p => p.isCurrent)
+  const chCurr = forecastCurr.challenges.find(c => c.isCurrent)
+  const pinNext = forecastNext.pinnacles.find(p => p.isCurrent)
+  const chNext = forecastNext.challenges.find(c => c.isCurrent)
+  if (pinCurr) numericKeys.add(pinCurr.number.value)
+  if (chCurr) numericKeys.add(chCurr.number)
+  if (pinNext) numericKeys.add(pinNext.number.value)
+  if (chNext) numericKeys.add(chNext.number)
   const extraKeys = [...numericKeys].map(n => `life_path_${n}`)
 
   const allKeys = [...new Set([...coreKeys, ...lessonKeys, ...debtKeys, ...extraKeys])]
@@ -108,8 +111,10 @@ export default async function ReportPage({ params }: { params: { token: string }
         editedNarrative: reading.editedNarrative ?? null,
       }}
       profile={profile}
-      forecast2026={forecast2026}
-      forecast2027={forecast2027}
+      forecastCurr={forecastCurr}
+      forecastNext={forecastNext}
+      currentYear={currentYear}
+      nextYear={nextYear}
       interpretations={interpretations}
       practitioner={{
         name: client.user.name,

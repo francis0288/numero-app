@@ -154,8 +154,10 @@ export interface ReadingPDFProps {
   client: { firstName: string; lastName: string; dateOfBirth: string | Date }
   reading: { createdAt: string | Date; aiNarrative?: string | null; editedNarrative?: string | null }
   profile: NumerologyProfile
-  forecast2026: ForecastProfile
-  forecast2027: ForecastProfile
+  forecastCurr: ForecastProfile
+  forecastNext: ForecastProfile
+  currentYear: number
+  nextYear: number
   interpretations: Record<string, { title?: string; overview?: string; [k: string]: unknown }>
   practitioner: { name: string; logoUrl?: string | null; brandingFooter?: string | null }
   karmicDebtNums: number[]
@@ -165,7 +167,7 @@ export interface ReadingPDFProps {
 // ── Main PDF ───────────────────────────────────────────────────────────────────
 
 export function ReadingPDF({
-  client: cl, reading, profile, forecast2026, forecast2027,
+  client: cl, reading, profile, forecastCurr, forecastNext, currentYear, nextYear,
   interpretations: interps, practitioner, karmicDebtNums, isolationNumber,
 }: ReadingPDFProps) {
   const narrative = reading.editedNarrative ?? reading.aiNarrative ?? ''
@@ -183,14 +185,14 @@ export function ReadingPDF({
 
   const lifePathInterp = interps[getNumberKey(profile.lifePath)]
   const destinyInterp = interps[getNumberKey(profile.destiny)]
-  const py2026 = forecast2026.personalYear
-  const py2027 = forecast2027.personalYear
-  const py2026Info = PY_INFO[py2026.value] ?? PY_INFO[1]
-  const py2027Info = PY_INFO[py2027.value] ?? PY_INFO[1]
-  const pin2026 = forecast2026.pinnacles.find(p => p.isCurrent)
-  const ch2026 = forecast2026.challenges.find(c => c.isCurrent)
-  const pin2027 = forecast2027.pinnacles.find(p => p.isCurrent)
-  const ch2027 = forecast2027.challenges.find(c => c.isCurrent)
+  const pyCurr = forecastCurr.personalYear
+  const pyNext = forecastNext.personalYear
+  const pyCurrInfo = PY_INFO[pyCurr.value] ?? PY_INFO[1]
+  const pyNextInfo = PY_INFO[pyNext.value] ?? PY_INFO[1]
+  const pinCurr = forecastCurr.pinnacles.find(p => p.isCurrent)
+  const chCurr = forecastCurr.challenges.find(c => c.isCurrent)
+  const pinNext = forecastNext.pinnacles.find(p => p.isCurrent)
+  const chNext = forecastNext.challenges.find(c => c.isCurrent)
 
   const strengthBullets = sentences(lifePathInterp?.overview, 3)
   const growthBullets = sentences(lifePathInterp?.overview, 6).slice(3)
@@ -344,8 +346,8 @@ export function ReadingPDF({
           <SecHeading title="Annual Forecast" />
 
           {([
-            { year: 2026, py: py2026, info: py2026Info, pin: pin2026, ch: ch2026 },
-            { year: 2027, py: py2027, info: py2027Info, pin: pin2027, ch: ch2027 },
+            { year: currentYear, py: pyCurr, info: pyCurrInfo, pin: pinCurr, ch: chCurr },
+            { year: nextYear, py: pyNext, info: pyNextInfo, pin: pinNext, ch: chNext },
           ] as const).map(({ year, py, info, pin, ch }) => (
             <View key={year} style={styles.forecastCard} wrap={false}>
               <View style={styles.forecastHeader}>
@@ -426,7 +428,7 @@ export function ReadingPDF({
                   With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.display}, you carry a unique blueprint for this lifetime — gifts, lessons, and purpose that are entirely your own.
                 </Text>
                 <Text style={{ ...styles.bodyText, textAlign: 'center' }}>
-                  As you move through Personal Year {py2026.display} in 2026, step fully into your potential. Trust the wisdom of your numbers and know that every step is part of a perfectly orchestrated plan.
+                  As you move through Personal Year {pyCurr.display} in {currentYear}, step fully into your potential. Trust the wisdom of your numbers and know that every step is part of a perfectly orchestrated plan.
                 </Text>
               </>
             )}
