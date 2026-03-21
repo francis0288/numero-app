@@ -18,7 +18,7 @@ const schema = z.object({
     .string()
     .min(1, 'Date of birth is required')
     .refine((d) => new Date(d) < new Date(), { message: 'Date of birth must be in the past' }),
-  preferredLanguage: z.enum(['en', 'zh', 'vi']).default('en'),
+  preferredLanguage: z.enum(['vi', 'en']).default('vi'),
   email: z.string().email('Enter a valid email').optional().or(z.literal('')),
   phone: z.string().optional(),
   notes: z.string().optional(),
@@ -26,9 +26,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const LANG_OPTIONS = [
-  { value: 'en', label: 'English' },
-  { value: 'zh', label: '中文' },
   { value: 'vi', label: 'Tiếng Việt' },
+  { value: 'en', label: 'English' },
 ] as const
 
 function Field({

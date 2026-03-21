@@ -93,10 +93,12 @@ export default async function ReportPage({ params }: { params: { token: string }
 
   const allKeys = [...new Set([...coreKeys, ...lessonKeys, ...debtKeys, ...extraKeys])]
 
-  const interpRows = await prisma.interpretation.findMany({
-    where: { numberKey: { in: allKeys }, locale: client.preferredLanguage },
-  })
-  const interpretations = Object.fromEntries(interpRows.map(r => [r.numberKey, JSON.parse(r.baseText)]))
+  const [interpRowsVi, interpRowsEn] = await Promise.all([
+    prisma.interpretation.findMany({ where: { numberKey: { in: allKeys }, locale: 'vi' } }),
+    prisma.interpretation.findMany({ where: { numberKey: { in: allKeys }, locale: 'en' } }),
+  ])
+  const interpretations_vi = Object.fromEntries(interpRowsVi.map(r => [r.numberKey, JSON.parse(r.baseText)]))
+  const interpretations_en = Object.fromEntries(interpRowsEn.map(r => [r.numberKey, JSON.parse(r.baseText)]))
 
   return (
     <ReportClient
@@ -115,7 +117,8 @@ export default async function ReportPage({ params }: { params: { token: string }
       forecastNext={forecastNext}
       currentYear={currentYear}
       nextYear={nextYear}
-      interpretations={interpretations}
+      interpretations_vi={interpretations_vi}
+      interpretations_en={interpretations_en}
       practitioner={{
         name: client.user.name,
         logoUrl: client.user.logoUrl ?? null,

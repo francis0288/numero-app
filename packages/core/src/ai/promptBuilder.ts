@@ -25,13 +25,10 @@ export interface FollowUpPromptInput {
 }
 
 function getLanguageInstruction(lang: string): string {
-  if (lang === 'zh') {
-    return 'Write the entire reading in Simplified Chinese (简体中文). Use natural, warm, professional Chinese.'
+  if (lang === 'en') {
+    return 'Write the entire reading in English.'
   }
-  if (lang === 'vi') {
-    return 'Write the entire reading in Vietnamese (Tiếng Việt). Use natural, warm, professional Vietnamese.'
-  }
-  return 'Write in English.'
+  return 'Viết toàn bộ bài đọc bằng tiếng Việt. Sử dụng tiếng Việt tự nhiên, ấm áp, chuyên nghiệp.'
 }
 
 function getToneInstruction(tone: 'warm' | 'analytical' | 'spiritual' | 'practical'): string {

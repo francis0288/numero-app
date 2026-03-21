@@ -40,16 +40,7 @@ function todayFormatted() {
   return new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-const LANG_LABELS: Record<string, string> = { en: 'EN', zh: '中文', vi: 'Việt' }
-
-const CORE_LABELS: Record<string, string> = {
-  destiny: 'Destiny Number',
-  soul: 'Soul Number',
-  personality: 'Personality Number',
-  maturity: 'Maturity Number',
-  birthDay: 'Birthday Number',
-  currentName: 'Current Name Number',
-}
+const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
@@ -94,7 +85,7 @@ function NumberCard({
         <p className="text-sm text-[#2C2C2C] mb-3">{content.title}</p>
       )}
       <a href={detailPath} className="text-sm text-[#7B5EA7] hover:underline">
-        View meaning →
+        {locale === 'vi' ? 'Xem ý nghĩa →' : 'View meaning →'}
       </a>
     </div>
   )
@@ -130,6 +121,22 @@ export default async function ProfilePage({
       birthCertName: client.birthCertName,
       currentName: client.currentName,
     })
+  }
+
+  const CORE_LABELS: Record<string, string> = locale === 'vi' ? {
+    destiny: 'Số Định Mệnh',
+    soul: 'Số Linh Hồn',
+    personality: 'Số Nhân Cách',
+    maturity: 'Số Trưởng Thành',
+    birthDay: 'Số Ngày Sinh',
+    currentName: 'Số Tên Hiện Tại',
+  } : {
+    destiny: 'Destiny Number',
+    soul: 'Soul Number',
+    personality: 'Personality Number',
+    maturity: 'Maturity Number',
+    birthDay: 'Birthday Number',
+    currentName: 'Current Name Number',
   }
 
   // Collect all number keys to fetch
@@ -196,7 +203,7 @@ export default async function ProfilePage({
                 {client.firstName} {client.middleName ? `${client.middleName} ` : ''}{client.lastName}
               </h1>
               <p className="text-[#888888] text-sm mt-1">
-                {formatDOB(client.dateOfBirth)} (age {getAge(client.dateOfBirth)})
+                {formatDOB(client.dateOfBirth)} ({locale === 'vi' ? 'tuổi' : 'age'} {getAge(client.dateOfBirth)})
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs rounded-full px-3 py-0.5 font-medium">
@@ -206,7 +213,7 @@ export default async function ProfilePage({
                   href={locale === 'en' ? `/clients/${id}/edit` : `/${locale}/clients/${id}/edit`}
                   className="text-xs text-[#888888] hover:text-[#7B5EA7] transition-colors"
                 >
-                  Edit client
+                  {locale === 'vi' ? 'Chỉnh sửa khách hàng' : 'Edit client'}
                 </a>
               </div>
             </div>
@@ -215,7 +222,9 @@ export default async function ProfilePage({
                 href={readingPath}
                 className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
               >
-                {readingCount === 0 ? 'Generate AI reading →' : 'View reading →'}
+                {readingCount === 0
+                  ? (locale === 'vi' ? 'Tạo bài đọc AI →' : 'Generate AI reading →')
+                  : (locale === 'vi' ? 'Xem bài đọc →' : 'View reading →')}
               </a>
               {latestReading && (
                 <p className="text-xs text-[#888888]">
@@ -227,7 +236,7 @@ export default async function ProfilePage({
                   href={readingsPath}
                   className="text-xs text-[#7B5EA7] hover:underline"
                 >
-                  Reading history ({readingCount})
+                  {locale === 'vi' ? `Lịch sử bài đọc (${readingCount})` : `Reading history (${readingCount})`}
                 </a>
               )}
             </div>
@@ -237,7 +246,7 @@ export default async function ProfilePage({
         {/* ── Life Path hero ── */}
         <div className="bg-[#7B5EA7] text-white rounded-2xl p-8">
           <p className="text-white/70 text-sm font-medium uppercase tracking-wide mb-2">
-            Life Path Number
+            {locale === 'vi' ? 'Số Đường Đời' : 'Life Path Number'}
           </p>
           <div className="flex items-center gap-5 mb-4">
             <span className="text-[72px] font-bold text-[#D4AC6E] leading-none">
@@ -256,13 +265,13 @@ export default async function ProfilePage({
             href={lifePathDetailPath}
             className="text-[#D4AC6E] text-sm hover:underline"
           >
-            View full meaning →
+            {locale === 'vi' ? 'Xem ý nghĩa đầy đủ →' : 'View full meaning →'}
           </a>
         </div>
 
         {/* ── Core numbers grid ── */}
         <div>
-          <h2 className="text-lg font-medium text-[#2C2C2C] mb-4">Core Numbers</h2>
+          <h2 className="text-lg font-medium text-[#2C2C2C] mb-4">{locale === 'vi' ? 'Số cốt lõi' : 'Core Numbers'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {coreEntries.map(([fieldKey, result]) => {
               const nKey = getNumberKey(result)
@@ -284,13 +293,13 @@ export default async function ProfilePage({
         {/* ── Today's forecast strip ── */}
         <div className="bg-[#F5F0FB] rounded-2xl p-5">
           <h2 className="text-base font-medium text-[#2C2C2C] mb-4">
-            Today — {todayFormatted()}
+            {locale === 'vi' ? 'Hôm nay —' : 'Today —'} {todayFormatted()}
           </h2>
           <div className="flex flex-wrap gap-3">
             {[
-              { label: 'Personal Year', result: forecast.personalYear },
-              { label: 'Personal Month', result: forecast.personalMonth },
-              { label: 'Personal Day', result: forecast.personalDay },
+              { label: locale === 'vi' ? 'Năm Cá Nhân' : 'Personal Year', result: forecast.personalYear },
+              { label: locale === 'vi' ? 'Tháng Cá Nhân' : 'Personal Month', result: forecast.personalMonth },
+              { label: locale === 'vi' ? 'Ngày Cá Nhân' : 'Personal Day', result: forecast.personalDay },
             ].map(({ label, result }) => (
               <div
                 key={label}
@@ -306,20 +315,20 @@ export default async function ProfilePage({
         {/* ── Karmic Lessons ── */}
         <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-6">
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-base font-medium text-[#2C2C2C]">Karmic Lessons</h2>
+            <h2 className="text-base font-medium text-[#2C2C2C]">{locale === 'vi' ? 'Bài Học Nghiệp' : 'Karmic Lessons'}</h2>
             <div className="group relative">
               <span className="w-4 h-4 rounded-full bg-[#E8E0F0] text-[#888888] text-xs flex items-center justify-center cursor-help">
                 i
               </span>
               <div className="absolute left-6 top-0 hidden group-hover:block z-10 bg-[#2C2C2C] text-white text-xs rounded-lg px-3 py-2 w-48">
-                Numbers absent from the birth certificate name
+                {locale === 'vi' ? 'Số vắng mặt trong tên khai sinh' : 'Numbers absent from the birth certificate name'}
               </div>
             </div>
           </div>
 
           {profile.karmicLessons.length === 0 ? (
             <p className="text-[#888888] text-sm">
-              No karmic lessons — all numbers 1–9 are present ✓
+              {locale === 'vi' ? 'Không có bài học nghiệp — tất cả số 1–9 đều có mặt ✓' : 'No karmic lessons — all numbers 1–9 are present ✓'}
             </p>
           ) : (
             <div className="flex flex-wrap gap-4">
@@ -364,7 +373,7 @@ export default async function ProfilePage({
         {/* Back link */}
         <div>
           <a href={dashboardPath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
-            ← Back to clients
+            {locale === 'vi' ? '← Quay lại danh sách' : '← Back to clients'}
           </a>
         </div>
       </main>

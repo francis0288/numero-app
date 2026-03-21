@@ -389,7 +389,7 @@ export default function ReadingPage(): React.ReactElement {
             <div className="flex items-center gap-2">
               <span className="text-[#888888] text-sm">Reading language:</span>
               <span className="bg-[#F5F0FB] text-[#7B5EA7] rounded-full px-3 py-1 text-sm">
-                {displayLanguage === 'vi' ? 'Tiếng Việt' : displayLanguage === 'zh' ? '简体中文' : 'English'}
+                {displayLanguage === 'vi' ? 'Tiếng Việt' : 'English'}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -398,8 +398,8 @@ export default function ReadingPage(): React.ReactElement {
               ) : (
                 <span className="text-[#888888] text-xs">Translate to:</span>
               )}
-              {(['en', 'zh', 'vi'] as const).map((lang) => {
-                const labels = { en: 'EN', zh: '中文', vi: 'Việt' }
+              {(['vi', 'en'] as const).map((lang) => {
+                const labels = { vi: 'Việt', en: 'EN' }
                 const isActive = displayLanguage === lang
                 return (
                   <button

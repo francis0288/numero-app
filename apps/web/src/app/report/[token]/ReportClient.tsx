@@ -23,7 +23,8 @@ export interface ReportClientProps {
   forecastNext: ForecastProfile
   currentYear: number
   nextYear: number
-  interpretations: Record<string, Interpretation>
+  interpretations_vi: Record<string, Interpretation>
+  interpretations_en: Record<string, Interpretation>
   practitioner: { name: string; logoUrl: string | null; brandingFooter: string | null }
   token: string
   karmicDebtNums: number[]
@@ -252,9 +253,10 @@ function MarkdownNarrative({ text, tc }: { text: string; tc: TC }) {
 
 export function ReportClient({
   clientData, readingData, profile, forecastCurr, forecastNext, currentYear, nextYear,
-  interpretations, practitioner, token, karmicDebtNums, isolationNumber,
+  interpretations_vi, interpretations_en, practitioner, token, karmicDebtNums, isolationNumber,
 }: ReportClientProps) {
   const [theme, setTheme] = useState<ThemeKey>('dark')
+  const [reportLang, setReportLang] = useState('vi')
 
   useEffect(() => {
     const saved = localStorage.getItem('report-theme')
@@ -268,6 +270,7 @@ export function ReportClient({
   }
 
   const tc = THEMES[theme]
+  const interpretations = reportLang === 'en' ? interpretations_en : interpretations_vi
   const narrative = readingData.editedNarrative ?? readingData.aiNarrative ?? ''
 
   const CORE_CARDS = [
@@ -317,6 +320,21 @@ export function ReportClient({
         }}
       >
         {theme === 'dark' ? '☀ Light' : '🌙 Dark'}
+      </button>
+
+      {/* ── Language toggle ── */}
+      <button
+        onClick={() => setReportLang(l => l === 'vi' ? 'en' : 'vi')}
+        style={{
+          position: 'fixed', top: 16, right: 120, zIndex: 50,
+          padding: '8px 16px', borderRadius: 99, fontSize: 13, fontWeight: 500, cursor: 'pointer',
+          backgroundColor: reportLang === 'vi' ? 'rgba(255,255,255,0.12)' : '#7B5EA7',
+          color: reportLang === 'vi' ? tc.toggleText : '#ffffff',
+          border: `1px solid ${reportLang === 'vi' ? tc.toggleBorder : '#7B5EA7'}`,
+          backdropFilter: 'blur(8px)',
+        }}
+      >
+        {reportLang === 'vi' ? '🌐 ENG' : '🌐 TIẾNG VIỆT'}
       </button>
 
       {/* ── HEADER ── */}

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-const LANG_LABELS: Record<string, string> = { en: 'EN', zh: '中文', vi: 'Việt' }
+const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }
 
 interface Client {
   id: string
@@ -67,7 +67,7 @@ export function ClientList({
         </svg>
         <input
           type="search"
-          placeholder="Search clients…"
+          placeholder={locale === 'vi' ? 'Tìm kiếm khách hàng...' : 'Search clients…'}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full border border-[#E8E0F0] rounded-xl pl-10 pr-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#7B5EA7] text-sm text-[#2C2C2C]"
@@ -78,13 +78,13 @@ export function ClientList({
       {clients.length === 0 && (
         <div className="text-center py-20">
           <div className="text-4xl mb-4">✨</div>
-          <p className="text-lg font-medium text-[#2C2C2C] mb-1">No clients yet</p>
-          <p className="text-[#888888] text-sm mb-6">Add your first client to get started</p>
+          <p className="text-lg font-medium text-[#2C2C2C] mb-1">{locale === 'vi' ? 'Chưa có khách hàng' : 'No clients yet'}</p>
+          <p className="text-[#888888] text-sm mb-6">{locale === 'vi' ? 'Thêm khách hàng đầu tiên để bắt đầu' : 'Add your first client to get started'}</p>
           <a
             href={newClientPath}
             className="inline-block bg-[#7B5EA7] text-white rounded-xl px-6 py-3 text-sm font-medium hover:bg-[#6A4F96] transition-colors"
           >
-            + Add new client
+            {locale === 'vi' ? '+ Thêm khách hàng mới' : '+ Add new client'}
           </a>
         </div>
       )}
@@ -119,8 +119,10 @@ export function ClientList({
               <p className="text-sm text-[#888888]">{formatDate(client.dateOfBirth)}</p>
               <p className="text-xs text-[#888888] mt-0.5">
                 {client._count.readings === 0
-                  ? 'No readings yet'
-                  : `${client._count.readings} reading${client._count.readings !== 1 ? 's' : ''}`}
+                  ? (locale === 'vi' ? 'Chưa có bài đọc' : 'No readings yet')
+                  : locale === 'vi'
+                    ? `${client._count.readings} bài đọc`
+                    : `${client._count.readings} reading${client._count.readings !== 1 ? 's' : ''}`}
               </p>
             </div>
 
