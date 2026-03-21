@@ -271,35 +271,56 @@ describe('calculateFullProfile', () => {
 
 // ---------------------------------------------------------------------------
 // Isolation Numbers (Số Cô Lập)
-// A digit is isolated if: present in birth date AND all 3×3 grid neighbours absent.
+// A digit is isolated if: present in birth date AND appears only ONCE (not "strong")
+// AND all 3×3 grid neighbours are absent.
+// Digits appearing 2+ times are "strong" — excluded from isolation.
 // Grid neighbours: 1→[2,4,5] 2→[1,3,4,5,6] 3→[2,5,6] 4→[1,2,5,7,8]
 //                 5→[1,2,3,4,6,7,8,9] 6→[2,3,5,8,9] 7→[4,5,8] 8→[4,5,6,7,9] 9→[5,6,8]
 // ---------------------------------------------------------------------------
 describe('calculateIsolationNumbers', () => {
-  it('1983-03-03 → [1, 3] (digits {1,3,8,9}: 1 and 3 are isolated)', () => {
-    // present: {1,3,8,9}
-    // 1: neighbours [2,4,5] — none present → isolated
-    // 3: neighbours [2,5,6] — none present → isolated
-    // 8: neighbours [4,5,6,7,9] — 9 present → not isolated
-    // 9: neighbours [5,6,8] — 8 present → not isolated
-    expect(calculateIsolationNumbers('1983-03-03')).toEqual([1, 3])
+  it('1983-03-03 → [1] (3 appears 3× → strong; 1 isolated, 8 and 9 not isolated)', () => {
+    // non-zero digits: 1,9,8,3,3,3 → counts: {1:1, 3:3, 8:1, 9:1}
+    // 1: count=1, neighbours [2,4,5] — none present → isolated
+    // 3: count=3 → STRONG → skip
+    // 8: count=1, neighbours [4,5,6,7,9] — 9 present → not isolated
+    // 9: count=1, neighbours [5,6,8] — 8 present → not isolated
+    expect(calculateIsolationNumbers('1983-03-03')).toEqual([1])
   })
 
-  it('1969-12-11 → [] (digits {1,2,6,9}: all have present neighbours)', () => {
-    // 1: neighbour 2 present → not isolated
-    // 2: neighbours 1, 6 present → not isolated
-    // 6: neighbours 2, 9 present → not isolated
-    // 9: neighbour 6 present → not isolated
+  it('1969-12-11 → [] (digits {1,2,6,9}: all have present neighbours or are strong)', () => {
+    // non-zero: 1,9,6,9,1,2,1,1 → counts: {1:4, 9:2, 6:1, 2:1}
+    // 1: count=4 → STRONG → skip (also neighbour 2 present)
+    // 2: count=1, neighbours [1,3,4,5,6] — 1,6 present → not isolated
+    // 6: count=1, neighbours [2,3,5,8,9] — 2,9 present → not isolated
+    // 9: count=2 → STRONG → skip
     expect(calculateIsolationNumbers('1969-12-11')).toEqual([])
   })
 
-  it('1111-01-01 → [1] (only digit 1 present, all its neighbours absent)', () => {
-    // present: {1}; neighbours of 1 are [2,4,5] — none present → isolated
-    expect(calculateIsolationNumbers('1111-01-01')).toEqual([1])
+  it('1111-01-01 → [] (digit 1 appears 5× → strong, not isolated)', () => {
+    // non-zero: 1,1,1,1,1 → counts: {1:5} → STRONG → skip
+    expect(calculateIsolationNumbers('1111-01-01')).toEqual([])
+  })
+
+  it('1971-11-10 → [7, 9] (1 appears 4× strong; 7 and 9 isolated)', () => {
+    // non-zero: 1,9,7,1,1,1,1 → counts: {1:4, 9:1, 7:1}
+    // 1: count=4 → STRONG → skip
+    // 7: count=1, neighbours [4,5,8] — none present → isolated
+    // 9: count=1, neighbours [5,6,8] — none present → isolated
+    expect(calculateIsolationNumbers('1971-11-10')).toEqual([7, 9])
+  })
+
+  it('1984-04-13 → [3] (1 and 4 appear 2× strong; 8 and 9 have present neighbours)', () => {
+    // non-zero: 1,9,8,4,4,1,3 → counts: {1:2, 9:1, 8:1, 4:2, 3:1}
+    // 1: count=2 → STRONG → skip
+    // 3: count=1, neighbours [2,5,6] — none present → isolated
+    // 4: count=2 → STRONG → skip
+    // 8: count=1, neighbours [4,5,6,7,9] — 4,9 present → not isolated
+    // 9: count=1, neighbours [5,6,8] — 8 present → not isolated
+    expect(calculateIsolationNumbers('1984-04-13')).toEqual([3])
   })
 
   it('digit absent from birth date is never isolated', () => {
-    // 1990-03-09: digits {1,9,3} — digit 5 is absent, must not appear
+    // 1990-03-09: digit 5 is absent, must not appear
     const result = calculateIsolationNumbers('1990-03-09')
     expect(result.includes(5)).toBe(false)
   })

@@ -1,11 +1,12 @@
 /**
  * Số Cô Lập — Isolation Number
  *
- * A digit (1–9) is isolated if:
+ * A digit (1–9) is isolated if ALL of:
  *   1. It IS present in the birth date digits
- *   2. ALL of its 3×3 grid neighbours are ABSENT from the birth date digits
+ *   2. It appears only ONCE — digits appearing 2+ times are "strong", not isolated
+ *   3. ALL of its 3×3 grid neighbours are ABSENT from the birth date digits
  *
- * 3×3 Lo Shu grid layout:
+ * 3×3 Pythagorean grid layout:
  *   4 9 2
  *   3 5 7
  *   8 1 6
@@ -26,18 +27,23 @@ const GRID_NEIGHBORS: Record<number, number[]> = {
 }
 
 export function calculateIsolationNumbers(birthDate: string): number[] {
-  // Collect all non-zero digits present in the birth date string (ignore dashes/zeros)
-  const presentDigits = new Set<number>()
+  // Count occurrences of each non-zero digit (1–9) in the birth date string
+  const digitCount: Record<number, number> = {}
   for (const ch of birthDate) {
     const d = parseInt(ch, 10)
-    if (d >= 1 && d <= 9) presentDigits.add(d)
+    if (d >= 1 && d <= 9) {
+      digitCount[d] = (digitCount[d] ?? 0) + 1
+    }
   }
+
+  const presentDigits = new Set(Object.keys(digitCount).map(Number))
 
   const isolated: number[] = []
   for (let digit = 1; digit <= 9; digit++) {
     if (!presentDigits.has(digit)) continue
-    const neighbors = GRID_NEIGHBORS[digit]
-    const allNeighborsAbsent = neighbors.every((n) => !presentDigits.has(n))
+    // Digits appearing 2+ times are "strong" — not isolated
+    if (digitCount[digit] > 1) continue
+    const allNeighborsAbsent = GRID_NEIGHBORS[digit].every((n) => !presentDigits.has(n))
     if (allNeighborsAbsent) isolated.push(digit)
   }
 
