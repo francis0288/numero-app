@@ -8,8 +8,8 @@ import { signIn } from 'next-auth/react'
 import { useRouter, usePathname } from '@/navigation'
 
 const schema = z.object({
-  email: z.string().email('Enter a valid email'),
-  password: z.string().min(1, 'Password is required'),
+  name: z.string().min(1, 'Vui lòng nhập tên'),
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
 })
 type FormData = z.infer<typeof schema>
 
@@ -29,7 +29,7 @@ export default function LoginPage({ params: { locale } }: { params: { locale: st
     setLoading(true)
     setAuthError('')
     const result = await signIn('credentials', {
-      email: data.email,
+      name: data.name,
       password: data.password,
       redirect: false,
     })
@@ -57,20 +57,20 @@ export default function LoginPage({ params: { locale } }: { params: { locale: st
       {/* Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-8 w-full max-w-[400px]">
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* Email */}
+          {/* Name */}
           <div className="mb-5">
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVietnamese ? 'Địa chỉ email' : 'Email address'}
+              {isVietnamese ? 'Tên' : 'Name'}
             </label>
             <input
-              {...register('email')}
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
+              {...register('name')}
+              type="text"
+              autoComplete="username"
+              placeholder="Hương Thảo"
               className="w-full border border-[#E8E0F0] rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#7B5EA7] text-[#2C2C2C] text-sm"
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
             )}
           </div>
 
