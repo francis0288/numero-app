@@ -12,6 +12,19 @@ export interface FullForecastInput {
   lifePath: NumberResult
   /** ISO date string "YYYY-MM-DD". Defaults to today if omitted. */
   targetDate?: string
+  /**
+   * Semantic name groups for correct Essence/Transit calculation.
+   * When provided, each group is treated as one Transit unit:
+   *   Spiritual Transit = lastName  (Họ)
+   *   Mental Transit    = middleName (Tên đệm)
+   *   Physical Transit  = firstName (Tên)
+   * Values should be stripped of Vietnamese diacritics (uppercase A-Z).
+   */
+  nameParts?: {
+    lastName: string
+    middleName?: string
+    firstName: string
+  }
 }
 
 export function calculateFullForecast(input: FullForecastInput): ForecastProfile {
@@ -24,7 +37,7 @@ export function calculateFullForecast(input: FullForecastInput): ForecastProfile
   const lifeCycles    = calculateLifeCycles(input.birthDate, input.lifePath, currentAge)
   const pinnacles     = calculatePinnacles(input.birthDate, input.lifePath, currentAge)
   const challenges    = calculateChallenges(input.birthDate, input.lifePath, currentAge)
-  const essenceNumber = calculateEssence(input.birthCertName, currentAge)
+  const essenceNumber = calculateEssence(input.birthCertName, currentAge, input.nameParts)
 
   return {
     personalYear,

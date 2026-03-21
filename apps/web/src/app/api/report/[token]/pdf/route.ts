@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { calculateFullForecast, calculateFullProfile } from '@numero-app/core'
+import { calculateFullForecast, calculateFullProfile, stripVietnamese } from '@numero-app/core'
 import type { NumerologyProfile } from '@numero-app/core'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { ReadingPDF } from '@/components/ReadingPDF'
@@ -42,13 +42,21 @@ export async function GET(_req: Request, { params }: { params: { token: string }
   const currentYear = new Date().getFullYear()
   const nextYear = currentYear + 1
 
+  const nameParts = {
+    lastName:   stripVietnamese(client.lastName),
+    middleName: client.middleName ? stripVietnamese(client.middleName) : undefined,
+    firstName:  stripVietnamese(client.firstName),
+  }
+
   const forecastCurr = calculateFullForecast({
     birthDate: birthDateStr, birthCertName: client.birthCertName, lifePath: profile.lifePath,
     targetDate: `${currentYear}-06-15`,
+    nameParts,
   })
   const forecastNext = calculateFullForecast({
     birthDate: birthDateStr, birthCertName: client.birthCertName, lifePath: profile.lifePath,
     targetDate: `${nextYear}-06-15`,
+    nameParts,
   })
 
   const isolationNumber = reduceDigit(Math.abs(profile.destiny.methodA.value - profile.soul.methodA.value))

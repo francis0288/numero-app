@@ -1,6 +1,6 @@
 import React from 'react'
 import { prisma } from '@/lib/prisma'
-import { calculateFullForecast, calculateFullProfile } from '@numero-app/core'
+import { calculateFullForecast, calculateFullProfile, stripVietnamese } from '@numero-app/core'
 import type { NumerologyProfile } from '@numero-app/core'
 import { ReportClient } from './ReportClient'
 
@@ -50,11 +50,18 @@ export default async function ReportPage({ params }: { params: { token: string }
   const currentYear = new Date().getFullYear()
   const nextYear = currentYear + 1
 
+  const nameParts = {
+    lastName:   stripVietnamese(client.lastName),
+    middleName: client.middleName ? stripVietnamese(client.middleName) : undefined,
+    firstName:  stripVietnamese(client.firstName),
+  }
+
   const forecastCurr = calculateFullForecast({
     birthDate: birthDateStr,
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
     targetDate: `${currentYear}-06-15`,
+    nameParts,
   })
 
   const forecastNext = calculateFullForecast({
@@ -62,6 +69,7 @@ export default async function ReportPage({ params }: { params: { token: string }
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
     targetDate: `${nextYear}-06-15`,
+    nameParts,
   })
 
   // Isolation number = |Destiny.value - Soul.value| reduced to single digit

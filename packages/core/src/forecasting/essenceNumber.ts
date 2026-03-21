@@ -8,36 +8,50 @@ import type { ForecastResult } from '../types'
  * Each letter's "transit duration" equals its Pythagorean value:
  *   A=1 year, B=2 years, J=1 year, R=9 years, etc.
  *
- * Algorithm (per name part):
- *   1. Collect the letters of the part.
+ * When nameParts is provided the three semantic groups are used as transits:
+ *   Spiritual Transit = lastName  (Họ)
+ *   Mental Transit    = middleName (Tên đệm) — omitted if empty
+ *   Physical Transit  = firstName (Tên)
+ *
+ * Each group's letters are summed together as a single unit before cycling,
+ * so "THANH TINH" (a two-word given name) is treated as one Physical Transit.
+ *
+ * Algorithm (per group):
+ *   1. Collect all letters from the group (ignoring spaces and non-alpha chars).
  *   2. Compute the total cycle length = sum of all letter values.
  *   3. Find the position within that cycle: pos = currentAge % totalCycle.
  *   4. Walk through letters accumulating durations until we reach pos —
- *      that letter is "active" for this part at currentAge.
+ *      that letter's value is "active" for this group at currentAge.
  *
- * The active letter values from all parts are summed, then reduced
+ * The active letter values from all groups are summed, then reduced
  * (master-number-aware).
  */
 export function calculateEssence(
   birthCertName: string,
   currentAge: number,
+  nameParts?: { lastName: string; middleName?: string; firstName: string },
 ): ForecastResult {
-  const parts = birthCertName.toUpperCase().split(' ').filter(Boolean)
+  // Use semantic name groups when provided; otherwise fall back to word-by-word.
+  const groups: string[] = nameParts
+    ? [
+        nameParts.lastName,
+        ...(nameParts.middleName ? [nameParts.middleName] : []),
+        nameParts.firstName,
+      ]
+    : birthCertName.toUpperCase().split(' ').filter(Boolean)
+
   let essenceSum = 0
 
-  for (const part of parts) {
-    // Keep only letters (skip hyphens, apostrophes, etc.)
-    const letters = [...part].filter((c) => /[A-Z]/.test(c))
+  for (const group of groups) {
+    // Collect letters from the entire group (handles multi-word parts like "THANH TINH")
+    const letters = [...group.toUpperCase()].filter((c) => /[A-Z]/.test(c))
     if (letters.length === 0) continue
 
-    // Total cycle length for this name part
     const totalCycle = letters.reduce((sum, c) => sum + getLetterValue(c), 0)
     if (totalCycle === 0) continue
 
-    // Position within the repeating letter cycle
     const pos = currentAge % totalCycle
 
-    // Walk through letters to find which one is active at this position
     let cumulative = 0
     let activeValue = getLetterValue(letters[0])
     for (const letter of letters) {

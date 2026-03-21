@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import {
   calculateFullForecast,
   calculateFullProfile,
+  stripVietnamese,
 } from '@numero-app/core'
 import type { NumerologyProfile } from '@numero-app/core'
 
@@ -38,10 +39,17 @@ export async function GET(
         currentName: client.currentName,
       })
 
+  const nameParts = {
+    lastName:   stripVietnamese(client.lastName),
+    middleName: client.middleName ? stripVietnamese(client.middleName) : undefined,
+    firstName:  stripVietnamese(client.firstName),
+  }
+
   const forecast = calculateFullForecast({
     birthDate: birthDateStr,
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
+    nameParts,
   })
 
   // Load interpretations

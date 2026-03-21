@@ -6,6 +6,7 @@ import {
   calculateFullProfile,
   calculateFullForecast,
   buildReadingPrompt,
+  stripVietnamese,
 } from '@numero-app/core'
 import type { NumerologyProfile } from '@numero-app/core'
 
@@ -52,6 +53,11 @@ export async function POST(
     birthDate: birthDateStr,
     birthCertName: client.birthCertName,
     lifePath: profile.lifePath,
+    nameParts: {
+      lastName:   stripVietnamese(client.lastName),
+      middleName: client.middleName ? stripVietnamese(client.middleName) : undefined,
+      firstName:  stripVietnamese(client.firstName),
+    },
   })
 
   const language = client.preferredLanguage || 'en'
