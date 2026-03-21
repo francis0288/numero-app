@@ -123,6 +123,8 @@ export default async function ReportPage({ params }: { params: { token: string }
         name: client.user.name,
         logoUrl: client.user.logoUrl ?? null,
         brandingFooter: client.user.brandingFooter ?? null,
+        phone: client.user.phone ?? null,
+        brandingEmail: client.user.brandingEmail ?? null,
       }}
       token={params.token}
       karmicDebtNums={karmicDebtNums}

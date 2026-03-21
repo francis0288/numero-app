@@ -17,6 +17,8 @@ export async function GET() {
     email: user.email,
     logoUrl: user.logoUrl,
     brandingFooter: user.brandingFooter,
+    phone: user.phone,
+    brandingEmail: user.brandingEmail,
   })
 }
 
@@ -26,15 +28,17 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await req.json() as { name?: string; brandingFooter?: string }
+  const body = await req.json() as { name?: string; brandingFooter?: string; phone?: string; brandingEmail?: string }
 
   const user = await prisma.user.update({
     where: { id: session.user.id },
     data: {
       ...(body.name !== undefined && { name: body.name }),
       ...(body.brandingFooter !== undefined && { brandingFooter: body.brandingFooter }),
+      ...(body.phone !== undefined && { phone: body.phone }),
+      ...(body.brandingEmail !== undefined && { brandingEmail: body.brandingEmail }),
     },
   })
 
-  return NextResponse.json({ name: user.name, brandingFooter: user.brandingFooter })
+  return NextResponse.json({ name: user.name, brandingFooter: user.brandingFooter, phone: user.phone, brandingEmail: user.brandingEmail })
 }

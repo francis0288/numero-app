@@ -280,7 +280,7 @@ export default function ReadingPage(): React.ReactElement {
   }
 
   const handleRegenerate = () => {
-    if (window.confirm('Generate a new reading? The current version will be replaced.')) {
+    if (window.confirm('Tạo bản đọc mới? Phiên bản hiện tại sẽ bị thay thế.')) {
       setStreamedText('')
       setReadingId(null)
       setStatus(null)
@@ -289,10 +289,10 @@ export default function ReadingPage(): React.ReactElement {
   }
 
   const tones: Array<{ value: Tone; label: string }> = [
-    { value: 'warm', label: '✨ Warm' },
-    { value: 'analytical', label: '📊 Analytical' },
-    { value: 'spiritual', label: '🌙 Spiritual' },
-    { value: 'practical', label: '⚡ Practical' },
+    { value: 'warm', label: '✨ Ấm Áp' },
+    { value: 'analytical', label: '📊 Phân Tích' },
+    { value: 'spiritual', label: '🌙 Tâm Linh' },
+    { value: 'practical', label: '⚡ Thực Tế' },
   ]
 
   const showGenerationPanel = !streamedText && !isStreaming
@@ -308,7 +308,7 @@ export default function ReadingPage(): React.ReactElement {
               href={`/clients/${id}/profile`}
               className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors"
             >
-              ← Back to profile
+              ← Quay lại hồ sơ
             </Link>
             {clientName && (
               <h1 className="text-xl font-medium text-[#2C2C2C]">{clientName}</h1>
@@ -317,17 +317,17 @@ export default function ReadingPage(): React.ReactElement {
           <div className="flex items-center gap-2">
             {version !== null && (
               <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs px-2 py-1 rounded-full">
-                Reading v{version}
+                Phiên bản {version}
               </span>
             )}
             {status === 'draft' && (
               <span className="bg-amber-50 text-amber-700 border border-amber-200 text-xs px-2 py-1 rounded-full">
-                Draft
+                Bản nháp
               </span>
             )}
             {status === 'finalised' && (
               <span className="bg-green-50 text-green-700 border border-green-200 text-xs px-2 py-1 rounded-full">
-                Finalised
+                Đã hoàn tất
               </span>
             )}
           </div>
@@ -336,7 +336,7 @@ export default function ReadingPage(): React.ReactElement {
         {/* Section A — Generation panel */}
         {showGenerationPanel && (
           <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-6">
-            <h2 className="text-[#7B5EA7] font-medium text-lg mb-5">Generate AI Reading</h2>
+            <h2 className="text-[#7B5EA7] font-medium text-lg mb-5">Tạo Bản Đọc AI</h2>
 
             {/* Tone selector */}
             <div className="flex flex-wrap gap-2 mb-4">
@@ -361,13 +361,13 @@ export default function ReadingPage(): React.ReactElement {
                 onClick={() => setShowCustomFocus(true)}
                 className="text-[#7B5EA7] text-sm"
               >
-                + Add custom focus (optional)
+                + Thêm chủ đề tập trung (tùy chọn)
               </button>
             ) : (
               <textarea
                 value={customFocus}
                 onChange={(e) => setCustomFocus(e.target.value)}
-                placeholder="e.g. She is considering changing careers this year..."
+                placeholder="VD: Cô ấy đang cân nhắc thay đổi nghề nghiệp trong năm nay..."
                 rows={3}
                 className="w-full mt-3 p-3 border border-[#E8E0F0] rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
               />
@@ -378,7 +378,7 @@ export default function ReadingPage(): React.ReactElement {
               onClick={() => void handleGenerate()}
               className="w-full mt-6 bg-[#7B5EA7] text-white rounded-xl py-3 font-medium hover:bg-[#6B4E97] transition-colors"
             >
-              Generate Reading
+              Tạo Bản Đọc
             </button>
           </div>
         )}
@@ -387,16 +387,16 @@ export default function ReadingPage(): React.ReactElement {
         {showReadingDisplay && (
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-[#888888] text-sm">Reading language:</span>
+              <span className="text-[#888888] text-sm">Ngôn ngữ:</span>
               <span className="bg-[#F5F0FB] text-[#7B5EA7] rounded-full px-3 py-1 text-sm">
                 {displayLanguage === 'vi' ? 'Tiếng Việt' : 'English'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               {isTranslating ? (
-                <span className="text-[#7B5EA7] text-xs animate-pulse">Translating…</span>
+                <span className="text-[#7B5EA7] text-xs animate-pulse">Đang dịch…</span>
               ) : (
-                <span className="text-[#888888] text-xs">Translate to:</span>
+                <span className="text-[#888888] text-xs">Dịch sang:</span>
               )}
               {(['vi', 'en'] as const).map((lang) => {
                 const labels = { vi: 'Việt', en: 'EN' }
@@ -470,7 +470,7 @@ export default function ReadingPage(): React.ReactElement {
                     }}
                     className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
                   >
-                    Edit
+                    Chỉnh sửa
                   </button>
                 )}
                 {isEditing && (
@@ -480,13 +480,13 @@ export default function ReadingPage(): React.ReactElement {
                       disabled={isSaving}
                       className="bg-[#7B5EA7] text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] disabled:opacity-50 transition-colors"
                     >
-                      {isSaving ? 'Saving…' : 'Save edits'}
+                      {isSaving ? 'Đang lưu…' : 'Lưu chỉnh sửa'}
                     </button>
                     <button
                       onClick={() => setIsEditing(false)}
                       className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
                     >
-                      Cancel
+                      Hủy
                     </button>
                   </>
                 )}
@@ -495,7 +495,7 @@ export default function ReadingPage(): React.ReactElement {
                     onClick={handleRegenerate}
                     className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
                   >
-                    Regenerate
+                    Tạo lại
                   </button>
                 )}
               </div>
@@ -505,14 +505,14 @@ export default function ReadingPage(): React.ReactElement {
                   href={`/clients/${id}/followup`}
                   className="border border-[#E8E0F0] text-[#7B5EA7] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] hover:bg-[#F5F0FB] transition-colors"
                 >
-                  Follow-up Q&A →
+                  Hỏi đáp thêm →
                 </Link>
                 {status !== 'finalised' && !isStreaming && !isTranslating && readingId && (
                   <button
                     onClick={() => void handleFinalise()}
                     className="bg-[#7B5EA7] text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
                   >
-                    Finalise →
+                    Hoàn tất →
                   </button>
                 )}
               </div>
@@ -523,7 +523,7 @@ export default function ReadingPage(): React.ReactElement {
         {/* Share panel — shown after finalising */}
         {status === 'finalised' && shareToken && (
           <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mt-6">
-            <p className="text-green-700 font-medium mb-3">✓ Reading finalised</p>
+            <p className="text-green-700 font-medium mb-3">✓ Đã hoàn tất bản đọc</p>
             <div className="bg-white border border-[#E8E0F0] rounded-xl px-4 py-3 font-mono text-sm text-[#888888] truncate mb-4">
               {typeof window !== 'undefined'
                 ? `${window.location.origin}/report/${shareToken}`
@@ -535,14 +535,14 @@ export default function ReadingPage(): React.ReactElement {
                 onClick={() => void handleCopyLink()}
                 className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
               >
-                {copied ? '✓ Copied!' : 'Copy link'}
+                {copied ? '✓ Đã sao chép!' : 'Sao chép liên kết'}
               </button>
               <button
                 type="button"
                 onClick={() => window.open(`/report/${shareToken}`, '_blank')}
                 className="border border-[#E8E0F0] text-[#2C2C2C] rounded-xl px-5 py-2.5 text-sm hover:border-[#7B5EA7] transition-colors"
               >
-                Open report
+                Xem báo cáo
               </button>
             </div>
           </div>

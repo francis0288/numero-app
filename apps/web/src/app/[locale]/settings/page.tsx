@@ -20,6 +20,8 @@ export default function SettingsPage() {
   // Profile
   const [name, setName] = useState('')
   const [brandingFooter, setBrandingFooter] = useState('')
+  const [phone, setPhone] = useState('')
+  const [brandingEmail, setBrandingEmail] = useState('')
   const [profileSaved, setProfileSaved] = useState(false)
 
   // Logo
@@ -40,9 +42,11 @@ export default function SettingsPage() {
     fetch('/api/settings/profile')
       .then(async (r) => {
         if (r.ok) {
-          const d = await r.json() as { name?: string; email?: string; logoUrl?: string; brandingFooter?: string }
+          const d = await r.json() as { name?: string; email?: string; logoUrl?: string; brandingFooter?: string; phone?: string; brandingEmail?: string }
           setName(d.name ?? '')
           setBrandingFooter(d.brandingFooter ?? '')
+          setPhone(d.phone ?? '')
+          setBrandingEmail(d.brandingEmail ?? '')
           if (d.logoUrl) setLogoPreview(d.logoUrl)
         }
       })
@@ -53,7 +57,7 @@ export default function SettingsPage() {
     const res = await fetch('/api/settings/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, brandingFooter }),
+      body: JSON.stringify({ name, brandingFooter, phone, brandingEmail }),
     })
     if (res.ok) {
       setProfileSaved(true)
@@ -120,11 +124,29 @@ export default function SettingsPage() {
               />
             </div>
             <div>
+              <label className="block text-sm text-[#888888] mb-1">{locale === 'vi' ? 'Số điện thoại' : 'Phone'}</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. 0901 234 567"
+                className="w-full border border-[#E8E0F0] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-[#888888] mb-1">{locale === 'vi' ? 'Email liên hệ' : 'Contact email'}</label>
+              <input
+                value={brandingEmail}
+                onChange={(e) => setBrandingEmail(e.target.value)}
+                placeholder="e.g. hello@yoursite.com"
+                className="w-full border border-[#E8E0F0] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+              />
+            </div>
+            <div>
               <label className="block text-sm text-[#888888] mb-1">{locale === 'vi' ? 'Chân trang thương hiệu' : 'Branding footer'}</label>
               <input
                 value={brandingFooter}
                 onChange={(e) => setBrandingFooter(e.target.value)}
-                placeholder="e.g. yoursite.com | hello@yoursite.com"
+                placeholder="e.g. yoursite.com"
                 className="w-full border border-[#E8E0F0] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
               />
             </div>
