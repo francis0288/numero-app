@@ -3,18 +3,13 @@ import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
-import { calculateFullProfile } from '@numero-app/core'
+import { calculateFullProfile, stripVietnamese } from '@numero-app/core'
 
 const createClientSchema = z.object({
-  firstName: z.string().min(1),
-  middleName: z.string().optional(),
-  lastName: z.string().min(1),
-  birthCertName: z.string().min(1),
-  currentName: z.string().min(1),
+  displayName: z.string().min(1),
+  motherName: z.string().optional(),
   dateOfBirth: z.string().min(1),
-  preferredLanguage: z.string().default('en'),
-  email: z.string().email().optional().or(z.literal('')),
-  phone: z.string().optional(),
+  preferredLanguage: z.string().default('vi'),
   notes: z.string().optional(),
 })
 
@@ -46,27 +41,29 @@ export async function POST(request: Request) {
   }
 
   const data = parsed.data
+  const stripped = stripVietnamese(data.displayName)
 
   const client = await prisma.client.create({
     data: {
       userId: session.user.id,
-      firstName: data.firstName,
-      middleName: data.middleName || null,
-      lastName: data.lastName,
-      birthCertName: data.birthCertName.toUpperCase(),
-      currentName: data.currentName.toUpperCase(),
+      firstName: data.displayName,
+      middleName: null,
+      lastName: '',
+      birthCertName: stripped,
+      currentName: stripped,
       dateOfBirth: new Date(data.dateOfBirth),
       preferredLanguage: data.preferredLanguage,
-      email: data.email || null,
-      phone: data.phone || null,
+      email: null,
+      phone: null,
       notes: data.notes || null,
     },
   })
 
   const profile = calculateFullProfile({
     birthDate: data.dateOfBirth,
-    birthCertName: data.birthCertName.toUpperCase(),
-    currentName: data.currentName.toUpperCase(),
+    birthCertName: stripped,
+    currentName: stripped,
+    motherName: data.motherName ? stripVietnamese(data.motherName) : undefined,
   })
 
   await prisma.reading.create({

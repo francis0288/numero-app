@@ -22,8 +22,8 @@ function formatDate(d: Date | string) {
   })
 }
 
-function initials(firstName: string, lastName: string) {
-  return `${firstName[0] ?? ''}${lastName[0] ?? ''}`.toUpperCase()
+function initials(firstName: string) {
+  return (firstName[0] ?? '').toUpperCase()
 }
 
 export function ClientList({
@@ -37,10 +37,7 @@ export function ClientList({
 
   const filtered = clients.filter((c) => {
     const q = search.toLowerCase()
-    return (
-      c.firstName.toLowerCase().includes(q) ||
-      c.lastName.toLowerCase().includes(q)
-    )
+    return c.firstName.toLowerCase().includes(q)
   })
 
   const profilePath = (id: string) =>
@@ -103,14 +100,14 @@ export function ClientList({
           >
             {/* Avatar */}
             <div className="w-11 h-11 rounded-full bg-[#F5F0FB] flex items-center justify-center text-[#7B5EA7] font-medium text-sm shrink-0">
-              {initials(client.firstName, client.lastName)}
+              {initials(client.firstName)}
             </div>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="font-medium text-[#2C2C2C]">
-                  {client.firstName} {client.lastName}
+                  {client.firstName}
                 </span>
                 <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs rounded-full px-2 py-0.5 font-medium">
                   {LANG_LABELS[client.preferredLanguage] ?? client.preferredLanguage}

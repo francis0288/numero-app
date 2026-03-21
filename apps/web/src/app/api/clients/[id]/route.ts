@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { authOptions } from '@/lib/auth'
+import { stripVietnamese } from '@numero-app/core'
 
 export async function GET(
   _req: Request,
@@ -43,10 +44,37 @@ export async function PUT(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const body = await request.json()
+  const body = await request.json() as {
+    displayName?: string
+    dateOfBirth?: string
+    preferredLanguage?: string
+    notes?: string
+  }
+
+  const updateData: Record<string, unknown> = {}
+
+  if (body.displayName !== undefined) {
+    const stripped = stripVietnamese(body.displayName)
+    updateData.firstName = body.displayName
+    updateData.birthCertName = stripped
+    updateData.currentName = stripped
+  }
+
+  if (body.dateOfBirth !== undefined) {
+    updateData.dateOfBirth = new Date(body.dateOfBirth)
+  }
+
+  if (body.preferredLanguage !== undefined) {
+    updateData.preferredLanguage = body.preferredLanguage
+  }
+
+  if (body.notes !== undefined) {
+    updateData.notes = body.notes || null
+  }
+
   const updated = await prisma.client.update({
     where: { id: params.id },
-    data: body,
+    data: updateData,
   })
 
   return NextResponse.json(updated)

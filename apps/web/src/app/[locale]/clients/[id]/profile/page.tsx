@@ -7,6 +7,8 @@ import { calculateFullProfile, calculatePersonalYear, calculatePersonalMonth, ca
 import type { NumerologyProfile, NumberResult } from '@numero-app/core'
 import { NavBar } from '@/components/NavBar'
 import { ShareSection } from '@/components/ShareSection'
+import { CollapsibleWorkings } from '@/components/CollapsibleWorkings'
+import { EngToggle } from '@/components/EngToggle'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -44,6 +46,23 @@ const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+function buildWorkings(profile: NumerologyProfile, birthDateStr: string): Record<string, string> {
+  const [yearStr, monthStr, dayStr] = birthDateStr.split('-')
+  const day = parseInt(dayStr, 10)
+  const month = parseInt(monthStr, 10)
+  const yearDigits = (yearStr ?? '').split('').join('+')
+  const yearSum = (yearStr ?? '').split('').reduce((s, d) => s + parseInt(d, 10), 0)
+  const lpSum = day + month + yearSum
+  const w: Record<string, string> = {}
+  w.lifePath = `${day} + ${month} + (${yearDigits}) = ${lpSum} → ${profile.lifePath.display}`
+  w.destiny = `Cộng gộp ngang (A): ${profile.destiny.methodA.display}\nCộng rút gọn (B): ${profile.destiny.methodB.display}`
+  w.soul = `Cộng gộp ngang (A): ${profile.soul.methodA.display}\nCộng rút gọn (B): ${profile.soul.methodB.display}`
+  w.personality = `Cộng gộp ngang (A): ${profile.personality.methodA.display}\nCộng rút gọn (B): ${profile.personality.methodB.display}`
+  w.attitude = `Tháng ${month} + Ngày ${day} = ${month + day} → ${profile.attitude.display}`
+  w.bridge = `|Đường Đời(${profile.lifePath.value}) − Vận Mệnh(${profile.destiny.methodA.value})| = ${profile.bridge.display}`
+  return w
+}
+
 function NumberCard({
   label,
   result,
@@ -51,6 +70,7 @@ function NumberCard({
   numberKey,
   locale,
   clientId,
+  workings,
 }: {
   label: string
   result: NumberResult
@@ -58,6 +78,7 @@ function NumberCard({
   numberKey: string
   locale: string
   clientId: string
+  workings?: string
 }) {
   const content = interp ? JSON.parse(interp.baseText) : null
   const detailPath =
@@ -87,6 +108,7 @@ function NumberCard({
       <a href={detailPath} className="text-sm text-[#7B5EA7] hover:underline">
         {locale === 'vi' ? 'Xem ý nghĩa →' : 'View meaning →'}
       </a>
+      {workings && <CollapsibleWorkings workings={workings} />}
     </div>
   )
 }
@@ -122,6 +144,8 @@ export default async function ProfilePage({
       currentName: client.currentName,
     })
   }
+
+  const workings = buildWorkings(profile, birthDateStr)
 
   const CORE_LABELS: Record<string, string> = locale === 'vi' ? {
     destiny: 'Số Định Mệnh',
@@ -200,7 +224,7 @@ export default async function ProfilePage({
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-medium text-[#2C2C2C]">
-                {client.firstName} {client.middleName ? `${client.middleName} ` : ''}{client.lastName}
+                {client.firstName}
               </h1>
               <p className="text-[#888888] text-sm mt-1">
                 {formatDOB(client.dateOfBirth)} ({locale === 'vi' ? 'tuổi' : 'age'} {getAge(client.dateOfBirth)})
@@ -215,6 +239,7 @@ export default async function ProfilePage({
                 >
                   {locale === 'vi' ? 'Chỉnh sửa khách hàng' : 'Edit client'}
                 </a>
+                <EngToggle />
               </div>
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
@@ -267,6 +292,7 @@ export default async function ProfilePage({
           >
             {locale === 'vi' ? 'Xem ý nghĩa đầy đủ →' : 'View full meaning →'}
           </a>
+          <CollapsibleWorkings workings={workings.lifePath} />
         </div>
 
         {/* ── Core numbers grid ── */}
@@ -275,6 +301,7 @@ export default async function ProfilePage({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {coreEntries.map(([fieldKey, result]) => {
               const nKey = getNumberKey(result)
+              const cardWorkings = workings[fieldKey as keyof typeof workings]
               return (
                 <NumberCard
                   key={fieldKey}
@@ -284,6 +311,7 @@ export default async function ProfilePage({
                   numberKey={nKey}
                   locale={locale}
                   clientId={id}
+                  workings={cardWorkings}
                 />
               )
             })}
@@ -343,6 +371,7 @@ export default async function ProfilePage({
             <p className="text-xs text-[#888888]">
               {locale === 'vi' ? 'Thái độ & ấn tượng đầu tiên' : 'Attitude & first impression'}
             </p>
+            <CollapsibleWorkings workings={workings.attitude} />
           </div>
 
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
@@ -355,6 +384,7 @@ export default async function ProfilePage({
             <p className="text-xs text-[#888888]">
               {locale === 'vi' ? 'Kết nối Đường Đời & Vận Mệnh' : 'Connects Life Path & Destiny'}
             </p>
+            <CollapsibleWorkings workings={workings.bridge} />
           </div>
         </div>
 

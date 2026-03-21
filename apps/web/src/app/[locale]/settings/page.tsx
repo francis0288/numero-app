@@ -106,13 +106,13 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-[#FDF6EC]">
       <NavBar locale={locale} />
       <main className="max-w-xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-medium text-[#2C2C2C] mb-6">Settings</h1>
+        <h1 className="text-2xl font-medium text-[#2C2C2C] mb-6">{locale === 'vi' ? 'Cài đặt' : 'Settings'}</h1>
 
         {/* Profile */}
-        <Card title="Profile">
+        <Card title={locale === 'vi' ? 'Hồ sơ' : 'Profile'}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-[#888888] mb-1">Name</label>
+              <label className="block text-sm text-[#888888] mb-1">{locale === 'vi' ? 'Tên' : 'Name'}</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -120,7 +120,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-[#888888] mb-1">Branding footer</label>
+              <label className="block text-sm text-[#888888] mb-1">{locale === 'vi' ? 'Chân trang thương hiệu' : 'Branding footer'}</label>
               <input
                 value={brandingFooter}
                 onChange={(e) => setBrandingFooter(e.target.value)}
@@ -133,7 +133,7 @@ export default function SettingsPage() {
               onClick={() => void saveProfile()}
               className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
             >
-              {profileSaved ? '✓ Saved' : 'Save changes'}
+              {profileSaved ? '✓ ' + (locale === 'vi' ? 'Đã lưu' : 'Saved') : (locale === 'vi' ? 'Lưu thay đổi' : 'Save changes')}
             </button>
           </div>
         </Card>
@@ -158,7 +158,7 @@ export default function SettingsPage() {
                 onClick={() => logoInputRef.current?.click()}
                 className="bg-[#7B5EA7] text-white rounded-xl px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
               >
-                {logoSaved ? '✓ Uploaded' : 'Upload logo'}
+                {logoSaved ? '✓ ' + (locale === 'vi' ? 'Đã tải lên' : 'Uploaded') : (locale === 'vi' ? 'Tải lên logo' : 'Upload logo')}
               </button>
               <p className="text-xs text-[#888888] mt-1">Appears on client report cover</p>
             </div>
