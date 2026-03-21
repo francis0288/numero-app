@@ -9,14 +9,14 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        name: { label: 'Name', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        username: { label: 'Tên đăng nhập', type: 'text' },
+        password: { label: 'Mật khẩu', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.name || !credentials?.password) return null
+        if (!credentials?.username || !credentials?.password) return null
 
         const user = await prisma.user.findFirst({
-          where: { name: credentials.name },
+          where: { name: { equals: credentials.username, mode: 'insensitive' } },
         })
         if (!user) return null
 
