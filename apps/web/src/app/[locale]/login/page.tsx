@@ -13,7 +13,7 @@ const schema = z.object({
 })
 type FormData = z.infer<typeof schema>
 
-export default function LoginPage({ params: { locale } }: { params: { locale: string } }): React.ReactElement {
+export default function LoginPage(): React.ReactElement {
   const router = useRouter()
   const [authError, setAuthError] = useState('')
   const [loading, setLoading] = useState(false)

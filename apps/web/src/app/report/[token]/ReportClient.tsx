@@ -482,7 +482,7 @@ export function ReportClient({
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
               {karmicDebtNums.map(n => {
                 const interp = interpretations[`karmic_debt_${n}`]
-                const [label, base] = DEBT_LABELS[n] ?? [`Debt ${n}`, n % 9 || 9]
+                const [, base] = DEBT_LABELS[n] ?? [`Debt ${n}`, n % 9 || 9]
                 return (
                   <div key={n} style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderLeft: `4px solid ${tc.karmicCardBorderLeft}`, borderRadius: 12, padding: 24 }}>
                     <div style={{ fontSize: 48, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 8 }}>{n}/{base}</div>
