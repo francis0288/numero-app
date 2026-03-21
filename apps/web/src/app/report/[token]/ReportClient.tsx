@@ -141,6 +141,14 @@ function getNumberKey(r: { value: number; isMasterNumber?: boolean; isKarmicDebt
   return `life_path_${r.value}`
 }
 
+function formatPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, '')
+  if (digits.length === 10) {
+    return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`
+  }
+  return phone
+}
+
 function sentences(text: string | undefined) {
   if (!text) return []
   return (text.match(/[^.!?]+[.!?]+/g) ?? []).map(s => s.trim()).filter(s => s.length > 10)
@@ -672,12 +680,24 @@ export function ReportClient({
             <p style={{ color: 'rgba(212,172,110,0.6)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', margin: '0 0 12px' }}>
               LIÊN HỆ
             </p>
-            <p style={{ color: '#D4AC6E', fontWeight: 700, fontSize: 18, margin: '0 0 12px' }}>
-              {practitioner.name}
-            </p>
+            {practitioner.phone ? (
+              <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: '#D4AC6E', fontWeight: 700, fontSize: 18, margin: '0 0 12px', textDecoration: 'none', opacity: 1, transition: 'opacity 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              >
+                {practitioner.name}
+              </a>
+            ) : (
+              <p style={{ color: '#D4AC6E', fontWeight: 700, fontSize: 18, margin: '0 0 12px' }}>
+                {practitioner.name}
+              </p>
+            )}
             {practitioner.phone && (
-              <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: 'rgba(255,255,255,0.75)', fontSize: 15, margin: '0 0 8px', textDecoration: 'none' }}>
-                📞 {practitioner.phone}
+              <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: 'rgba(255,255,255,0.8)', fontSize: 15, margin: '0 0 8px', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#D4AC6E')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.8)')}
+              >
+                📞 {formatPhone(practitioner.phone)}
               </a>
             )}
             {practitioner.brandingEmail && (

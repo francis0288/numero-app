@@ -79,3 +79,29 @@ export async function PUT(
 
   return NextResponse.json(updated)
 }
+
+export async function DELETE(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const client = await prisma.client.findFirst({
+    where: { id: params.id, userId: session.user.id },
+  })
+  if (!client) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  // Cascade delete: sessions → readings → client
+  await prisma.session.deleteMany({
+    where: { reading: { clientId: params.id } },
+  })
+  await prisma.reading.deleteMany({ where: { clientId: params.id } })
+  await prisma.client.delete({ where: { id: params.id } })
+
+  return NextResponse.json({ success: true })
+}

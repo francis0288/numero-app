@@ -8,6 +8,7 @@ import type { NumerologyProfile, NumberResult } from '@numero-app/core'
 import { NavBar } from '@/components/NavBar'
 import { ShareSection } from '@/components/ShareSection'
 import { EngToggle } from '@/components/EngToggle'
+import { DeleteClientButton } from '@/components/DeleteClientButton'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -85,12 +86,12 @@ function NumberCard({
         <span className="text-4xl font-bold text-[#7B5EA7]">{result.display}</span>
         {result.isMasterNumber && (
           <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5 font-medium">
-            Master
+            Số Master
           </span>
         )}
         {result.isKarmicDebt && (
           <span className="bg-[#D4AC6E] text-white text-xs rounded-full px-2 py-0.5 font-medium">
-            Karmic Debt
+            Số Nghiệp
           </span>
         )}
       </div>
@@ -261,7 +262,7 @@ export default async function ProfilePage({
               </a>
               {latestReading && (
                 <p className="text-xs text-[#888888]">
-                  v{latestReading.version} · {latestReading.status}
+                  v{latestReading.version} · {latestReading.status === 'draft' ? 'Bản nháp' : latestReading.status === 'finalised' ? 'Đã hoàn tất' : latestReading.status}
                 </p>
               )}
               {readingCount > 1 && (
@@ -343,7 +344,7 @@ export default async function ProfilePage({
                   <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-bold text-[#7B5EA7]">{dual.methodA.display}</span>
                     {dual.methodA.isMasterNumber && (
-                      <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5">Master</span>
+                      <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5">Số Master</span>
                     )}
                   </div>
                 </div>
@@ -373,7 +374,7 @@ export default async function ProfilePage({
             <div className="flex items-baseline gap-2 mb-1">
               <span className="text-4xl font-bold text-[#7B5EA7]">{profile.attitude.display}</span>
               {profile.attitude.isMasterNumber && (
-                <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5 font-medium">Master</span>
+                <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5 font-medium">Số Master</span>
               )}
             </div>
             <p className="text-xs text-[#888888]">
@@ -494,11 +495,12 @@ export default async function ProfilePage({
           />
         )}
 
-        {/* Back link */}
-        <div>
+        {/* Back link + delete */}
+        <div className="flex items-center justify-between">
           <a href={dashboardPath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
             {locale === 'vi' ? '← Quay lại danh sách' : '← Back to clients'}
           </a>
+          <DeleteClientButton clientId={id} clientName={client.firstName} locale={locale} />
         </div>
       </main>
     </div>

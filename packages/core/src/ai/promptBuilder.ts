@@ -26,9 +26,23 @@ export interface FollowUpPromptInput {
 
 function getLanguageInstruction(lang: string): string {
   if (lang === 'en') {
-    return 'Write the entire reading in English.'
+    return `Write the entire reading in English.
+Use these section headings (keep the ## markdown):
+## Overview
+## Your Inner World
+## Life Purpose & Gifts
+## Challenges & Growth
+## The Year Ahead
+## Closing Guidance`
   }
-  return 'Viết toàn bộ bài đọc bằng tiếng Việt. Sử dụng tiếng Việt tự nhiên, ấm áp, chuyên nghiệp.'
+  return `Viết toàn bộ bài đọc bằng tiếng Việt. Sử dụng tiếng Việt tự nhiên, ấm áp, chuyên nghiệp.
+Sử dụng các tiêu đề phần sau (giữ nguyên dấu ## markdown):
+## Tổng Quan
+## Thế Giới Nội Tâm
+## Mục Đích Sống & Tài Năng
+## Thách Thức & Phát Triển
+## Năm Phía Trước
+## Lời Khuyên Kết`
 }
 
 function getToneInstruction(tone: 'warm' | 'analytical' | 'spiritual' | 'practical'): string {
@@ -76,17 +90,16 @@ Structure your response with exactly these 6 markdown headings and no others.`
 
   const chartSummary = buildChartSummary(input.profile, input.forecast)
 
+  const sectionHeadings = input.client.preferredLanguage === 'en'
+    ? `## Overview\n## Your Inner World\n## Life Purpose & Gifts\n## Challenges & Growth\n## The Year Ahead\n## Closing Guidance`
+    : `## Tổng Quan\n## Thế Giới Nội Tâm\n## Mục Đích Sống & Tài Năng\n## Thách Thức & Phát Triển\n## Năm Phía Trước\n## Lời Khuyên Kết`
+
   let user = `Please write a numerology reading for ${input.client.firstName}.
 
 ${chartSummary}
 
 Write a reading with these 6 sections:
-## Overview
-## Your Inner World
-## Life Purpose & Gifts
-## Challenges & Growth
-## The Year Ahead
-## Closing Guidance
+${sectionHeadings}
 Each section: 2-3 paragraphs. End with one specific, actionable piece of guidance.`
 
   if (input.customFocus) {

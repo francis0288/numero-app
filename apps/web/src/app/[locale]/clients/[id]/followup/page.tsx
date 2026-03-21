@@ -123,9 +123,9 @@ export default function FollowUpPage(): React.ReactElement {
   }
 
   const suggestionChips = [
-    'Is this a good year for a career change?',
-    'What does her Soul number mean for relationships?',
-    'What are her biggest strengths this year?',
+    'Năm nay có tốt để thay đổi công việc không?',
+    'Số Linh Hồn có ý nghĩa gì với các mối quan hệ?',
+    'Điểm mạnh lớn nhất trong năm nay là gì?',
   ]
 
   const lastMessage = messages[messages.length - 1]
@@ -141,10 +141,10 @@ export default function FollowUpPage(): React.ReactElement {
             href={`/clients/${id}/reading`}
             className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors block mb-3"
           >
-            ← Back to reading
+            ← Quay lại bài đọc
           </Link>
           <h1 className="text-2xl font-medium text-[#2C2C2C]">
-            {clientName ? `${clientName}'s Follow-up Q&A` : 'Follow-up Q&A'}
+            {clientName ? `${clientName} — Hỏi & Đáp` : 'Hỏi & Đáp'}
           </h1>
         </div>
 
@@ -152,7 +152,7 @@ export default function FollowUpPage(): React.ReactElement {
         <div className="min-h-[400px] space-y-4 mb-6">
           {messages.length === 0 ? (
             <div>
-              <p className="text-sm text-[#888888] mb-3">Suggested questions:</p>
+              <p className="text-sm text-[#888888] mb-3">Gợi ý câu hỏi:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestionChips.map((chip) => (
                   <button
@@ -199,7 +199,7 @@ export default function FollowUpPage(): React.ReactElement {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={clientName ? `Ask a question about ${clientName}'s chart...` : 'Ask a question about this chart...'}
+              placeholder={clientName ? `Hỏi về biểu đồ số học của ${clientName}...` : 'Hỏi về biểu đồ số học...'}
               className="w-full p-3 border border-[#E8E0F0] rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
             />
             <button
@@ -207,10 +207,10 @@ export default function FollowUpPage(): React.ReactElement {
               disabled={isStreaming || !inputText.trim()}
               className="bg-[#7B5EA7] text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-[#6B4E97] transition-colors shrink-0"
             >
-              Send
+              Gửi
             </button>
           </div>
-          <p className="text-xs text-[#888888] mt-1">⌘ + Enter to send</p>
+          <p className="text-xs text-[#888888] mt-1">⌘ + Enter để gửi</p>
         </div>
       </main>
     </div>
