@@ -141,9 +141,9 @@ export default async function ProfilePage({
 
   // Collect all number keys to fetch
   const coreEntries: [string, NumberResult][] = [
-    ['destiny', profile.destiny],
-    ['soul', profile.soul],
-    ['personality', profile.personality],
+    ['destiny', profile.destiny.methodA],
+    ['soul', profile.soul.methodA],
+    ['personality', profile.personality.methodA],
     ['maturity', profile.maturity],
     ['birthDay', profile.birthDay],
     ['currentName', profile.currentName],
@@ -289,6 +289,89 @@ export default async function ProfilePage({
             })}
           </div>
         </div>
+
+        {/* ── Dual method comparison for Destiny, Soul, Personality ── */}
+        <div className="space-y-3">
+          {[
+            { label: locale === 'vi' ? 'Số Vận Mệnh — cả hai phương pháp' : 'Destiny — Both Methods', dual: profile.destiny },
+            { label: locale === 'vi' ? 'Số Linh Hồn — cả hai phương pháp' : 'Soul — Both Methods', dual: profile.soul },
+            { label: locale === 'vi' ? 'Số Nhân Cách — cả hai phương pháp' : 'Personality — Both Methods', dual: profile.personality },
+          ].map(({ label, dual }) => (
+            <div key={label} className="bg-[#F5F0FB] rounded-2xl border border-[#E8E0F0] p-5">
+              <p className="text-xs text-[#7B5EA7] font-medium uppercase tracking-wide mb-3">{label}</p>
+              <div className="flex gap-6">
+                <div>
+                  <p className="text-[10px] text-[#888888] mb-1">
+                    {locale === 'vi' ? 'Cộng gộp ngang' : 'Adding across'}
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-[#7B5EA7]">{dual.methodA.display}</span>
+                    {dual.methodA.isMasterNumber && (
+                      <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5">Master</span>
+                    )}
+                  </div>
+                </div>
+                <div className="w-px bg-[#E8E0F0]" />
+                <div>
+                  <p className="text-[10px] text-[#888888] mb-1">
+                    {locale === 'vi' ? 'Cộng rút gọn' : 'Reducing down'}
+                  </p>
+                  <span className="text-2xl font-bold text-[#D4AC6E]">{dual.methodB.display}</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-[#888888] mt-2">
+                ℹ {locale === 'vi'
+                  ? 'Hai phương pháp tính cho kết quả khác nhau. Chọn phương pháp phù hợp với từng trường hợp.'
+                  : 'Two methods may give different results. Choose the appropriate method for each case.'}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Attitude & Bridge numbers ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
+            <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
+              {locale === 'vi' ? 'Số Thái Độ' : 'Attitude Number'}
+            </p>
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="text-4xl font-bold text-[#7B5EA7]">{profile.attitude.display}</span>
+              {profile.attitude.isMasterNumber && (
+                <span className="bg-[#7B5EA7] text-white text-xs rounded-full px-2 py-0.5 font-medium">Master</span>
+              )}
+            </div>
+            <p className="text-xs text-[#888888]">
+              {locale === 'vi' ? 'Thái độ & ấn tượng đầu tiên' : 'Attitude & first impression'}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
+            <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
+              {locale === 'vi' ? 'Số Kết Nối' : 'Bridge Number'}
+            </p>
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="text-4xl font-bold text-[#7B5EA7]">{profile.bridge.display}</span>
+            </div>
+            <p className="text-xs text-[#888888]">
+              {locale === 'vi' ? 'Kết nối Đường Đời & Vận Mệnh' : 'Connects Life Path & Destiny'}
+            </p>
+          </div>
+        </div>
+
+        {/* Mother's name number (if present) */}
+        {profile.motherName && (
+          <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
+            <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
+              {locale === 'vi' ? 'Số Tên Mẹ' : "Mother's Name Number"}
+            </p>
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="text-4xl font-bold text-[#7B5EA7]">{profile.motherName.display}</span>
+            </div>
+            <p className="text-xs text-[#888888]">
+              {locale === 'vi' ? 'Số từ tên người mẹ' : "Number from mother's name"}
+            </p>
+          </div>
+        )}
 
         {/* ── Today's forecast strip ── */}
         <div className="bg-[#F5F0FB] rounded-2xl p-5">

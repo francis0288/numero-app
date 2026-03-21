@@ -1,9 +1,12 @@
 import { isConsonant } from '../utils'
-import { reduceNameParts } from './_helpers'
-import type { NumberResult } from '../types'
+import { reduceNameParts, reduceNameMethodA } from './_helpers'
+import type { DestinyResult } from '../types'
 
 /** Consonants only (Y counts as a consonant). */
-export function calculatePersonality(birthCertName: string): NumberResult {
+export function calculatePersonality(birthCertName: string): DestinyResult {
   const parts = birthCertName.toUpperCase().split(' ').filter(Boolean)
-  return reduceNameParts(parts, isConsonant)
+  return {
+    methodA: reduceNameMethodA(parts, isConsonant),
+    methodB: reduceNameParts(parts, isConsonant),
+  }
 }

@@ -19,6 +19,7 @@ const schema = z.object({
     .min(1, 'Date of birth is required')
     .refine((d) => new Date(d) < new Date(), { message: 'Date of birth must be in the past' }),
   preferredLanguage: z.enum(['vi', 'en']).default('vi'),
+  motherName: z.string().optional(),
   email: z.string().email('Enter a valid email').optional().or(z.literal('')),
   phone: z.string().optional(),
   notes: z.string().optional(),
@@ -162,6 +163,19 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
               type="text"
               className={`${inputClass} uppercase`}
               onChange={(e) => setValue('currentName', e.target.value.toUpperCase())}
+            />
+          </Field>
+
+          {/* Row 5b: Mother's name */}
+          <Field
+            label={locale === 'vi' ? "Tên mẹ (tùy chọn)" : "Mother's name (optional)"}
+            helper={locale === 'vi' ? "Nhập không dấu — VD: NGUYEN THI HOA" : "Enter without diacritics — e.g. NGUYEN THI HOA"}
+          >
+            <input
+              {...register('motherName')}
+              type="text"
+              className={`${inputClass} uppercase`}
+              onChange={(e) => setValue('motherName', e.target.value.toUpperCase())}
             />
           </Field>
 

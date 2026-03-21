@@ -175,16 +175,16 @@ export function ReadingPDF({
 
   const CORE = [
     { key: 'lifePath', label: 'Life Path', r: profile.lifePath },
-    { key: 'destiny', label: 'Destiny', r: profile.destiny },
-    { key: 'soul', label: 'Soul', r: profile.soul },
-    { key: 'personality', label: 'Personality', r: profile.personality },
+    { key: 'destiny', label: 'Destiny', r: profile.destiny.methodA },
+    { key: 'soul', label: 'Soul', r: profile.soul.methodA },
+    { key: 'personality', label: 'Personality', r: profile.personality.methodA },
     { key: 'maturity', label: 'Maturity', r: profile.maturity },
     { key: 'birthDay', label: 'Birth Day', r: profile.birthDay },
     { key: 'currentName', label: 'Current Name', r: profile.currentName },
   ]
 
   const lifePathInterp = interps[getNumberKey(profile.lifePath)]
-  const destinyInterp = interps[getNumberKey(profile.destiny)]
+  const destinyInterp = interps[getNumberKey(profile.destiny.methodA)]
   const pyCurr = forecastCurr.personalYear
   const pyNext = forecastNext.personalYear
   const pyCurrInfo = PY_INFO[pyCurr.value] ?? PY_INFO[1]
@@ -256,7 +256,7 @@ export function ReadingPDF({
           <View style={styles.cardRow}>
             <View style={styles.cardHalf}>
               <Text style={styles.label}>Name Index — Destiny Number</Text>
-              <Text style={styles.bigNum}>{profile.destiny.display}</Text>
+              <Text style={styles.bigNum}>{profile.destiny.methodA.display}</Text>
               {destinyInterp?.title && <Text style={styles.cardTitle}>{destinyInterp.title}</Text>}
               {destinyInterp?.overview && <Text style={styles.bodyText}>{destinyInterp.overview.slice(0, 280)}…</Text>}
             </View>
@@ -425,7 +425,7 @@ export function ReadingPDF({
             ) : (
               <>
                 <Text style={{ ...styles.bodyText, textAlign: 'center' }}>
-                  With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.display}, you carry a unique blueprint for this lifetime — gifts, lessons, and purpose that are entirely your own.
+                  With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.methodA.display}, you carry a unique blueprint for this lifetime — gifts, lessons, and purpose that are entirely your own.
                 </Text>
                 <Text style={{ ...styles.bodyText, textAlign: 'center' }}>
                   As you move through Personal Year {pyCurr.display} in {currentYear}, step fully into your potential. Trust the wisdom of your numbers and know that every step is part of a perfectly orchestrated plan.

@@ -51,9 +51,9 @@ export async function GET(_req: Request, { params }: { params: { token: string }
     targetDate: `${nextYear}-06-15`,
   })
 
-  const isolationNumber = reduceDigit(Math.abs(profile.destiny.value - profile.soul.value))
+  const isolationNumber = reduceDigit(Math.abs(profile.destiny.methodA.value - profile.soul.methodA.value))
 
-  const allNums = [profile.lifePath, profile.destiny, profile.soul, profile.personality, profile.maturity, profile.birthDay, profile.currentName]
+  const allNums = [profile.lifePath, profile.destiny.methodA, profile.soul.methodA, profile.personality.methodA, profile.maturity, profile.birthDay, profile.currentName]
   const karmicDebtNums = [...new Set(allNums.filter(r => r.isKarmicDebt && r.karmicDebtNumber).map(r => r.karmicDebtNumber!))]
 
   const coreKeys = allNums.map(getNumberKey)

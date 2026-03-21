@@ -47,12 +47,13 @@ function buildChartSummary(profile: NumerologyProfile, forecast: { personalYear:
 
   return `NUMEROLOGY CHART:
 Life Path:    ${profile.lifePath.display}
-Destiny:      ${profile.destiny.display}
-Soul:         ${profile.soul.display}
-Personality:  ${profile.personality.display}
+Destiny:      ${profile.destiny.methodA.display} (methodB: ${profile.destiny.methodB.display})
+Soul:         ${profile.soul.methodA.display}
+Personality:  ${profile.personality.methodA.display}
 Maturity:     ${profile.maturity.display}
 Birth Day:    ${profile.birthDay.display}
 Current Name: ${profile.currentName.display}
+Attitude:     ${profile.attitude.display}
 Karmic Lessons: ${karmicLessons}
 
 TODAY'S FORECAST:
@@ -106,7 +107,7 @@ ${langInstruction}`
     ? input.profile.karmicLessons.join(', ')
     : 'None'
 
-  const chartSummary = `Life Path: ${input.profile.lifePath.display} | Destiny: ${input.profile.destiny.display} | Soul: ${input.profile.soul.display} | Personality: ${input.profile.personality.display} | Maturity: ${input.profile.maturity.display} | Birth Day: ${input.profile.birthDay.display} | Current Name: ${input.profile.currentName.display} | Karmic Lessons: ${karmicLessons}`
+  const chartSummary = `Life Path: ${input.profile.lifePath.display} | Destiny: ${input.profile.destiny.methodA.display} | Soul: ${input.profile.soul.methodA.display} | Personality: ${input.profile.personality.methodA.display} | Maturity: ${input.profile.maturity.display} | Birth Day: ${input.profile.birthDay.display} | Current Name: ${input.profile.currentName.display} | Attitude: ${input.profile.attitude.display} | Karmic Lessons: ${karmicLessons}`
 
   const readingSummary = input.existingReading.slice(0, 500)
 

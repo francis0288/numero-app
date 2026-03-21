@@ -47,9 +47,9 @@ export async function GET(
   // Load interpretations
   const numberKeys = [
     getNumberKey(profile.lifePath),
-    getNumberKey(profile.destiny),
-    getNumberKey(profile.soul),
-    getNumberKey(profile.personality),
+    getNumberKey(profile.destiny.methodA),
+    getNumberKey(profile.soul.methodA),
+    getNumberKey(profile.personality.methodA),
     getNumberKey(profile.maturity),
     getNumberKey(profile.birthDay),
     getNumberKey(profile.currentName),

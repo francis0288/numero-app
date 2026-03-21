@@ -35,7 +35,28 @@
       "Bash(pnpm --filter @numero-app/web dev)",
       "Bash(pnpm --filter @numero-app/web add @react-pdf/renderer)",
       "Bash(pnpm --filter @numero-app/web prisma migrate dev --name default_language_vi)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(pnpm setup:*)",
+      "Bash(PNPM_HOME=\"C:/Users/francis home/AppData/Local/pnpm\" pnpm add -g vercel 2>&1)",
+      "Bash(vercel:*)",
+      "Bash(printf 'postgresql://postgres.hvlovkmysvdyxehipaiv:L48X7SfJdebYZ!-@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1\\\\n\\\\n')",
+      "Read(//c/Users/francis home/.local/share/com.vercel.cli/**)",
+      "Read(//c/Users/francis home/.config/vercel/**)",
+      "Read(//c/Users/francis home/.local/**)",
+      "Read(//c/Users/francis home/AppData/Local/com.vercel.cli/**)",
+      "Read(//c/Users/francis home/AppData/Roaming/com.vercel.cli/**)",
+      "Read(//c/Users/francis home/AppData/**)",
+      "Bash(curl -s \"https://api.vercel.com/v9/projects/numero-app?teamId=team_GYMdQVthpmxQydzA5rA8csXk\" -H \"Authorization: Bearer vca_2jkmWwrlhFxxWqaBRccJHvKEYuZmntwYWkkVFIQZfQG95eJf7Z3ESvKP\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\(''''id'''',''''''''\\)\\)\")",
+      "Bash(pnpm --filter @numero-app/web prisma db seed)",
+      "Bash(pnpm --filter @numero-app/web exec tsc --noEmit)",
+      "Bash(ls -R C:/projects/numero-app/apps/web/src/app/[locale])",
+      "Bash(find:*)",
+      "Bash(rm \"C:/projects/numero-app/packages/i18n/src/locales/zh/common.json\" \"C:/projects/numero-app/packages/i18n/src/locales/zh/forecasting.json\" \"C:/projects/numero-app/packages/i18n/src/locales/zh/interpretations.json\" \"C:/projects/numero-app/packages/i18n/src/locales/zh/numbers.json\" \"C:/projects/numero-app/packages/i18n/src/locales/zh/screens.json\")",
+      "Bash(rmdir \"C:/projects/numero-app/packages/i18n/src/locales/zh\")",
+      "Bash(pnpm --filter @numero-app/web exec node -e \":*)",
+      "Bash(pnpm --filter @numero-app/core test --reporter=verbose)"
     ]
   }
 }

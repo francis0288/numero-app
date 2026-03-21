@@ -15,8 +15,8 @@ const LP_1960 = calculateLifePath('1960-02-02') // value: 11
 // 2026 digits: 2+0+2+6=10→1
 // ---------------------------------------------------------------------------
 describe('calculatePersonalYear', () => {
-  it('1969-12-11 in 2026: month=3 day=2 year=1 → 6', () => {
-    expect(calculatePersonalYear('1969-12-11', 2026).value).toBe(6)
+  it('1969-12-11 in 2026: 11+12+10=33 → 33 (Master Number)', () => {
+    expect(calculatePersonalYear('1969-12-11', 2026).value).toBe(33)
   })
 
   it('1960-02-02 in 2026: month=2 day=2 year=1 → 5', () => {
@@ -27,6 +27,20 @@ describe('calculatePersonalYear', () => {
   it('1983-06-24 in 2026: month=6 day=6 year=1 → 4', () => {
     // month=06→6, day=24→6, year=2026→1; 6+6+1=13→4
     expect(calculatePersonalYear('1983-06-24', 2026).value).toBe(4)
+  })
+
+  it('born April 13, year 2026: 13+4+(2+0+2+6=10)=27 → 9', () => {
+    expect(calculatePersonalYear('1984-04-13', 2026).value).toBe(9)
+  })
+
+  it('born October 29, year 2026: 29+10+10=49→13→4', () => {
+    expect(calculatePersonalYear('1985-10-29', 2026).value).toBe(4)
+  })
+
+  it('born March 9, year 2026: 9+3+10=22 → 22 (Master Number!)', () => {
+    const r = calculatePersonalYear('1990-03-09', 2026)
+    expect(r.value).toBe(22)
+    expect(r.isMasterNumber).toBe(true)
   })
 })
 

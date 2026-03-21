@@ -65,10 +65,10 @@ export default async function ReportPage({ params }: { params: { token: string }
   })
 
   // Isolation number = |Destiny.value - Soul.value| reduced to single digit
-  const isolationNumber = reduceDigit(Math.abs(profile.destiny.value - profile.soul.value))
+  const isolationNumber = reduceDigit(Math.abs(profile.destiny.methodA.value - profile.soul.methodA.value))
 
   // Unique karmic debt compound numbers across all core numbers
-  const allNums = [profile.lifePath, profile.destiny, profile.soul, profile.personality, profile.maturity, profile.birthDay, profile.currentName]
+  const allNums = [profile.lifePath, profile.destiny.methodA, profile.soul.methodA, profile.personality.methodA, profile.maturity, profile.birthDay, profile.currentName]
   const karmicDebtNums = [...new Set(allNums.filter(r => r.isKarmicDebt && r.karmicDebtNumber).map(r => r.karmicDebtNumber!))]
 
   // Build all interpretation keys

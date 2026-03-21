@@ -1,24 +1,30 @@
-import { reduceToSingleDigit } from '../utils'
-import { fullyReduce, makeForecastResult } from './_forecastHelpers'
+import { sumDigits, reduceToSingleDigit } from '../utils'
+import { makeForecastResult } from './_forecastHelpers'
 import type { ForecastResult } from '../types'
 
 /**
- * Personal Year = fully-reduce(month) + fully-reduce(day) + fully-reduce(year digits).
- * The three COMPONENTS are always reduced to a single digit (no master stops).
- * The FINAL SUM is reduced with master-number awareness (can be 11 / 22 / 33).
+ * Personal Year = rawDay + rawMonth + digitSum(year) → reduce with master awareness.
  *
- * Example: birthDate="1969-12-11", targetYear=2026
- *   month=12→3, day=11→2, year=2+0+2+6=10→1 → total=6
+ * CORRECT formula (per numerologist):
+ *   - Use raw (unreduced) day and month numbers
+ *   - Use ONE pass of digit sum for the year (e.g. 2026 → 2+0+2+6 = 10, not 1)
+ *   - Sum all three, then reduce (preserving master numbers 11, 22, 33)
+ *
+ * Example: born April 13, year 2026
+ *   13 + 4 + (2+0+2+6=10) = 27 → 9
+ *
+ * Example: born March 9, year 2026
+ *   9 + 3 + 10 = 22 → 22/4 (Master Number!)
  */
 export function calculatePersonalYear(
   birthDate: string,
   targetYear: number,
 ): ForecastResult {
   const [, monthStr, dayStr] = birthDate.split('-')
-  const month = fullyReduce(parseInt(monthStr, 10))
-  const day   = fullyReduce(parseInt(dayStr,   10))
-  const year  = fullyReduce(targetYear)
-  const value = reduceToSingleDigit(month + day + year)
+  const month = parseInt(monthStr, 10)
+  const day   = parseInt(dayStr,   10)
+  const yearDigitSum = sumDigits(targetYear)
+  const value = reduceToSingleDigit(month + day + yearDigitSum)
   return makeForecastResult(value)
 }
 

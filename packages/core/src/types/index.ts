@@ -7,15 +7,24 @@ export interface NumberResult {
   karmicDebtNumber?: number
 }
 
+export interface DestinyResult {
+  methodA: NumberResult  // Adding across (Cộng gộp ngang)
+  methodB: NumberResult  // Reducing down (Cộng rút gọn)
+}
+
 export interface NumerologyProfile {
   lifePath: NumberResult
-  destiny: NumberResult
-  soul: NumberResult
-  personality: NumberResult
+  destiny: DestinyResult
+  soul: DestinyResult
+  personality: DestinyResult
   maturity: NumberResult
   birthDay: NumberResult
   currentName: NumberResult
+  attitude: NumberResult
+  bridge: NumberResult
+  motherName?: NumberResult
   karmicLessons: number[]
+  karmicDebtNumbers: number[]
 }
 
 export interface ForecastResult {

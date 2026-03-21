@@ -275,16 +275,16 @@ export function ReportClient({
 
   const CORE_CARDS = [
     { key: 'lifePath', label: 'Life Path', result: profile.lifePath },
-    { key: 'destiny', label: 'Destiny', result: profile.destiny },
-    { key: 'soul', label: 'Soul', result: profile.soul },
-    { key: 'personality', label: 'Personality', result: profile.personality },
+    { key: 'destiny', label: 'Destiny', result: profile.destiny.methodA },
+    { key: 'soul', label: 'Soul', result: profile.soul.methodA },
+    { key: 'personality', label: 'Personality', result: profile.personality.methodA },
     { key: 'maturity', label: 'Maturity', result: profile.maturity },
     { key: 'birthDay', label: 'Birth Day', result: profile.birthDay },
     { key: 'currentName', label: 'Current Name', result: profile.currentName },
   ]
 
   const lifePathInterp = interpretations[getNumberKey(profile.lifePath)]
-  const destinyInterp = interpretations[getNumberKey(profile.destiny)]
+  const destinyInterp = interpretations[getNumberKey(profile.destiny.methodA)]
 
   const pyCurr = forecastCurr.personalYear
   const pyNext = forecastNext.personalYear
@@ -400,7 +400,7 @@ export function ReportClient({
 
             <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
               <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Name Index — Destiny Number</p>
-              <div style={{ fontSize: 56, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 12 }}>{profile.destiny.display}</div>
+              <div style={{ fontSize: 56, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 12 }}>{profile.destiny.methodA.display}</div>
               {destinyInterp?.title && <p style={{ fontSize: 16, fontWeight: 600, color: tc.body, margin: '0 0 12px' }}>{destinyInterp.title}</p>}
               {destinyInterp?.overview && <p style={{ fontSize: 13, color: tc.body, lineHeight: 1.8, margin: 0 }}>{destinyInterp.overview}</p>}
             </div>
@@ -634,7 +634,7 @@ export function ReportClient({
               ) : (
                 <>
                   <p style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: '0 0 16px' }}>
-                    With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.display}, you carry a unique blueprint for this lifetime — a combination of gifts, lessons, and purpose that is entirely your own.
+                    With a Life Path {profile.lifePath.display} and Destiny {profile.destiny.methodA.display}, you carry a unique blueprint for this lifetime — a combination of gifts, lessons, and purpose that is entirely your own.
                   </p>
                   <p style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: 0 }}>
                     As you move through Personal Year {pyCurr.display} in {currentYear}, this is your invitation to step fully into your potential. Trust the wisdom of your numbers, embrace the journey, and know that every step you take is part of a perfectly orchestrated plan.
