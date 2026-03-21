@@ -16,6 +16,13 @@ export function calculateBridge(
   lifePath: NumberResult,
   destiny: NumberResult,
 ): NumberResult {
-  const diff = Math.abs(baseValue(lifePath) - baseValue(destiny))
-  return makeResult(diff, diff)
+  const lpBase   = baseValue(lifePath)
+  const destBase = baseValue(destiny)
+  const diff     = Math.abs(lpBase - destBase)
+
+  const lpLabel   = lifePath.isMasterNumber  ? `${lifePath.value}→${lpBase}`  : String(lpBase)
+  const destLabel = destiny.isMasterNumber   ? `${destiny.value}→${destBase}` : String(destBase)
+  const workings  = `|Đường Đời(${lpLabel}) − Vận Mệnh(${destLabel})| = ${diff}`
+
+  return makeResult(diff, diff, workings)
 }

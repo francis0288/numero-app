@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { redirect, notFound } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { calculateFullProfile } from '@numero-app/core'
 import { NavBar } from '@/components/NavBar'
 import { EngToggle } from '@/components/EngToggle'
 
@@ -46,6 +47,26 @@ export default async function NumberDetailPage({
   // Extract display number from key (e.g. "life_path_7" → "7", "master_11" → "11")
   const displayNum = key.split('_').at(-1) ?? ''
 
+  // Compute fresh profile to get workings for this client
+  const birthDateStr = client.dateOfBirth.toISOString().split('T')[0]
+  const freshProfile = calculateFullProfile({
+    birthDate: birthDateStr,
+    birthCertName: client.birthCertName,
+    currentName: client.currentName,
+  })
+
+  // Determine relevant workings based on key type
+  let numberWorkings: string | undefined
+  if (key.startsWith('karmic_lesson_')) {
+    numberWorkings = `Bài học nghiệp là các số vắng mặt trong tên khai sinh.\nTên tính: ${client.birthCertName}`
+  } else if (key.startsWith('life_path_') || key.startsWith('master_')) {
+    numberWorkings = freshProfile.lifePath.workings
+  } else if (key.startsWith('karmic_debt_')) {
+    numberWorkings = freshProfile.destiny.methodA.workings
+  } else {
+    numberWorkings = freshProfile.lifePath.workings
+  }
+
   const profilePath =
     locale === 'en'
       ? `/clients/${id}/profile`
@@ -81,6 +102,14 @@ export default async function NumberDetailPage({
             </div>
           </div>
         </div>
+
+        {/* Workings */}
+        {numberWorkings && (
+          <div className="bg-[#F5F0FB] rounded-xl p-5 border-l-4 border-[#7B5EA7]">
+            <p className="text-sm font-medium text-[#7B5EA7] mb-2">Cách tính số này</p>
+            <pre className="font-mono text-sm text-[#555555] whitespace-pre-wrap leading-relaxed">{numberWorkings}</pre>
+          </div>
+        )}
 
         {/* Keywords */}
         {content.keywords?.length > 0 && (

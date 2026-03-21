@@ -1,5 +1,6 @@
 import { sumDigits, reduceToSingleDigit } from '../utils'
 import { makeForecastResult } from './_forecastHelpers'
+import { reductionChain } from '../numerology/_helpers'
 import type { ForecastResult } from '../types'
 
 /**
@@ -9,28 +10,28 @@ import type { ForecastResult } from '../types'
  *   - Use raw (unreduced) day and month numbers
  *   - Use ONE pass of digit sum for the year (e.g. 2026 → 2+0+2+6 = 10, not 1)
  *   - Sum all three, then reduce (preserving master numbers 11, 22, 33)
- *
- * Example: born April 13, year 2026
- *   13 + 4 + (2+0+2+6=10) = 27 → 9
- *
- * Example: born March 9, year 2026
- *   9 + 3 + 10 = 22 → 22/4 (Master Number!)
  */
 export function calculatePersonalYear(
   birthDate: string,
   targetYear: number,
 ): ForecastResult {
   const [, monthStr, dayStr] = birthDate.split('-')
-  const month = parseInt(monthStr, 10)
-  const day   = parseInt(dayStr,   10)
+  const month        = parseInt(monthStr, 10)
+  const day          = parseInt(dayStr,   10)
   const yearDigitSum = sumDigits(targetYear)
-  const value = reduceToSingleDigit(month + day + yearDigitSum)
-  return makeForecastResult(value)
+  const total        = month + day + yearDigitSum
+  const value        = reduceToSingleDigit(total)
+
+  const yearPart  = `${String(targetYear).split('').join('+')}=${yearDigitSum}`
+  const totalPart = total === value ? String(value) : `${total}→${reductionChain(total)}`
+  const workings  = `Ngày(${day}) + Tháng(${month}) + ${yearPart} = ${totalPart}`
+
+  const result = makeForecastResult(value)
+  return { ...result, workings }
 }
 
 /**
  * Personal Month = personalYear.value + targetMonth → reduce.
- * Month is NOT pre-reduced — we add it as-is (e.g., 9+12=21→3).
  */
 export function calculatePersonalMonth(
   personalYear: ForecastResult,

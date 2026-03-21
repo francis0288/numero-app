@@ -5,6 +5,7 @@ export interface NumberResult {
   isMasterNumber: boolean
   isKarmicDebt: boolean
   karmicDebtNumber?: number
+  workings?: string
 }
 
 export interface DestinyResult {
@@ -31,6 +32,7 @@ export interface ForecastResult {
   value: number
   display: string
   isMasterNumber: boolean
+  workings?: string
 }
 
 export interface LifeCycle {

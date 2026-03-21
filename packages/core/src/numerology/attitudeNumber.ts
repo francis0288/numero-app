@@ -1,5 +1,5 @@
 import { reduceToSingleDigit } from '../utils'
-import { makeResult } from './_helpers'
+import { makeResult, reductionChain } from './_helpers'
 import type { NumberResult } from '../types'
 
 /**
@@ -9,9 +9,15 @@ import type { NumberResult } from '../types'
  */
 export function calculateAttitude(birthDate: string): NumberResult {
   const [, monthStr, dayStr] = birthDate.split('-')
-  const month = parseInt(monthStr, 10)
-  const day = parseInt(dayStr, 10)
+  const month   = parseInt(monthStr, 10)
+  const day     = parseInt(dayStr,   10)
   const compound = month + day
-  const value = reduceToSingleDigit(compound)
-  return makeResult(compound, value)
+  const value    = reduceToSingleDigit(compound)
+
+  const totalPart = compound === value
+    ? `${compound}`
+    : `${compound} → ${reductionChain(compound)}`
+  const workings = `Ngày(${day}) + Tháng(${month}) = ${totalPart}`
+
+  return makeResult(compound, value, workings)
 }

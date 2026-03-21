@@ -5,8 +5,10 @@ import type { DestinyResult } from '../types'
 export function calculateDestiny(birthCertName: string): DestinyResult {
   const parts = birthCertName.toUpperCase().split(' ').filter(Boolean)
   const filter = (c: string) => /[A-Z]/.test(c)
+  const methodA = reduceNameMethodA(parts, filter)
+  const methodB = reduceNameParts(parts, filter)
   return {
-    methodA: reduceNameMethodA(parts, filter),
-    methodB: reduceNameParts(parts, filter),
+    methodA: { ...methodA, workings: methodA.workings ? `Tất cả chữ cái:\n${methodA.workings}` : undefined },
+    methodB: { ...methodB, workings: methodB.workings ? `Cộng rút gọn:\n${methodB.workings}` : undefined },
   }
 }

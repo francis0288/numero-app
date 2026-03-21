@@ -7,7 +7,6 @@ import { calculateFullProfile, calculatePersonalYear, calculatePersonalMonth, ca
 import type { NumerologyProfile, NumberResult } from '@numero-app/core'
 import { NavBar } from '@/components/NavBar'
 import { ShareSection } from '@/components/ShareSection'
-import { CollapsibleWorkings } from '@/components/CollapsibleWorkings'
 import { EngToggle } from '@/components/EngToggle'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -46,21 +45,14 @@ const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function buildWorkings(profile: NumerologyProfile, birthDateStr: string): Record<string, string> {
-  const [yearStr, monthStr, dayStr] = birthDateStr.split('-')
-  const day = parseInt(dayStr, 10)
-  const month = parseInt(monthStr, 10)
-  const yearDigits = (yearStr ?? '').split('').join('+')
-  const yearSum = (yearStr ?? '').split('').reduce((s, d) => s + parseInt(d, 10), 0)
-  const lpSum = day + month + yearSum
-  const w: Record<string, string> = {}
-  w.lifePath = `${day} + ${month} + (${yearDigits}) = ${lpSum} → ${profile.lifePath.display}`
-  w.destiny = `Cộng gộp ngang (A): ${profile.destiny.methodA.display}\nCộng rút gọn (B): ${profile.destiny.methodB.display}`
-  w.soul = `Cộng gộp ngang (A): ${profile.soul.methodA.display}\nCộng rút gọn (B): ${profile.soul.methodB.display}`
-  w.personality = `Cộng gộp ngang (A): ${profile.personality.methodA.display}\nCộng rút gọn (B): ${profile.personality.methodB.display}`
-  w.attitude = `Tháng ${month} + Ngày ${day} = ${month + day} → ${profile.attitude.display}`
-  w.bridge = `|Đường Đời(${profile.lifePath.value}) − Vận Mệnh(${profile.destiny.methodA.value})| = ${profile.bridge.display}`
-  return w
+function WorkingsBox({ workings }: { workings?: string }): React.ReactElement | null {
+  if (!workings) return null
+  return (
+    <div className="bg-[#F5F0FB] rounded-lg p-3 mt-3 border-l-4 border-[#7B5EA7]">
+      <p className="text-xs font-medium text-[#7B5EA7] mb-1">Cách tính:</p>
+      <pre className="font-mono text-xs text-[#555555] leading-relaxed whitespace-pre-wrap">{workings}</pre>
+    </div>
+  )
 }
 
 function NumberCard({
@@ -108,7 +100,7 @@ function NumberCard({
       <a href={detailPath} className="text-sm text-[#7B5EA7] hover:underline">
         {locale === 'vi' ? 'Xem ý nghĩa →' : 'View meaning →'}
       </a>
-      {workings && <CollapsibleWorkings workings={workings} />}
+      <WorkingsBox workings={workings} />
     </div>
   )
 }
@@ -145,7 +137,23 @@ export default async function ProfilePage({
     })
   }
 
-  const workings = buildWorkings(profile, birthDateStr)
+  // Always compute fresh profile to get workings (stored profile may lack them)
+  const freshProfile = calculateFullProfile({
+    birthDate: birthDateStr,
+    birthCertName: client.birthCertName,
+    currentName: client.currentName,
+  })
+  const workings = {
+    lifePath:    freshProfile.lifePath.workings,
+    destiny:     freshProfile.destiny.methodA.workings,
+    soul:        freshProfile.soul.methodA.workings,
+    personality: freshProfile.personality.methodA.workings,
+    maturity:    freshProfile.maturity.workings,
+    birthDay:    freshProfile.birthDay.workings,
+    currentName: freshProfile.currentName.workings,
+    attitude:    freshProfile.attitude.workings,
+    bridge:      freshProfile.bridge.workings,
+  }
 
   const CORE_LABELS: Record<string, string> = locale === 'vi' ? {
     destiny: 'Số Định Mệnh',
@@ -292,7 +300,7 @@ export default async function ProfilePage({
           >
             {locale === 'vi' ? 'Xem ý nghĩa đầy đủ →' : 'View full meaning →'}
           </a>
-          <CollapsibleWorkings workings={workings.lifePath} />
+          <WorkingsBox workings={workings.lifePath} />
         </div>
 
         {/* ── Core numbers grid ── */}
@@ -371,7 +379,7 @@ export default async function ProfilePage({
             <p className="text-xs text-[#888888]">
               {locale === 'vi' ? 'Thái độ & ấn tượng đầu tiên' : 'Attitude & first impression'}
             </p>
-            <CollapsibleWorkings workings={workings.attitude} />
+            <WorkingsBox workings={workings.attitude} />
           </div>
 
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
@@ -384,7 +392,7 @@ export default async function ProfilePage({
             <p className="text-xs text-[#888888]">
               {locale === 'vi' ? 'Kết nối Đường Đời & Vận Mệnh' : 'Connects Life Path & Destiny'}
             </p>
-            <CollapsibleWorkings workings={workings.bridge} />
+            <WorkingsBox workings={workings.bridge} />
           </div>
         </div>
 
@@ -423,6 +431,9 @@ export default async function ProfilePage({
               </div>
             ))}
           </div>
+          {forecast.personalYear.workings && (
+            <WorkingsBox workings={forecast.personalYear.workings} />
+          )}
         </div>
 
         {/* ── Karmic Lessons ── */}

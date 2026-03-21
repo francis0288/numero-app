@@ -1,5 +1,5 @@
 import { isMasterNumber, sumDigits, reduceToSingleDigit } from '../utils'
-import { makeResult } from './_helpers'
+import { makeResult, reductionChain } from './_helpers'
 import type { NumberResult } from '../types'
 
 /**
@@ -14,7 +14,17 @@ export function calculateMaturity(
   lifePath: NumberResult,
   destiny: NumberResult,
 ): NumberResult {
-  const compound = toBase(lifePath.value) + toBase(destiny.value)
-  const value = reduceToSingleDigit(compound)
-  return makeResult(compound, value)
+  const lpBase   = toBase(lifePath.value)
+  const destBase = toBase(destiny.value)
+  const compound = lpBase + destBase
+  const value    = reduceToSingleDigit(compound)
+
+  const lpLabel   = lifePath.isMasterNumber   ? `${lifePath.value}→${lpBase}`   : String(lpBase)
+  const destLabel = destiny.isMasterNumber    ? `${destiny.value}→${destBase}`  : String(destBase)
+  const totalPart = compound === value
+    ? `${lpBase}+${destBase}=${value}`
+    : `${lpBase}+${destBase}=${compound}→${reductionChain(compound)}`
+  const workings = `Đường Đời(${lpLabel}) + Vận Mệnh(${destLabel}) = ${totalPart}`
+
+  return makeResult(compound, value, workings)
 }
