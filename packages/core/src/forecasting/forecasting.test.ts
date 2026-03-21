@@ -11,33 +11,34 @@ const LP_1960 = calculateLifePath('1960-02-02') // value: 11
 
 // ---------------------------------------------------------------------------
 // Personal Year
-// Formula: fullyReduce(month) + fullyReduce(day) + fullyReduce(year) → reduce
-// 2026 digits: 2+0+2+6=10→1
+// Formula: sum ALL individual digits of day + month + full 4-digit year → reduce
 // ---------------------------------------------------------------------------
 describe('calculatePersonalYear', () => {
-  it('1969-12-11 in 2026: 11+12+10=33 → 33 (Master Number)', () => {
-    expect(calculatePersonalYear('1969-12-11', 2026).value).toBe(33)
+  it('1969-12-11 in 2026: 1+1+1+2+2+0+2+6=15 → 6', () => {
+    expect(calculatePersonalYear('1969-12-11', 2026).value).toBe(6)
   })
 
-  it('1960-02-02 in 2026: month=2 day=2 year=1 → 5', () => {
-    // month=02→2, day=02→2, year=2026→1; 2+2+1=5
+  it('1960-02-02 in 2026: 0+2+0+2+2+0+2+6=14 → 5', () => {
     expect(calculatePersonalYear('1960-02-02', 2026).value).toBe(5)
   })
 
-  it('1983-06-24 in 2026: month=6 day=6 year=1 → 4', () => {
-    // month=06→6, day=24→6, year=2026→1; 6+6+1=13→4
-    expect(calculatePersonalYear('1983-06-24', 2026).value).toBe(4)
+  it('1983-06-24 in 2026: 2+4+0+6+2+0+2+6=22 → 22 (Master Number)', () => {
+    const r = calculatePersonalYear('1983-06-24', 2026)
+    expect(r.value).toBe(22)
+    expect(r.isMasterNumber).toBe(true)
   })
 
-  it('born April 13, year 2026: 13+4+(2+0+2+6=10)=27 → 9', () => {
+  it('born April 13, year 2026: 1+3+0+4+2+0+2+6=18 → 9', () => {
     expect(calculatePersonalYear('1984-04-13', 2026).value).toBe(9)
   })
 
-  it('born October 29, year 2026: 29+10+10=49→13→4', () => {
-    expect(calculatePersonalYear('1985-10-29', 2026).value).toBe(4)
+  it('born October 29, year 2026: 2+9+1+0+2+0+2+6=22 → 22 (Master Number)', () => {
+    const r = calculatePersonalYear('1985-10-29', 2026)
+    expect(r.value).toBe(22)
+    expect(r.isMasterNumber).toBe(true)
   })
 
-  it('born March 9, year 2026: 9+3+10=22 → 22 (Master Number!)', () => {
+  it('born March 9, year 2026: 0+9+0+3+2+0+2+6=22 → 22 (Master Number)', () => {
     const r = calculatePersonalYear('1990-03-09', 2026)
     expect(r.value).toBe(22)
     expect(r.isMasterNumber).toBe(true)
@@ -48,8 +49,9 @@ describe('calculatePersonalYear', () => {
 // Personal Month
 // ---------------------------------------------------------------------------
 describe('calculatePersonalMonth', () => {
-  it('PY=6 + month=3 → 9', () => {
-    const py = calculatePersonalYear('1969-12-11', 2026) // value=6
+  it('PY=6 (1969-12-11 in 2026) + month=3 → 9', () => {
+    const py = calculatePersonalYear('1969-12-11', 2026) // value=6 (new formula)
+    expect(py.value).toBe(6)
     expect(calculatePersonalMonth(py, 3).value).toBe(9)
   })
 

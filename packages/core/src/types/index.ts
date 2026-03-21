@@ -26,6 +26,7 @@ export interface NumerologyProfile {
   motherName?: NumberResult
   karmicLessons: number[]
   karmicDebtNumbers: number[]
+  isolationNumbers: number[]
 }
 
 export interface ForecastResult {

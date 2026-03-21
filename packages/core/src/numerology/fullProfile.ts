@@ -9,6 +9,7 @@ import { calculateKarmicLessons } from './karmicLessons'
 import { calculateAttitude } from './attitudeNumber'
 import { calculateBridge } from './bridgeNumber'
 import { calculateMotherName } from './motherNameNumber'
+import { calculateIsolationNumbers } from './isolationNumber'
 import type { NumerologyProfile, NumberResult } from '../types'
 
 export interface FullProfileInput {
@@ -29,7 +30,8 @@ export function calculateFullProfile(input: FullProfileInput): NumerologyProfile
   const attitude    = calculateAttitude(input.birthDate)
   const bridge      = calculateBridge(lifePath, destiny.methodA)
   const motherName  = input.motherName ? calculateMotherName(input.motherName) : undefined
-  const karmicLessons = calculateKarmicLessons(input.birthCertName)
+  const karmicLessons     = calculateKarmicLessons(input.birthCertName)
+  const isolationNumbers  = calculateIsolationNumbers(input.birthDate)
 
   // Collect all karmic debt numbers from all number results
   const allResults: NumberResult[] = [
@@ -59,5 +61,6 @@ export function calculateFullProfile(input: FullProfileInput): NumerologyProfile
     motherName,
     karmicLessons,
     karmicDebtNumbers,
+    isolationNumbers,
   }
 }
