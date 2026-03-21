@@ -1,6 +1,11 @@
 import { isMasterNumber, isKarmicDebt, sumDigits, reduceToSingleDigit, getLetterValue } from '../utils'
 import type { NumberResult } from '../types'
 
+export interface NameGroup {
+  label: string  // e.g. "HỌ", "TÊN ĐỆM", "TÊN"
+  value: string  // stripped uppercase, e.g. "LE", "THI", "THANH TINH"
+}
+
 export function buildDisplay(compound: number, value: number): string {
   if (isMasterNumber(value)) {
     const base = sumDigits(value)
@@ -61,6 +66,42 @@ export function reduceNameParts(
     `${d.part}: ${d.pairs} = ${d.partSum}${d.partSum !== d.reduced ? '→' + d.reduced : ''}`
   )
   const sums = partData.map(d => d.reduced)
+  const totalLine = `Tổng: ${sums.join('+')} = ${compound}${compound !== value ? '→' + reductionChain(compound) : ''}`
+  const workings = [...partLines, totalLine].join('\n')
+
+  return makeResult(compound, value, workings)
+}
+
+/**
+ * Method B using semantic name groups (Họ | Tên đệm | Tên).
+ * Reduces each group as a whole unit (all letters summed before reducing),
+ * regardless of spaces within the group.
+ */
+export function reduceNameGroups(
+  groups: NameGroup[],
+  filter: (char: string) => boolean,
+): NumberResult {
+  const groupData = groups
+    .map(({ label, value }) => {
+      const letters = [...value.toUpperCase()].filter(filter)
+      const partSum = letters.reduce((sum, c) => sum + getLetterValue(c), 0)
+      const reduced = reduceToSingleDigit(partSum)
+      const pairs = letters.map(c => `${c}=${getLetterValue(c)}`).join(' ')
+      return { label, value: value.toUpperCase(), letters, partSum, reduced, pairs }
+    })
+    .filter(d => d.letters.length > 0)
+
+  if (groupData.length === 0) {
+    return makeResult(0, 0, 'Không có ký tự phù hợp')
+  }
+
+  const compound = groupData.reduce((a, d) => a + d.reduced, 0)
+  const value = reduceToSingleDigit(compound)
+
+  const partLines = groupData.map(d =>
+    `${d.label}(${d.value}): ${d.pairs} = ${d.partSum}${d.partSum !== d.reduced ? '→' + reductionChain(d.partSum) : ''}`
+  )
+  const sums = groupData.map(d => d.reduced)
   const totalLine = `Tổng: ${sums.join('+')} = ${compound}${compound !== value ? '→' + reductionChain(compound) : ''}`
   const workings = [...partLines, totalLine].join('\n')
 

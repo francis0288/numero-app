@@ -16,7 +16,7 @@ interface Interpretation {
 }
 
 export interface ReportClientProps {
-  clientData: { firstName: string; lastName: string; dateOfBirth: string }
+  clientData: { firstName: string; middleName?: string | null; lastName: string; dateOfBirth: string }
   readingData: { createdAt: string; aiNarrative: string | null; editedNarrative: string | null }
   profile: NumerologyProfile
   forecastCurr: ForecastProfile
@@ -377,7 +377,7 @@ export function ReportClient({
           </div>
 
           <h1 style={{ fontSize: 40, fontWeight: 700, color: '#D4AC6E', margin: '0 0 12px' }}>
-            {clientData.firstName} {clientData.lastName}
+            {[clientData.lastName, clientData.middleName, clientData.firstName].filter(Boolean).join(' ')}
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: '0 0 6px' }}>
             Sinh ngày {formatLong(clientData.dateOfBirth)}

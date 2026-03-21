@@ -28,9 +28,13 @@ export async function GET(
     return NextResponse.json({ error: 'Reading not found' }, { status: 404 })
   }
 
+  const displayName = [client.lastName, client.middleName, client.firstName]
+    .filter(Boolean)
+    .join(' ')
+
   return NextResponse.json({
     reading,
-    firstName: client.firstName,
+    firstName: displayName,
     shareToken: reading.status === 'finalised' ? client.shareToken : undefined,
   })
 }

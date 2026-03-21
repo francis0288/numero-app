@@ -54,7 +54,7 @@ export default async function ReadingsPage({
             ← Back to profile
           </a>
           <h1 className="text-xl font-medium text-[#2C2C2C]">
-            {client.firstName} — Reading history
+            {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')} — Reading history
           </h1>
         </div>
 

@@ -151,7 +151,7 @@ function Footer({ name, clientName }: { name: string; clientName: string }) {
 // ── Props ──────────────────────────────────────────────────────────────────────
 
 export interface ReadingPDFProps {
-  client: { firstName: string; lastName: string; dateOfBirth: string | Date }
+  client: { firstName: string; middleName?: string | null; lastName: string; dateOfBirth: string | Date }
   reading: { createdAt: string | Date; aiNarrative?: string | null; editedNarrative?: string | null }
   profile: NumerologyProfile
   forecastCurr: ForecastProfile
@@ -171,7 +171,7 @@ export function ReadingPDF({
   interpretations: interps, practitioner, karmicDebtNums, isolationNumber,
 }: ReadingPDFProps) {
   const narrative = reading.editedNarrative ?? reading.aiNarrative ?? ''
-  const clientName = `${cl.firstName} ${cl.lastName}`
+  const clientName = [cl.lastName, cl.middleName, cl.firstName].filter(Boolean).join(' ')
 
   const CORE = [
     { key: 'lifePath', label: 'Life Path', r: profile.lifePath },

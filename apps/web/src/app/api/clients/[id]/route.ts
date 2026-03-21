@@ -45,7 +45,9 @@ export async function PUT(
   }
 
   const body = await request.json() as {
-    displayName?: string
+    ho?: string
+    tenDem?: string
+    ten?: string
     dateOfBirth?: string
     preferredLanguage?: string
     notes?: string
@@ -53,11 +55,24 @@ export async function PUT(
 
   const updateData: Record<string, unknown> = {}
 
-  if (body.displayName !== undefined) {
-    const stripped = stripVietnamese(body.displayName)
-    updateData.firstName = body.displayName
-    updateData.birthCertName = stripped
-    updateData.currentName = stripped
+  if (body.ho !== undefined || body.ten !== undefined) {
+    const ho  = body.ho  ?? client.lastName
+    const ten = body.ten ?? client.firstName
+    const tenDem = body.tenDem !== undefined ? body.tenDem : (client.middleName ?? '')
+
+    const strippedLast  = stripVietnamese(ho)
+    const strippedMid   = tenDem ? stripVietnamese(tenDem) : ''
+    const strippedFirst = stripVietnamese(ten)
+
+    const birthCertName = [strippedLast, strippedMid, strippedFirst]
+      .filter(Boolean)
+      .join(' ')
+
+    updateData.lastName       = ho
+    updateData.middleName     = tenDem || null
+    updateData.firstName      = ten
+    updateData.birthCertName  = birthCertName
+    updateData.currentName    = birthCertName
   }
 
   if (body.dateOfBirth !== undefined) {

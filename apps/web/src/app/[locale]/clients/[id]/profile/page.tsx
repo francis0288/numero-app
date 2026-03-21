@@ -226,7 +226,7 @@ export default async function ProfilePage({
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-medium text-[#2C2C2C]">
-                {client.firstName}
+                {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')}
               </h1>
               <p className="text-[#888888] text-sm mt-1">
                 {formatDOB(client.dateOfBirth)} (tuổi {getAge(client.dateOfBirth)})
@@ -491,7 +491,7 @@ export default async function ProfilePage({
           <a href={dashboardPath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
             ← Quay lại danh sách
           </a>
-          <DeleteClientButton clientId={id} clientName={client.firstName} locale={locale} />
+          <DeleteClientButton clientId={id} clientName={[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')} locale={locale} />
         </div>
       </main>
     </div>

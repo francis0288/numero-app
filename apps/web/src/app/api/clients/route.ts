@@ -6,7 +6,9 @@ import { authOptions } from '@/lib/auth'
 import { calculateFullProfile, stripVietnamese } from '@numero-app/core'
 
 const createClientSchema = z.object({
-  displayName: z.string().min(1),
+  ho: z.string().min(1),
+  tenDem: z.string().optional().default(''),
+  ten: z.string().min(1),
   motherName: z.string().optional(),
   dateOfBirth: z.string().min(1),
   preferredLanguage: z.string().default('vi'),
@@ -40,37 +42,51 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const data = parsed.data
-  const stripped = stripVietnamese(data.displayName)
+  const { ho, tenDem, ten, motherName, dateOfBirth, preferredLanguage, notes } = parsed.data
+
+  const strippedLast  = stripVietnamese(ho)
+  const strippedMid   = tenDem ? stripVietnamese(tenDem) : ''
+  const strippedFirst = stripVietnamese(ten)
+
+  const birthCertName = [strippedLast, strippedMid, strippedFirst]
+    .filter(Boolean)
+    .join(' ')
+
+  const nameParts = {
+    lastName:   strippedLast,
+    middleName: strippedMid || undefined,
+    firstName:  strippedFirst,
+  }
 
   const client = await prisma.client.create({
     data: {
       userId: session.user.id,
-      firstName: data.displayName,
-      middleName: null,
-      lastName: '',
-      birthCertName: stripped,
-      currentName: stripped,
-      dateOfBirth: new Date(data.dateOfBirth),
-      preferredLanguage: data.preferredLanguage,
+      firstName: ten,
+      middleName: tenDem || null,
+      lastName: ho,
+      birthCertName,
+      currentName: birthCertName,
+      dateOfBirth: new Date(dateOfBirth),
+      preferredLanguage,
       email: null,
       phone: null,
-      notes: data.notes || null,
+      notes: notes || null,
     },
   })
 
   const profile = calculateFullProfile({
-    birthDate: data.dateOfBirth,
-    birthCertName: stripped,
-    currentName: stripped,
-    motherName: data.motherName ? stripVietnamese(data.motherName) : undefined,
+    birthDate: dateOfBirth,
+    birthCertName,
+    currentName: birthCertName,
+    motherName: motherName ? stripVietnamese(motherName) : undefined,
+    nameParts,
   })
 
   await prisma.reading.create({
     data: {
       clientId: client.id,
       version: 1,
-      language: data.preferredLanguage,
+      language: preferredLanguage,
       profileJSON: JSON.stringify(profile),
       status: 'draft',
     },

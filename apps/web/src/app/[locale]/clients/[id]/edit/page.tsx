@@ -33,7 +33,9 @@ export default function EditClientPage() {
   const router = useRouter()
   const isVi = locale === 'vi'
 
-  const [displayName, setDisplayName] = useState('')
+  const [ho, setHo] = useState('')
+  const [tenDem, setTenDem] = useState('')
+  const [ten, setTen] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [preferredLanguage, setPreferredLanguage] = useState<'vi' | 'en'>('vi')
   const [notes, setNotes] = useState('')
@@ -41,7 +43,10 @@ export default function EditClientPage() {
   const [submitting, setSubmitting] = useState(false)
   const [serverError, setServerError] = useState('')
 
-  const strippedName = stripVi(displayName)
+  const strippedHo     = stripVi(ho)
+  const strippedTenDem = stripVi(tenDem)
+  const strippedTen    = stripVi(ten)
+  const combinedPreview = [strippedHo, strippedTenDem, strippedTen].filter(Boolean).join(' | ')
 
   useEffect(() => {
     fetch(`/api/clients/${id}`)
@@ -49,11 +54,15 @@ export default function EditClientPage() {
         if (!r.ok) return
         const data = await r.json() as {
           firstName: string
+          middleName?: string | null
+          lastName?: string | null
           dateOfBirth: string
           preferredLanguage: string
           notes?: string | null
         }
-        setDisplayName(data.firstName)
+        setHo(data.lastName ?? '')
+        setTenDem(data.middleName ?? '')
+        setTen(data.firstName)
         setDateOfBirth(data.dateOfBirth.slice(0, 10))
         setPreferredLanguage((data.preferredLanguage as 'vi' | 'en') || 'vi')
         setNotes(data.notes ?? '')
@@ -70,7 +79,14 @@ export default function EditClientPage() {
       const res = await fetch(`/api/clients/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ displayName, dateOfBirth, preferredLanguage, notes: notes || undefined }),
+        body: JSON.stringify({
+          ho,
+          tenDem: tenDem || undefined,
+          ten,
+          dateOfBirth,
+          preferredLanguage,
+          notes: notes || undefined,
+        }),
       })
       if (!res.ok) {
         const err = await res.json() as { error?: string }
@@ -108,23 +124,69 @@ export default function EditClientPage() {
         </div>
 
         <form onSubmit={(e) => void onSubmit(e)} noValidate className="space-y-5">
-          {/* Full name */}
+          {/* Họ */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              Họ và tên<span className="text-red-500 ml-0.5">*</span>
+              Họ<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              value={ho}
+              onChange={(e) => setHo(e.target.value)}
+              placeholder="Lê"
               className={inputClass}
             />
-            {strippedName && (
-              <p className="text-xs text-[#888888] mt-1">
-                Dùng để tính số: <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
-              </p>
+            <p className="text-xs text-[#888888] mt-1">Tên họ — VD: Lê, Nguyễn, Trần</p>
+            {strippedHo && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedHo}</p>
             )}
           </div>
+
+          {/* Tên đệm */}
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+              Tên đệm
+            </label>
+            <input
+              type="text"
+              value={tenDem}
+              onChange={(e) => setTenDem(e.target.value)}
+              placeholder="Thị"
+              className={inputClass}
+            />
+            <p className="text-xs text-[#888888] mt-1">Tên đệm nếu có — VD: Thị, Văn, Minh</p>
+            {strippedTenDem && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTenDem}</p>
+            )}
+          </div>
+
+          {/* Tên */}
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+              Tên<span className="text-red-500 ml-0.5">*</span>
+            </label>
+            <input
+              type="text"
+              value={ten}
+              onChange={(e) => setTen(e.target.value)}
+              placeholder="Thanh Tình"
+              className={inputClass}
+            />
+            <p className="text-xs text-[#888888] mt-1">Tên gọi — VD: Thanh Tình, Hùng, Lan</p>
+            {strippedTen && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTen}</p>
+            )}
+          </div>
+
+          {/* Combined preview */}
+          {combinedPreview && (
+            <div>
+              <p className="text-xs text-[#888888] mb-1">Tên đầy đủ để tính số:</p>
+              <div className="font-mono text-xs text-[#7B5EA7] bg-[#F5F0FB] rounded p-2 mt-1">
+                {combinedPreview}
+              </div>
+            </div>
+          )}
 
           {/* Date of birth */}
           <div>

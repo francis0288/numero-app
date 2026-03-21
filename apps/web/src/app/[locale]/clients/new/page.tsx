@@ -28,7 +28,9 @@ function stripVi(name: string): string {
 
 export default function NewClientPage({ params: { locale } }: { params: { locale: string } }): React.ReactElement {
   const router = useRouter()
-  const [displayName, setDisplayName] = useState('')
+  const [ho, setHo] = useState('')
+  const [tenDem, setTenDem] = useState('')
+  const [ten, setTen] = useState('')
   const [motherName, setMotherName] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [preferredLanguage, setPreferredLanguage] = useState<'vi' | 'en'>('vi')
@@ -37,14 +39,19 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState('')
 
-  const strippedName = stripVi(displayName)
+  const strippedHo     = stripVi(ho)
+  const strippedTenDem = stripVi(tenDem)
+  const strippedTen    = stripVi(ten)
   const strippedMother = stripVi(motherName)
+
+  const combinedPreview = [strippedHo, strippedTenDem, strippedTen].filter(Boolean).join(' | ')
 
   const validate = () => {
     const e: Record<string, string> = {}
-    if (!displayName.trim()) e.displayName = locale === 'vi' ? 'Vui lòng nhập họ và tên' : 'Name is required'
-    if (!dateOfBirth) e.dateOfBirth = locale === 'vi' ? 'Vui lòng nhập ngày sinh' : 'Date of birth is required'
-    else if (new Date(dateOfBirth) >= new Date()) e.dateOfBirth = locale === 'vi' ? 'Ngày sinh phải là ngày trong quá khứ' : 'Date of birth must be in the past'
+    if (!ho.trim()) e.ho = 'Vui lòng nhập họ'
+    if (!ten.trim()) e.ten = 'Vui lòng nhập tên'
+    if (!dateOfBirth) e.dateOfBirth = 'Vui lòng nhập ngày sinh'
+    else if (new Date(dateOfBirth) >= new Date()) e.dateOfBirth = 'Ngày sinh phải là ngày trong quá khứ'
     return e
   }
 
@@ -58,18 +65,26 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
       const res = await fetch('/api/clients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ displayName, motherName: motherName || undefined, dateOfBirth, preferredLanguage, notes: notes || undefined }),
+        body: JSON.stringify({
+          ho,
+          tenDem: tenDem || undefined,
+          ten,
+          motherName: motherName || undefined,
+          dateOfBirth,
+          preferredLanguage,
+          notes: notes || undefined,
+        }),
       })
       if (!res.ok) {
         const err = await res.json() as { error?: string }
-        setServerError(err.error ?? (locale === 'vi' ? 'Có lỗi xảy ra' : 'Something went wrong'))
+        setServerError(err.error ?? 'Có lỗi xảy ra')
         setSubmitting(false)
         return
       }
       const { id } = await res.json() as { id: string }
       router.push(`/clients/${id}/profile`)
     } catch {
-      setServerError(locale === 'vi' ? 'Lỗi kết nối — vui lòng thử lại' : 'Network error — please try again')
+      setServerError('Lỗi kết nối — vui lòng thử lại')
       setSubmitting(false)
     }
   }
@@ -88,27 +103,73 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
         </div>
 
         <form onSubmit={(e) => void onSubmit(e)} noValidate className="space-y-5">
-          {/* Field 1: Full name */}
+          {/* Field 1: Họ */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              Họ và tên<span className="text-red-500 ml-0.5">*</span>
+              Họ<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
-              value={displayName}
-              onChange={(e) => { setDisplayName(e.target.value); setErrors(prev => ({ ...prev, displayName: '' })) }}
-              placeholder="VD: Nguyễn Thị Hoa"
+              value={ho}
+              onChange={(e) => { setHo(e.target.value); setErrors(prev => ({ ...prev, ho: '' })) }}
+              placeholder="Lê"
               className={inputClass}
             />
-            {strippedName && (
-              <p className="text-xs text-[#888888] mt-1">
-                Dùng để tính số: <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
-              </p>
+            <p className="text-xs text-[#888888] mt-1">Tên họ — VD: Lê, Nguyễn, Trần</p>
+            {strippedHo && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedHo}</p>
             )}
-            {errors.displayName && <p className="text-red-500 text-xs mt-1">{errors.displayName}</p>}
+            {errors.ho && <p className="text-red-500 text-xs mt-1">{errors.ho}</p>}
           </div>
 
-          {/* Field 2: Date of birth */}
+          {/* Field 2: Tên đệm */}
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+              Tên đệm
+            </label>
+            <input
+              type="text"
+              value={tenDem}
+              onChange={(e) => setTenDem(e.target.value)}
+              placeholder="Thị"
+              className={inputClass}
+            />
+            <p className="text-xs text-[#888888] mt-1">Tên đệm nếu có — VD: Thị, Văn, Minh</p>
+            {strippedTenDem && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTenDem}</p>
+            )}
+          </div>
+
+          {/* Field 3: Tên */}
+          <div>
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+              Tên<span className="text-red-500 ml-0.5">*</span>
+            </label>
+            <input
+              type="text"
+              value={ten}
+              onChange={(e) => { setTen(e.target.value); setErrors(prev => ({ ...prev, ten: '' })) }}
+              placeholder="Thanh Tình"
+              className={inputClass}
+            />
+            <p className="text-xs text-[#888888] mt-1">Tên gọi — VD: Thanh Tình, Hùng, Lan</p>
+            {strippedTen && (
+              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTen}</p>
+            )}
+            {errors.ten && <p className="text-red-500 text-xs mt-1">{errors.ten}</p>}
+          </div>
+
+          {/* Combined preview */}
+          {combinedPreview && (
+            <div>
+              <p className="text-xs text-[#888888] mb-1">Tên đầy đủ để tính số:</p>
+              <div className="font-mono text-xs text-[#7B5EA7] bg-[#F5F0FB] rounded p-2 mt-1">
+                {combinedPreview}
+              </div>
+            </div>
+          )}
+
+          {/* Date of birth */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
               Ngày sinh<span className="text-red-500 ml-0.5">*</span>
@@ -122,7 +183,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
             {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
           </div>
 
-          {/* Field 3: Mother's name (optional) */}
+          {/* Mother's name (optional) */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
               Tên mẹ (tùy chọn)
@@ -141,7 +202,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
             )}
           </div>
 
-          {/* Field 4: Preferred language */}
+          {/* Preferred language */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
               Ngôn ngữ báo cáo
@@ -164,7 +225,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
             </div>
           </div>
 
-          {/* Field 5: Notes */}
+          {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
               Ghi chú (tùy chọn)

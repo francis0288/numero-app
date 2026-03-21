@@ -17,13 +17,18 @@ export interface FullProfileInput {
   birthCertName: string
   currentName: string
   motherName?: string
+  nameParts?: {
+    lastName: string
+    middleName?: string
+    firstName: string
+  }
 }
 
 export function calculateFullProfile(input: FullProfileInput): NumerologyProfile {
   const lifePath    = calculateLifePath(input.birthDate)
-  const destiny     = calculateDestiny(input.birthCertName)
-  const soul        = calculateSoul(input.birthCertName)
-  const personality = calculatePersonality(input.birthCertName)
+  const destiny     = calculateDestiny(input.birthCertName, input.nameParts)
+  const soul        = calculateSoul(input.birthCertName, input.nameParts)
+  const personality = calculatePersonality(input.birthCertName, input.nameParts)
   const maturity    = calculateMaturity(lifePath, destiny.methodA)
   const birthDay    = calculateBirthDay(input.birthDate)
   const currentName = calculateCurrentName(input.currentName)

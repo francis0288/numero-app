@@ -22,8 +22,12 @@ function formatDate(d: Date | string) {
   })
 }
 
-function initials(firstName: string) {
-  return (firstName[0] ?? '').toUpperCase()
+function getDisplayName(client: { firstName: string; middleName?: string | null; lastName?: string | null }): string {
+  return [client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')
+}
+
+function initials(client: { firstName: string; middleName?: string | null; lastName?: string | null }) {
+  return (getDisplayName(client)[0] ?? '').toUpperCase()
 }
 
 function TrashIcon() {
@@ -50,7 +54,7 @@ export function ClientList({
 
   const filtered = clientList.filter((c) => {
     const q = search.toLowerCase()
-    return c.firstName.toLowerCase().includes(q)
+    return getDisplayName(c).toLowerCase().includes(q)
   })
 
   const profilePath = (id: string) =>
@@ -128,7 +132,7 @@ export function ClientList({
             {pendingDelete === client.id && (
               <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-1 flex items-center justify-between gap-4">
                 <p className="text-sm text-red-700">
-                  Bạn có chắc muốn xóa hồ sơ của <strong>{client.firstName}</strong>? Tất cả bài đọc sẽ bị xóa vĩnh viễn.
+                  Bạn có chắc muốn xóa hồ sơ của <strong>{getDisplayName(client)}</strong>? Tất cả bài đọc sẽ bị xóa vĩnh viễn.
                 </p>
                 <div className="flex gap-2 shrink-0">
                   <button
@@ -153,13 +157,13 @@ export function ClientList({
               <a href={profilePath(client.id)} className="flex items-center gap-4 flex-1 min-w-0">
                 {/* Avatar */}
                 <div className="w-11 h-11 rounded-full bg-[#F5F0FB] flex items-center justify-center text-[#7B5EA7] font-medium text-sm shrink-0">
-                  {initials(client.firstName)}
+                  {initials(client)}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-medium text-[#2C2C2C]">{client.firstName}</span>
+                    <span className="font-medium text-[#2C2C2C]">{getDisplayName(client)}</span>
                     <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs rounded-full px-2 py-0.5 font-medium">
                       {LANG_LABELS[client.preferredLanguage] ?? client.preferredLanguage}
                     </span>

@@ -104,6 +104,7 @@ export default async function ReportPage({ params }: { params: { token: string }
     <ReportClient
       clientData={{
         firstName: client.firstName,
+        middleName: client.middleName,
         lastName: client.lastName,
         dateOfBirth: client.dateOfBirth.toISOString(),
       }}
