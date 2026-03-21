@@ -103,15 +103,15 @@ export default function EditClientPage() {
       <NavBar locale={locale} />
       <main className="max-w-[640px] mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-medium text-[#2C2C2C]">{isVi ? 'Chỉnh sửa khách hàng' : 'Edit Client'}</h1>
-          <p className="text-[#888888] text-sm mt-1">{isVi ? 'Cập nhật thông tin khách hàng.' : "Update the client's details."}</p>
+          <h1 className="text-2xl font-medium text-[#2C2C2C]">Chỉnh Sửa Hồ Sơ</h1>
+          <p className="text-[#888888] text-sm mt-1">Cập nhật thông tin khách hàng.</p>
         </div>
 
         <form onSubmit={(e) => void onSubmit(e)} noValidate className="space-y-5">
           {/* Full name */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Họ và tên' : 'Full name'}<span className="text-red-500 ml-0.5">*</span>
+              Họ và tên<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
@@ -121,7 +121,7 @@ export default function EditClientPage() {
             />
             {strippedName && (
               <p className="text-xs text-[#888888] mt-1">
-                {isVi ? 'Dùng để tính số:' : 'Used for calculation:'} <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
+                Dùng để tính số: <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
               </p>
             )}
           </div>
@@ -129,7 +129,7 @@ export default function EditClientPage() {
           {/* Date of birth */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ngày sinh' : 'Date of birth'}<span className="text-red-500 ml-0.5">*</span>
+              Ngày sinh<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="date"
@@ -142,7 +142,7 @@ export default function EditClientPage() {
           {/* Preferred language */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ngôn ngữ báo cáo' : 'Report language'}
+              Ngôn ngữ báo cáo
             </label>
             <div className="flex gap-2">
               {(['vi', 'en'] as const).map((lang) => (
@@ -156,7 +156,7 @@ export default function EditClientPage() {
                       : 'border border-[#E8E0F0] text-[#888888] hover:border-[#7B5EA7] hover:text-[#7B5EA7]'
                   }`}
                 >
-                  {lang === 'vi' ? 'Tiếng Việt' : 'English'}
+                  {lang === 'vi' ? 'Tiếng Việt' : 'Tiếng Anh'}
                 </button>
               ))}
             </div>
@@ -165,13 +165,13 @@ export default function EditClientPage() {
           {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ghi chú (tùy chọn)' : 'Notes (optional)'}
+              Ghi chú (tùy chọn)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder={isVi ? 'Ghi chú từ buổi tư vấn…' : 'Notes from the session…'}
+              placeholder="Ghi chú buổi làm việc hôm nay..."
               className={`${inputClass} resize-none`}
             />
           </div>
@@ -188,13 +188,13 @@ export default function EditClientPage() {
               disabled={submitting}
               className="w-full bg-[#7B5EA7] text-white rounded-xl px-6 py-3 font-medium hover:bg-[#6A4F96] transition-colors disabled:opacity-60"
             >
-              {submitting ? (isVi ? 'Đang lưu…' : 'Saving…') : (isVi ? 'Lưu thay đổi' : 'Save changes')}
+              {submitting ? 'Đang lưu…' : 'Lưu thay đổi'}
             </button>
             <a
               href={profilePath}
               className="block w-full text-center border border-[#7B5EA7] text-[#7B5EA7] rounded-xl px-6 py-3 text-sm font-medium hover:bg-[#F5F0FB] transition-colors"
             >
-              {isVi ? 'Hủy' : 'Cancel'}
+              Hủy
             </a>
           </div>
         </form>

@@ -75,16 +75,15 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
   }
 
   const dashboardPath = locale === 'en' ? '/dashboard' : `/${locale}/dashboard`
-  const isVi = locale === 'vi'
 
   return (
     <div className="min-h-screen bg-[#FDF6EC]">
       <NavBar locale={locale} />
       <main className="max-w-[640px] mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-medium text-[#2C2C2C]">{isVi ? 'Thêm khách hàng mới' : 'New Client'}</h1>
+          <h1 className="text-2xl font-medium text-[#2C2C2C]">Khách Hàng Mới</h1>
           <p className="text-[#888888] text-sm mt-1">
-            {isVi ? 'Nhập thông tin để tính số học' : 'Enter details to calculate the numerology profile'}
+            Nhập thông tin để tính số học
           </p>
         </div>
 
@@ -92,18 +91,18 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           {/* Field 1: Full name */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Họ và tên' : 'Full name'}<span className="text-red-500 ml-0.5">*</span>
+              Họ và tên<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="text"
               value={displayName}
               onChange={(e) => { setDisplayName(e.target.value); setErrors(prev => ({ ...prev, displayName: '' })) }}
-              placeholder={isVi ? 'VD: Nguyễn Thị Hoa' : 'e.g. Nguyen Thi Hoa'}
+              placeholder="VD: Nguyễn Thị Hoa"
               className={inputClass}
             />
             {strippedName && (
               <p className="text-xs text-[#888888] mt-1">
-                {isVi ? 'Dùng để tính số:' : 'Used for calculation:'} <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
+                Dùng để tính số: <span className="font-medium text-[#7B5EA7]">{strippedName}</span>
               </p>
             )}
             {errors.displayName && <p className="text-red-500 text-xs mt-1">{errors.displayName}</p>}
@@ -112,7 +111,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           {/* Field 2: Date of birth */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ngày sinh' : 'Date of birth'}<span className="text-red-500 ml-0.5">*</span>
+              Ngày sinh<span className="text-red-500 ml-0.5">*</span>
             </label>
             <input
               type="date"
@@ -126,18 +125,18 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           {/* Field 3: Mother's name (optional) */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Tên mẹ (tùy chọn)' : "Mother's name (optional)"}
+              Tên mẹ (tùy chọn)
             </label>
             <input
               type="text"
               value={motherName}
               onChange={(e) => setMotherName(e.target.value)}
-              placeholder={isVi ? 'VD: Trần Thị Mai' : 'e.g. Tran Thi Mai'}
+              placeholder="VD: Trần Thị Mai"
               className={inputClass}
             />
             {strippedMother && (
               <p className="text-xs text-[#888888] mt-1">
-                {isVi ? 'Dùng để tính số:' : 'Used for calculation:'} <span className="font-medium text-[#7B5EA7]">{strippedMother}</span>
+                Dùng để tính số: <span className="font-medium text-[#7B5EA7]">{strippedMother}</span>
               </p>
             )}
           </div>
@@ -145,7 +144,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           {/* Field 4: Preferred language */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ngôn ngữ báo cáo' : 'Report language'}
+              Ngôn ngữ báo cáo
             </label>
             <div className="flex gap-2">
               {(['vi', 'en'] as const).map((lang) => (
@@ -159,7 +158,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
                       : 'border border-[#E8E0F0] text-[#888888] hover:border-[#7B5EA7] hover:text-[#7B5EA7]'
                   }`}
                 >
-                  {lang === 'vi' ? 'Tiếng Việt' : 'English'}
+                  {lang === 'vi' ? 'Tiếng Việt' : 'Tiếng Anh'}
                 </button>
               ))}
             </div>
@@ -168,13 +167,13 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           {/* Field 5: Notes */}
           <div>
             <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              {isVi ? 'Ghi chú (tùy chọn)' : 'Notes (optional)'}
+              Ghi chú (tùy chọn)
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder={isVi ? 'Ghi chú từ buổi tư vấn…' : "Notes from today's session…"}
+              placeholder="Ghi chú buổi làm việc hôm nay..."
               className={`${inputClass} resize-none`}
             />
           </div>
@@ -191,13 +190,13 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
               disabled={submitting}
               className="w-full bg-[#7B5EA7] text-white rounded-xl px-6 py-3 font-medium hover:bg-[#6A4F96] transition-colors disabled:opacity-60"
             >
-              {submitting ? (isVi ? 'Đang tính…' : 'Calculating…') : (isVi ? 'Tính số học →' : 'Calculate numbers →')}
+              {submitting ? 'Đang tính…' : 'Tính số →'}
             </button>
             <a
               href={dashboardPath}
               className="block w-full text-center border border-[#7B5EA7] text-[#7B5EA7] rounded-xl px-6 py-3 text-sm font-medium hover:bg-[#F5F0FB] transition-colors"
             >
-              {isVi ? 'Hủy' : 'Cancel'}
+              Hủy
             </a>
           </div>
         </form>

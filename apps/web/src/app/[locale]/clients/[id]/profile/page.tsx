@@ -99,7 +99,7 @@ function NumberCard({
         <p className="text-sm text-[#2C2C2C] mb-3">{content.title}</p>
       )}
       <a href={detailPath} className="text-sm text-[#7B5EA7] hover:underline">
-        {locale === 'vi' ? 'Xem ý nghĩa →' : 'View meaning →'}
+        Xem ý nghĩa →
       </a>
       <WorkingsBox workings={workings} />
     </div>
@@ -156,20 +156,13 @@ export default async function ProfilePage({
     bridge:      freshProfile.bridge.workings,
   }
 
-  const CORE_LABELS: Record<string, string> = locale === 'vi' ? {
-    destiny: 'Số Định Mệnh',
-    soul: 'Số Linh Hồn',
-    personality: 'Số Nhân Cách',
-    maturity: 'Số Trưởng Thành',
-    birthDay: 'Số Ngày Sinh',
-    currentName: 'Số Tên Hiện Tại',
-  } : {
-    destiny: 'Destiny Number',
-    soul: 'Soul Number',
-    personality: 'Personality Number',
-    maturity: 'Maturity Number',
-    birthDay: 'Birthday Number',
-    currentName: 'Current Name Number',
+  const CORE_LABELS: Record<string, string> = {
+    destiny: 'SỐ VẬN MỆNH',
+    soul: 'SỐ LINH HỒN',
+    personality: 'SỐ NHÂN CÁCH',
+    maturity: 'SỐ TRƯỞNG THÀNH',
+    birthDay: 'SỐ NGÀY SINH',
+    currentName: 'SỐ TÊN HIỆN TẠI',
   }
 
   // Collect all number keys to fetch
@@ -236,7 +229,7 @@ export default async function ProfilePage({
                 {client.firstName}
               </h1>
               <p className="text-[#888888] text-sm mt-1">
-                {formatDOB(client.dateOfBirth)} ({locale === 'vi' ? 'tuổi' : 'age'} {getAge(client.dateOfBirth)})
+                {formatDOB(client.dateOfBirth)} (tuổi {getAge(client.dateOfBirth)})
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs rounded-full px-3 py-0.5 font-medium">
@@ -246,7 +239,7 @@ export default async function ProfilePage({
                   href={locale === 'en' ? `/clients/${id}/edit` : `/${locale}/clients/${id}/edit`}
                   className="text-xs text-[#888888] hover:text-[#7B5EA7] transition-colors"
                 >
-                  {locale === 'vi' ? 'Chỉnh sửa khách hàng' : 'Edit client'}
+                  Chỉnh sửa
                 </a>
                 <EngToggle />
               </div>
@@ -257,8 +250,8 @@ export default async function ProfilePage({
                 className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
               >
                 {readingCount === 0
-                  ? (locale === 'vi' ? 'Tạo bài đọc AI →' : 'Generate AI reading →')
-                  : (locale === 'vi' ? 'Xem bài đọc →' : 'View reading →')}
+                  ? 'Tạo bài đọc AI →'
+                  : 'Xem bài đọc →'}
               </a>
               {latestReading && (
                 <p className="text-xs text-[#888888]">
@@ -270,7 +263,7 @@ export default async function ProfilePage({
                   href={readingsPath}
                   className="text-xs text-[#7B5EA7] hover:underline"
                 >
-                  {locale === 'vi' ? `Lịch sử bài đọc (${readingCount})` : `Reading history (${readingCount})`}
+                  {`Lịch sử bài đọc (${readingCount})`}
                 </a>
               )}
             </div>
@@ -280,7 +273,7 @@ export default async function ProfilePage({
         {/* ── Life Path hero ── */}
         <div className="bg-[#7B5EA7] text-white rounded-2xl p-8">
           <p className="text-white/70 text-sm font-medium uppercase tracking-wide mb-2">
-            {locale === 'vi' ? 'Số Đường Đời' : 'Life Path Number'}
+            SỐ ĐƯỜNG ĐỜI
           </p>
           <div className="flex items-center gap-5 mb-4">
             <span className="text-[72px] font-bold text-[#D4AC6E] leading-none">
@@ -299,14 +292,14 @@ export default async function ProfilePage({
             href={lifePathDetailPath}
             className="text-[#D4AC6E] text-sm hover:underline"
           >
-            {locale === 'vi' ? 'Xem ý nghĩa đầy đủ →' : 'View full meaning →'}
+            Xem ý nghĩa đầy đủ →
           </a>
           <WorkingsBox workings={workings.lifePath} />
         </div>
 
         {/* ── Core numbers grid ── */}
         <div>
-          <h2 className="text-lg font-medium text-[#2C2C2C] mb-4">{locale === 'vi' ? 'Số cốt lõi' : 'Core Numbers'}</h2>
+          <h2 className="text-lg font-medium text-[#2C2C2C] mb-4">Các Chỉ Số Cốt Lõi</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {coreEntries.map(([fieldKey, result]) => {
               const nKey = getNumberKey(result)
@@ -330,16 +323,16 @@ export default async function ProfilePage({
         {/* ── Dual method comparison for Destiny, Soul, Personality ── */}
         <div className="space-y-3">
           {[
-            { label: locale === 'vi' ? 'Số Vận Mệnh — cả hai phương pháp' : 'Destiny — Both Methods', dual: profile.destiny },
-            { label: locale === 'vi' ? 'Số Linh Hồn — cả hai phương pháp' : 'Soul — Both Methods', dual: profile.soul },
-            { label: locale === 'vi' ? 'Số Nhân Cách — cả hai phương pháp' : 'Personality — Both Methods', dual: profile.personality },
+            { label: 'SỐ VẬN MỆNH — HAI PHƯƠNG PHÁP', dual: profile.destiny },
+            { label: 'SỐ LINH HỒN — HAI PHƯƠNG PHÁP', dual: profile.soul },
+            { label: 'SỐ NHÂN CÁCH — HAI PHƯƠNG PHÁP', dual: profile.personality },
           ].map(({ label, dual }) => (
             <div key={label} className="bg-[#F5F0FB] rounded-2xl border border-[#E8E0F0] p-5">
               <p className="text-xs text-[#7B5EA7] font-medium uppercase tracking-wide mb-3">{label}</p>
               <div className="flex gap-6">
                 <div>
                   <p className="text-[10px] text-[#888888] mb-1">
-                    {locale === 'vi' ? 'Cộng gộp ngang' : 'Adding across'}
+                    Cộng gộp ngang
                   </p>
                   <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-bold text-[#7B5EA7]">{dual.methodA.display}</span>
@@ -351,15 +344,13 @@ export default async function ProfilePage({
                 <div className="w-px bg-[#E8E0F0]" />
                 <div>
                   <p className="text-[10px] text-[#888888] mb-1">
-                    {locale === 'vi' ? 'Cộng rút gọn' : 'Reducing down'}
+                    Cộng rút gọn
                   </p>
                   <span className="text-2xl font-bold text-[#D4AC6E]">{dual.methodB.display}</span>
                 </div>
               </div>
               <p className="text-[10px] text-[#888888] mt-2">
-                ℹ {locale === 'vi'
-                  ? 'Hai phương pháp tính cho kết quả khác nhau. Chọn phương pháp phù hợp với từng trường hợp.'
-                  : 'Two methods may give different results. Choose the appropriate method for each case.'}
+                ℹ Hai phương pháp có thể cho kết quả khác nhau. Chọn phương pháp phù hợp với từng trường hợp.
               </p>
             </div>
           ))}
@@ -369,7 +360,7 @@ export default async function ProfilePage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
             <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
-              {locale === 'vi' ? 'Số Thái Độ' : 'Attitude Number'}
+              SỐ THÁI ĐỘ
             </p>
             <div className="flex items-baseline gap-2 mb-1">
               <span className="text-4xl font-bold text-[#7B5EA7]">{profile.attitude.display}</span>
@@ -378,20 +369,20 @@ export default async function ProfilePage({
               )}
             </div>
             <p className="text-xs text-[#888888]">
-              {locale === 'vi' ? 'Thái độ & ấn tượng đầu tiên' : 'Attitude & first impression'}
+              Thái độ & ấn tượng đầu tiên
             </p>
             <WorkingsBox workings={workings.attitude} />
           </div>
 
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
             <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
-              {locale === 'vi' ? 'Số Kết Nối' : 'Bridge Number'}
+              SỐ KẾT NỐI
             </p>
             <div className="flex items-baseline gap-2 mb-1">
               <span className="text-4xl font-bold text-[#7B5EA7]">{profile.bridge.display}</span>
             </div>
             <p className="text-xs text-[#888888]">
-              {locale === 'vi' ? 'Kết nối Đường Đời & Vận Mệnh' : 'Connects Life Path & Destiny'}
+              Kết nối Đường Đời & Vận Mệnh
             </p>
             <WorkingsBox workings={workings.bridge} />
           </div>
@@ -401,13 +392,13 @@ export default async function ProfilePage({
         {profile.motherName && (
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
             <p className="text-xs text-[#888888] font-medium uppercase tracking-wide mb-2">
-              {locale === 'vi' ? 'Số Tên Mẹ' : "Mother's Name Number"}
+              SỐ TÊN MẸ
             </p>
             <div className="flex items-baseline gap-2 mb-1">
               <span className="text-4xl font-bold text-[#7B5EA7]">{profile.motherName.display}</span>
             </div>
             <p className="text-xs text-[#888888]">
-              {locale === 'vi' ? 'Số từ tên người mẹ' : "Number from mother's name"}
+              Số từ tên người mẹ
             </p>
           </div>
         )}
@@ -415,13 +406,13 @@ export default async function ProfilePage({
         {/* ── Today's forecast strip ── */}
         <div className="bg-[#F5F0FB] rounded-2xl p-5">
           <h2 className="text-base font-medium text-[#2C2C2C] mb-4">
-            {locale === 'vi' ? 'Hôm nay —' : 'Today —'} {todayFormatted()}
+            Hôm nay — {todayFormatted()}
           </h2>
           <div className="flex flex-wrap gap-3">
             {[
-              { label: locale === 'vi' ? 'Năm Cá Nhân' : 'Personal Year', result: forecast.personalYear },
-              { label: locale === 'vi' ? 'Tháng Cá Nhân' : 'Personal Month', result: forecast.personalMonth },
-              { label: locale === 'vi' ? 'Ngày Cá Nhân' : 'Personal Day', result: forecast.personalDay },
+              { label: 'Năm Cá Nhân', result: forecast.personalYear },
+              { label: 'Tháng Cá Nhân', result: forecast.personalMonth },
+              { label: 'Ngày Cá Nhân', result: forecast.personalDay },
             ].map(({ label, result }) => (
               <div
                 key={label}
@@ -440,20 +431,20 @@ export default async function ProfilePage({
         {/* ── Karmic Lessons ── */}
         <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-6">
           <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-base font-medium text-[#2C2C2C]">{locale === 'vi' ? 'Bài Học Nghiệp' : 'Karmic Lessons'}</h2>
+            <h2 className="text-base font-medium text-[#2C2C2C]">Bài Học Nhân Quả</h2>
             <div className="group relative">
               <span className="w-4 h-4 rounded-full bg-[#E8E0F0] text-[#888888] text-xs flex items-center justify-center cursor-help">
                 i
               </span>
               <div className="absolute left-6 top-0 hidden group-hover:block z-10 bg-[#2C2C2C] text-white text-xs rounded-lg px-3 py-2 w-48">
-                {locale === 'vi' ? 'Số vắng mặt trong tên khai sinh' : 'Numbers absent from the birth certificate name'}
+                Số vắng mặt trong tên khai sinh
               </div>
             </div>
           </div>
 
           {profile.karmicLessons.length === 0 ? (
             <p className="text-[#888888] text-sm">
-              {locale === 'vi' ? 'Không có bài học nghiệp — tất cả số 1–9 đều có mặt ✓' : 'No karmic lessons — all numbers 1–9 are present ✓'}
+              Không có bài học nghiệp — tất cả số 1–9 đều có mặt ✓
             </p>
           ) : (
             <div className="flex flex-wrap gap-4">
@@ -498,7 +489,7 @@ export default async function ProfilePage({
         {/* Back link + delete */}
         <div className="flex items-center justify-between">
           <a href={dashboardPath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
-            {locale === 'vi' ? '← Quay lại danh sách' : '← Back to clients'}
+            ← Quay lại danh sách
           </a>
           <DeleteClientButton clientId={id} clientName={client.firstName} locale={locale} />
         </div>
