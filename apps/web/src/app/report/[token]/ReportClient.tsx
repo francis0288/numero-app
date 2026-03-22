@@ -373,7 +373,7 @@ export function ReportClient({
               </p>
               {isolationNumber > 0 && interpretations[`life_path_${isolationNumber}`]?.overview && (
                 <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
-                  {interpretations[`life_path_${isolationNumber}`].overview?.slice(0, 200)}…
+                  {interpretations[`life_path_${isolationNumber}`].overview}
                 </p>
               )}
             </div>
@@ -469,7 +469,7 @@ export function ReportClient({
                 {/* Year header */}
                 <div style={{ backgroundColor: 'var(--report-forecast-header-bg)', borderBottom: '1px solid var(--border-subtle)', padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: 32, fontWeight: 700, color: 'var(--report-forecast-header-text)' }}>{year}</span>
-                  <span style={{ fontSize: 13, padding: '6px 16px', borderRadius: 99, fontWeight: 600, backgroundColor: 'var(--report-theme-pill-bg)', color: 'var(--report-theme-pill-text)', border: '1px solid var(--report-theme-pill-border)' }}>
+                  <span style={{ fontSize: 12, padding: '4px 12px', borderRadius: 20, fontWeight: 500, backgroundColor: 'var(--report-forecast-badge-bg)', color: 'var(--report-forecast-badge-text)', border: 'none' }}>
                     Năm Cá Nhân {py.display}
                   </span>
                 </div>
@@ -496,7 +496,7 @@ export function ReportClient({
                       <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 8px' }}>{col.title}</p>
                       {col.interpKey && interpretations[col.interpKey]?.overview && (
                         <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-                          {interpretations[col.interpKey]!.overview!.slice(0, 140)}…
+                          {interpretations[col.interpKey]!.overview}
                         </p>
                       )}
                     </div>
