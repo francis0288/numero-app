@@ -165,7 +165,7 @@ function NumberCard({ label, result, interp }: {
       <div style={{ fontSize: 48, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 8 }}>{result.display}</div>
       {interp?.title && <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 6px' }}>{interp.title}</p>}
       {interp?.overview && (
-        <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{interp.overview.slice(0, 80)}…</p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{interp.overview}</p>
       )}
     </div>
   )
