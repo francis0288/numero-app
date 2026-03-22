@@ -32,14 +32,14 @@ export default async function ReportPage({ params }: { params: { token: string }
     include: { user: true },
   })
 
-  if (!client) return <ErrorPage msg="Report not found" sub="This report link is invalid or has been removed." />
+  if (!client) return <ErrorPage msg="Không tìm thấy báo cáo" sub="Liên kết này không hợp lệ hoặc đã bị xóa." />
 
   const reading = await prisma.reading.findFirst({
     where: { clientId: client.id, status: 'finalised' },
     orderBy: { version: 'desc' },
   })
 
-  if (!reading) return <ErrorPage msg="Reading not ready yet" sub="Your practitioner is still preparing your reading." />
+  if (!reading) return <ErrorPage msg="Bài đọc chưa sẵn sàng" sub="Nhà tư vấn đang chuẩn bị bài đọc của bạn." />
 
   const birthDateStr = client.dateOfBirth.toISOString().split('T')[0]
 
