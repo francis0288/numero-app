@@ -80,12 +80,28 @@ function getNumberKey(r: { value: number; isMasterNumber?: boolean; isKarmicDebt
 
 function formatLong(d: string | Date) {
   const date = typeof d === 'string' ? new Date(d) : d
-  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  return `${date.getDate()} tháng ${date.getMonth() + 1} năm ${date.getFullYear()}`
 }
 
 function formatShort(d: string | Date) {
   const date = typeof d === 'string' ? new Date(d) : d
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  return `${date.getDate()} tháng ${date.getMonth() + 1} năm ${date.getFullYear()}`
+}
+
+const ORDINAL_VI: Record<string, string> = {
+  'First': 'Thứ Nhất',
+  'Second': 'Thứ Hai',
+  'Third': 'Thứ Ba',
+  'Fourth (Major)': 'Thứ Tư (Chính)',
+  'Fourth': 'Thứ Tư',
+}
+
+function translateOrdinalLabel(label: string | undefined, fallback: string): string {
+  if (!label) return fallback
+  for (const [en, vi] of Object.entries(ORDINAL_VI)) {
+    if (label.startsWith(en)) return label.replace(en, vi)
+  }
+  return label
 }
 
 function parseSections(text: string) {
@@ -343,7 +359,7 @@ export function ReadingPDF({
       {/* ── FINAL PAGE: Annual Forecast + Summary ── */}
       <Page size="A4" style={styles.page}>
         <View style={{ ...styles.section, paddingBottom: 48 }}>
-          <SecHeading title="Annual Forecast" />
+          <SecHeading title="Dự Báo Năm" />
 
           {([
             { year: currentYear, py: pyCurr, info: pyCurrInfo, pin: pinCurr, ch: chCurr },
@@ -352,11 +368,11 @@ export function ReadingPDF({
             <View key={year} style={styles.forecastCard} wrap={false}>
               <View style={styles.forecastHeader}>
                 <Text style={styles.forecastYear}>{year}</Text>
-                <Text style={styles.forecastPill}>Personal Year {py.display}</Text>
+                <Text style={styles.forecastPill}>Năm Cá Nhân {py.display}</Text>
               </View>
               <View style={styles.forecastCols}>
                 <View style={styles.forecastCol}>
-                  <Text style={styles.label}>Personal Year</Text>
+                  <Text style={styles.label}>Năm Cá Nhân</Text>
                   <Text style={styles.medNum}>{py.display}</Text>
                   <Text style={styles.cardTitle}>{info.theme}</Text>
                   {interps[`life_path_${py.value}`]?.overview && (
@@ -364,17 +380,17 @@ export function ReadingPDF({
                   )}
                 </View>
                 <View style={styles.forecastCol}>
-                  <Text style={styles.label}>Pinnacle</Text>
+                  <Text style={styles.label}>Đỉnh Cao</Text>
                   <Text style={styles.medNum}>{pin?.number.display ?? '—'}</Text>
-                  <Text style={styles.cardTitle}>{pin?.label ?? 'Pinnacle Cycle'}</Text>
+                  <Text style={styles.cardTitle}>{translateOrdinalLabel(pin?.label, 'Chu Kỳ Đỉnh Cao')}</Text>
                   {pin && interps[`life_path_${pin.number.value}`]?.overview && (
                     <Text style={styles.mutedText}>{interps[`life_path_${pin.number.value}`].overview?.slice(0, 90)}…</Text>
                   )}
                 </View>
                 <View style={styles.forecastColLast}>
-                  <Text style={styles.label}>Challenge</Text>
+                  <Text style={styles.label}>Thách Thức</Text>
                   <Text style={styles.medNum}>{ch?.number != null ? String(ch.number) : '0'}</Text>
-                  <Text style={styles.cardTitle}>{ch?.label ?? 'Challenge Cycle'}</Text>
+                  <Text style={styles.cardTitle}>{translateOrdinalLabel(ch?.label, 'Chu Kỳ Thách Thức')}</Text>
                   {ch?.number != null && interps[`life_path_${ch.number}`]?.overview && (
                     <Text style={styles.mutedText}>{interps[`life_path_${ch.number}`].overview?.slice(0, 90)}…</Text>
                   )}
@@ -386,11 +402,11 @@ export function ReadingPDF({
             </View>
           ))}
 
-          <SecHeading title="Summary & Future Directions" />
+          <SecHeading title="Tóm Tắt & Hướng Đi Tương Lai" />
           <View style={styles.threeCardRow} wrap={false}>
             <View style={styles.summaryCard}>
-              <Text style={styles.summaryCardTitle}>Your Greatest Strengths</Text>
-              {(strengthBullets.length > 0 ? strengthBullets : ['Your natural gifts flow through your Life Path.', 'You have unique wisdom to offer the world.', 'Your soul carries deep potential.']).map((b, i) => (
+              <Text style={styles.summaryCardTitle}>Điểm Mạnh Của Bạn</Text>
+              {(strengthBullets.length > 0 ? strengthBullets : ['Tài năng tự nhiên của bạn tuôn chảy qua Đường Đời.', 'Bạn có trí tuệ độc đáo để cống hiến cho thế giới.', 'Tâm hồn bạn mang tiềm năng sâu sắc.']).map((b, i) => (
                 <View key={i} style={styles.bulletRow}>
                   <Text style={styles.bulletIcon}>✓</Text>
                   <Text style={styles.bulletText}>{b}</Text>
@@ -398,8 +414,8 @@ export function ReadingPDF({
               ))}
             </View>
             <View style={styles.summaryCard}>
-              <Text style={styles.summaryCardTitle}>Areas for Growth</Text>
-              {(growthBullets.length > 0 ? growthBullets : ['Embrace vulnerability and openness.', 'Balance personal needs with service.', 'Trust the journey when the path is unclear.']).map((b, i) => (
+              <Text style={styles.summaryCardTitle}>Lĩnh Vực Phát Triển</Text>
+              {(growthBullets.length > 0 ? growthBullets : ['Đón nhận sự dễ bị tổn thương và cởi mở.', 'Cân bằng nhu cầu cá nhân với việc phụng sự.', 'Tin tưởng vào hành trình khi con đường chưa rõ ràng.']).map((b, i) => (
                 <View key={i} style={styles.bulletRow}>
                   <Text style={styles.bulletIconAmber}>○</Text>
                   <Text style={styles.bulletText}>{b}</Text>
@@ -407,8 +423,8 @@ export function ReadingPDF({
               ))}
             </View>
             <View style={styles.summaryCard}>
-              <Text style={styles.summaryCardTitle}>Your Path Forward</Text>
-              {(pathBullets.length > 0 ? pathBullets : ['Follow the calling of your deepest values.', 'Align daily actions with your soul purpose.', 'Trust that you are exactly where you need to be.']).map((b, i) => (
+              <Text style={styles.summaryCardTitle}>Hướng Đi Tương Lai</Text>
+              {(pathBullets.length > 0 ? pathBullets : ['Theo đuổi tiếng gọi của những giá trị sâu sắc nhất.', 'Gắn kết hành động hàng ngày với mục đích tâm hồn.', 'Tin rằng bạn đang đúng nơi cần phải ở.']).map((b, i) => (
                 <View key={i} style={styles.bulletRow}>
                   <Text style={styles.bulletIconViolet}>→</Text>
                   <Text style={styles.bulletText}>{b}</Text>

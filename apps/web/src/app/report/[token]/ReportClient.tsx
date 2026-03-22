@@ -128,11 +128,29 @@ const PY_INFO: Record<number, { theme: string; bullets: string[] }> = {
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function formatLong(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const d = new Date(iso)
+  return `${d.getDate()} tháng ${d.getMonth() + 1} năm ${d.getFullYear()}`
 }
 
 function formatShort(iso: string) {
-  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const d = new Date(iso)
+  return `${d.getDate()} tháng ${d.getMonth() + 1} năm ${d.getFullYear()}`
+}
+
+const ORDINAL_VI: Record<string, string> = {
+  'First': 'Thứ Nhất',
+  'Second': 'Thứ Hai',
+  'Third': 'Thứ Ba',
+  'Fourth (Major)': 'Thứ Tư (Chính)',
+  'Fourth': 'Thứ Tư',
+}
+
+function translateOrdinalLabel(label: string | undefined, fallback: string): string {
+  if (!label) return fallback
+  for (const [en, vi] of Object.entries(ORDINAL_VI)) {
+    if (label.startsWith(en)) return label.replace(en, vi)
+  }
+  return label
 }
 
 function getNumberKey(r: { value: number; isMasterNumber?: boolean; isKarmicDebt?: boolean; karmicDebtNumber?: number }) {
@@ -537,11 +555,11 @@ export function ReportClient({
                       interpKey: `life_path_${py.value}`,
                     },
                     {
-                      num: pin?.number.display ?? '—', numVal: pin?.number.value, sublabel: 'Đỉnh Cao', title: pin?.label ?? 'Chu Kỳ Đỉnh Cao',
+                      num: pin?.number.display ?? '—', numVal: pin?.number.value, sublabel: 'Đỉnh Cao', title: translateOrdinalLabel(pin?.label, 'Chu Kỳ Đỉnh Cao'),
                       interpKey: pin ? `life_path_${pin.number.value}` : null,
                     },
                     {
-                      num: ch?.number != null ? String(ch.number) : '0', numVal: ch?.number, sublabel: 'Thách Thức', title: ch?.label ?? 'Chu Kỳ Thách Thức',
+                      num: ch?.number != null ? String(ch.number) : '0', numVal: ch?.number, sublabel: 'Thách Thức', title: translateOrdinalLabel(ch?.label, 'Chu Kỳ Thách Thức'),
                       interpKey: ch?.number != null ? `life_path_${ch.number}` : null,
                     },
                   ].map((col, ci) => (

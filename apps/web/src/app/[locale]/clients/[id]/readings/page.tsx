@@ -19,7 +19,7 @@ const TONE_LABELS: Record<string, string> = {
 }
 
 function formatDate(d: Date) {
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  return `${d.getDate()} tháng ${d.getMonth() + 1} năm ${d.getFullYear()}`
 }
 
 export default async function ReadingsPage({
@@ -51,21 +51,21 @@ export default async function ReadingsPage({
       <main className="max-w-[800px] mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <a href={profilePath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
-            ← Back to profile
+            ← Quay lại hồ sơ
           </a>
           <h1 className="text-xl font-medium text-[#2C2C2C]">
-            {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')} — Reading history
+            {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')} — Lịch sử bài đọc
           </h1>
         </div>
 
         {readings.length === 0 ? (
           <div className="bg-white rounded-2xl border border-[#E8E0F0] p-8 text-center">
-            <p className="text-[#888888] mb-4">No readings yet.</p>
+            <p className="text-[#888888] mb-4">Chưa có bài đọc.</p>
             <a
               href={readingPath}
               className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
             >
-              Generate first reading →
+              Tạo bài đọc đầu tiên →
             </a>
           </div>
         ) : (
@@ -89,11 +89,11 @@ export default async function ReadingsPage({
                     <div className="flex items-center gap-2">
                       {r.status === 'finalised' ? (
                         <span className="bg-green-50 text-green-700 border border-green-200 text-xs px-2 py-1 rounded-full">
-                          Finalised
+                          Đã hoàn thành
                         </span>
                       ) : (
                         <span className="bg-amber-50 text-amber-700 border border-amber-200 text-xs px-2 py-1 rounded-full">
-                          Draft
+                          Bản nháp
                         </span>
                       )}
                       <span className="text-[#888888] text-xs">{formatDate(r.createdAt)}</span>
@@ -115,7 +115,7 @@ export default async function ReadingsPage({
             href={readingPath}
             className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
           >
-            Generate new reading →
+            Tạo bài đọc mới →
           </a>
         </div>
       </main>

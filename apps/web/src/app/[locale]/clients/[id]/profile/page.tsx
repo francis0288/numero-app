@@ -26,8 +26,10 @@ function getNumberKey(result: NumberResult): string {
   return `life_path_${result.value}`
 }
 
+const DAYS_VI = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
+
 function formatDOB(date: Date) {
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  return `${date.getDate()} tháng ${date.getMonth() + 1} năm ${date.getFullYear()}`
 }
 
 function getAge(dob: Date) {
@@ -39,7 +41,8 @@ function getAge(dob: Date) {
 }
 
 function todayFormatted() {
-  return new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  const d = new Date()
+  return `${DAYS_VI[d.getDay()]}, ${d.getDate()} tháng ${d.getMonth() + 1} năm ${d.getFullYear()}`
 }
 
 const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }

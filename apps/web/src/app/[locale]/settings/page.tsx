@@ -182,7 +182,7 @@ export default function SettingsPage() {
               >
                 {logoSaved ? '✓ ' + (locale === 'vi' ? 'Đã tải lên' : 'Uploaded') : (locale === 'vi' ? 'Tải lên logo' : 'Upload logo')}
               </button>
-              <p className="text-xs text-[#888888] mt-1">Appears on client report cover</p>
+              <p className="text-xs text-[#888888] mt-1">{locale === 'vi' ? 'Hiển thị trên trang bìa báo cáo' : 'Appears on client report cover'}</p>
             </div>
           </div>
           <input
@@ -195,7 +195,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* API Key */}
-        <Card title="Anthropic API Key">
+        <Card title={locale === 'vi' ? 'Khóa API Anthropic' : 'Anthropic API Key'}>
           <div className="space-y-3">
             <input
               type="password"
@@ -211,10 +211,10 @@ export default function SettingsPage() {
                 onClick={() => void saveApiKey()}
                 className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
               >
-                {apiKeySaved ? '✓ Saved' : 'Update key'}
+                {apiKeySaved ? (locale === 'vi' ? '✓ Đã lưu' : '✓ Saved') : (locale === 'vi' ? 'Cập nhật khóa' : 'Update key')}
               </button>
               <p className="text-xs text-[#888888]">
-                Get your key at{' '}
+                {locale === 'vi' ? 'Lấy khóa tại ' : 'Get your key at '}
                 <a
                   href="https://console.anthropic.com"
                   target="_blank"
@@ -229,16 +229,18 @@ export default function SettingsPage() {
         </Card>
 
         {/* Data export */}
-        <Card title="Data">
+        <Card title={locale === 'vi' ? 'Dữ liệu' : 'Data'}>
           <p className="text-sm text-[#888888] mb-4">
-            Download all your client data as a spreadsheet-compatible CSV file.
+            {locale === 'vi'
+              ? 'Tải xuống toàn bộ dữ liệu khách hàng dưới dạng file CSV.'
+              : 'Download all your client data as a spreadsheet-compatible CSV file.'}
           </p>
           <button
             type="button"
             onClick={exportData}
             className="border border-[#E8E0F0] text-[#2C2C2C] rounded-xl px-5 py-2.5 text-sm hover:border-[#7B5EA7] transition-colors"
           >
-            Export all client data as CSV
+            {locale === 'vi' ? 'Xuất dữ liệu CSV' : 'Export all client data as CSV'}
           </button>
         </Card>
       </main>
