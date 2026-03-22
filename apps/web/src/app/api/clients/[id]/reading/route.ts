@@ -73,6 +73,11 @@ export async function POST(
     forecast,
     tone,
     customFocus,
+    selectedMethods: {
+      destinyMethod: (client.destinyMethod as 'A' | 'B') ?? 'A',
+      soulMethod: (client.soulMethod as 'A' | 'B') ?? 'A',
+      personalityMethod: (client.personalityMethod as 'A' | 'B') ?? 'A',
+    },
   })
 
   // Count existing readings to determine version

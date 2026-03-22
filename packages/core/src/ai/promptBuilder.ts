@@ -1,5 +1,11 @@
 import type { NumerologyProfile, ForecastResult } from '../types/index.js'
 
+export interface SelectedMethods {
+  destinyMethod?: 'A' | 'B'
+  soulMethod?: 'A' | 'B'
+  personalityMethod?: 'A' | 'B'
+}
+
 export interface ReadingPromptInput {
   client: {
     firstName: string
@@ -14,6 +20,7 @@ export interface ReadingPromptInput {
   }
   tone: 'warm' | 'analytical' | 'spiritual' | 'practical'
   customFocus?: string
+  selectedMethods?: SelectedMethods
 }
 
 export interface FollowUpPromptInput {
@@ -54,16 +61,20 @@ function getToneInstruction(tone: 'warm' | 'analytical' | 'spiritual' | 'practic
   }
 }
 
-function buildChartSummary(profile: NumerologyProfile, forecast: { personalYear: ForecastResult; personalMonth: ForecastResult; personalDay: ForecastResult }): string {
+function buildChartSummary(profile: NumerologyProfile, forecast: { personalYear: ForecastResult; personalMonth: ForecastResult; personalDay: ForecastResult }, methods?: SelectedMethods): string {
   const karmicLessons = profile.karmicLessons.length > 0
     ? profile.karmicLessons.join(', ')
     : 'None'
 
+  const destiny = methods?.destinyMethod === 'B' ? profile.destiny.methodB : profile.destiny.methodA
+  const soul = methods?.soulMethod === 'B' ? profile.soul.methodB : profile.soul.methodA
+  const personality = methods?.personalityMethod === 'B' ? profile.personality.methodB : profile.personality.methodA
+
   return `NUMEROLOGY CHART:
 Life Path:    ${profile.lifePath.display}
-Destiny:      ${profile.destiny.methodA.display} (methodB: ${profile.destiny.methodB.display})
-Soul:         ${profile.soul.methodA.display}
-Personality:  ${profile.personality.methodA.display}
+Destiny:      ${destiny.display}
+Soul:         ${soul.display}
+Personality:  ${personality.display}
 Maturity:     ${profile.maturity.display}
 Birth Day:    ${profile.birthDay.display}
 Current Name: ${profile.currentName.display}
@@ -88,7 +99,7 @@ Do not reference any books or other numerologists. Write as if these are your ow
 
 Structure your response with exactly these 6 markdown headings and no others.`
 
-  const chartSummary = buildChartSummary(input.profile, input.forecast)
+  const chartSummary = buildChartSummary(input.profile, input.forecast, input.selectedMethods)
 
   const sectionHeadings = input.client.preferredLanguage === 'en'
     ? `## Overview\n## Your Inner World\n## Life Purpose & Gifts\n## Challenges & Growth\n## The Year Ahead\n## Closing Guidance`

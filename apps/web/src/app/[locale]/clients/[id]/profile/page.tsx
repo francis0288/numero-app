@@ -16,6 +16,7 @@ import { NavBar } from '@/components/NavBar'
 import { BottomNav } from '@/components/BottomNav'
 import { ShareSection } from '@/components/ShareSection'
 import { DeleteClientButton } from '@/components/DeleteClientButton'
+import { ProfileMethodSections } from '@/components/ProfileMethodSections'
 import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -57,6 +58,10 @@ function getActiveLetter(group: string, age: number): { letter: string; value: n
   return { letter: letters[letters.length - 1], value: PYTHAGOREAN_MAP[letters[letters.length - 1]] ?? 0 }
 }
 
+function stripNumberResult(r: NumberResult) {
+  return { value: r.value, display: r.display, isMasterNumber: r.isMasterNumber, workings: r.workings }
+}
+
 // ─── Sub-components ────────────────────────────────────────────────────────
 
 function SectionLabel({ title, style }: { title: string; style?: React.CSSProperties }) {
@@ -68,32 +73,6 @@ function SectionLabel({ title, style }: { title: string; style?: React.CSSProper
     }}>
       {title}
     </p>
-  )
-}
-
-function ProgressRing({ val, display, isMaster }: { val: number; display: string; isMaster: boolean }) {
-  const capped = Math.min(val, 9)
-  const dasharray = capped > 0 ? `${(capped / 9) * 175.9} 175.9` : '0 175.9'
-  return (
-    <svg viewBox="0 0 72 72" width="72" height="72">
-      <circle cx="36" cy="36" r="28" stroke="rgba(196,146,42,0.12)" strokeWidth="5" fill="none" />
-      {capped > 0 && (
-        <circle
-          cx="36" cy="36" r="28"
-          stroke="#C4922A" strokeWidth="5" fill="none"
-          strokeLinecap="round"
-          strokeDasharray={dasharray}
-          transform="rotate(-90 36 36)"
-        />
-      )}
-      <text
-        x="36" y="41" textAnchor="middle"
-        fontSize={isMaster ? '14' : '20'} fontWeight="500"
-        fill="#1C1A14" fontFamily="Georgia,serif"
-      >
-        {val > 0 ? display : '—'}
-      </text>
-    </svg>
   )
 }
 
@@ -113,71 +92,6 @@ function WorkingsBlock({ workings }: { workings?: string }) {
       <pre style={{ fontSize: 11, color: 'var(--color-mid)', fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.5, margin: 0 }}>
         {workings}
       </pre>
-    </div>
-  )
-}
-
-function TwoMethodCard({
-  title,
-  methodA,
-  methodB,
-}: {
-  title: string
-  methodA: NumberResult
-  methodB: NumberResult
-}) {
-  const same = methodA.value === methodB.value
-  return (
-    <div style={{
-      backgroundColor: 'var(--color-dark)', borderRadius: 16,
-      padding: '16px', border: '1px solid rgba(196,146,42,0.15)',
-    }}>
-      <SectionLabel title={`${title} — Hai Phương Pháp`} style={{ color: 'var(--color-gold)', marginBottom: 14 }} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-        <div style={{
-          backgroundColor: 'rgba(250,248,243,0.06)', borderRadius: 12, padding: '12px',
-          borderLeft: '2px solid var(--color-gold)',
-        }}>
-          <p style={{ fontSize: 9, color: 'rgba(250,248,243,0.5)', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)' }}>
-            Cộng gộp ngang
-          </p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 300, color: 'white', margin: '0 0 4px', lineHeight: 1 }}>
-            {methodA.display}
-          </p>
-          {methodA.isMasterNumber && (
-            <span style={{ fontSize: 9, color: '#E8C97A', fontFamily: 'var(--font-ui)' }}>Số chủ</span>
-          )}
-          {methodA.workings && (
-            <pre style={{ fontSize: 9, color: 'rgba(250,248,243,0.4)', fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.4, margin: '6px 0 0' }}>
-              {methodA.workings}
-            </pre>
-          )}
-        </div>
-        <div style={{
-          backgroundColor: 'rgba(250,248,243,0.06)', borderRadius: 12, padding: '12px',
-          borderLeft: '2px solid rgba(250,248,243,0.15)',
-        }}>
-          <p style={{ fontSize: 9, color: 'rgba(250,248,243,0.5)', margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)' }}>
-            Cộng rút gọn
-          </p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 300, color: 'white', margin: '0 0 4px', lineHeight: 1 }}>
-            {methodB.display}
-          </p>
-          {methodB.isMasterNumber && (
-            <span style={{ fontSize: 9, color: '#E8C97A', fontFamily: 'var(--font-ui)' }}>Số chủ</span>
-          )}
-          {methodB.workings && (
-            <pre style={{ fontSize: 9, color: 'rgba(250,248,243,0.4)', fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.4, margin: '6px 0 0' }}>
-              {methodB.workings}
-            </pre>
-          )}
-        </div>
-      </div>
-      {!same && (
-        <p style={{ fontSize: 10, color: 'rgba(250,248,243,0.4)', margin: '10px 0 0', fontFamily: 'var(--font-ui)', lineHeight: 1.4 }}>
-          ℹ Hai phương pháp có thể cho kết quả khác nhau — cả hai đều đúng theo hệ thống Pythagore.
-        </p>
-      )}
     </div>
   )
 }
@@ -220,7 +134,6 @@ export default async function ProfilePage({
   const personalDay = calculatePersonalDay(personalMonth, today.getDate())
   const currentMonthNum = today.getMonth() + 1
 
-  // Month strip data (all 12 months)
   const monthStrip = Array.from({ length: 12 }, (_, i) => {
     const m = i + 1
     const pm = calculatePersonalMonth(personalYear, m)
@@ -238,7 +151,6 @@ export default async function ProfilePage({
   const mentalTransit = nameParts.middleName ? getActiveLetter(nameParts.middleName, currentAge) : null
   const spiritualTransit = getActiveLetter(nameParts.lastName, currentAge)
 
-  // Essence number (sum of active transit values, reduced)
   const essenceSum = physicalTransit.value + (mentalTransit?.value ?? 0) + spiritualTransit.value
   const essenceValue = essenceSum > 0 ? (() => {
     let n = essenceSum
@@ -289,24 +201,22 @@ export default async function ProfilePage({
 
   const fullName = [client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')
 
-  // Number detail list rows (with workings)
-  const detailRows = [
-    { num: profile.lifePath.display, val: profile.lifePath.value, isMaster: profile.lifePath.isMasterNumber, title: 'Đường Đời', sub: lifePathContent?.overview?.slice(0, 60) ?? 'Mục đích cuộc sống', workings: profile.lifePath.workings },
-    { num: profile.destiny.methodA.display, val: profile.destiny.methodA.value, isMaster: profile.destiny.methodA.isMasterNumber, title: 'Vận Mệnh', sub: 'Sứ mệnh tiềm ẩn trong tên khai sinh', workings: profile.destiny.methodA.workings },
-    { num: profile.soul.methodA.display, val: profile.soul.methodA.value, isMaster: profile.soul.methodA.isMasterNumber, title: 'Linh Hồn', sub: 'Khao khát và động lực nội tâm', workings: profile.soul.methodA.workings },
-    { num: profile.personality.methodA.display, val: profile.personality.methodA.value, isMaster: profile.personality.methodA.isMasterNumber, title: 'Nhân Cách', sub: 'Ấn tượng bên ngoài với thế giới', workings: profile.personality.methodA.workings },
-    { num: profile.maturity.display, val: profile.maturity.value, isMaster: profile.maturity.isMasterNumber, title: 'Trưởng Thành', sub: 'Tiềm năng cuối cuộc đời', workings: profile.maturity.workings },
-  ]
-
   const transitRows = [
     { label: 'Thể Chất (Tên)', transit: physicalTransit, namePart: nameParts.firstName },
     ...(mentalTransit ? [{ label: 'Tinh Thần (Tên đệm)', transit: mentalTransit, namePart: nameParts.middleName ?? '' }] : []),
     { label: 'Tâm Linh (Họ)', transit: spiritualTransit, namePart: nameParts.lastName },
   ]
 
-  // Isolation number workings
+  // Isolation
   const birthDigits = birthDateStr.replace(/-/g, '').split('').map(Number).filter((d) => d > 0)
   const uniqueBirthDigits = [...new Set(birthDigits)].sort()
+
+  // Method selections from DB
+  const initialMethods = {
+    destinyMethod: (client.destinyMethod as 'A' | 'B') ?? 'A',
+    soulMethod: (client.soulMethod as 'A' | 'B') ?? 'A',
+    personalityMethod: (client.personalityMethod as 'A' | 'B') ?? 'A',
+  }
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>
@@ -354,50 +264,18 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ── 2. Core numbers — progress rings ── */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 20,
-            padding: '18px 10px 14px', border: '0.5px solid var(--color-border)',
-          }}>
-            <SectionLabel title="Số Cốt Lõi" style={{ paddingLeft: 10, marginBottom: 16 }} />
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              {[
-                { nr: profile.lifePath, label: 'Đường Đời' },
-                { nr: profile.destiny.methodA, label: 'Vận Mệnh' },
-                { nr: profile.soul.methodA, label: 'Linh Hồn' },
-              ].map(({ nr, label }) => (
-                <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <ProgressRing val={nr.value} display={nr.display} isMaster={nr.isMasterNumber} />
-                  <span style={{ fontSize: 10, color: 'var(--color-mid)', letterSpacing: '0.04em', fontFamily: 'var(--font-ui)' }}>
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Secondary numbers grid ── */}
-        <div style={{ padding: '0 16px 14px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-          {[
-            { nr: profile.personality.methodA, label: 'Nhân Cách' },
-            { nr: profile.maturity, label: 'Trưởng Thành' },
-            { nr: profile.birthDay, label: 'Ngày Sinh' },
-          ].map(({ nr, label }) => (
-            <div key={label} style={{
-              backgroundColor: 'var(--color-white)', borderRadius: 14,
-              border: '0.5px solid var(--color-border)', padding: '12px 10px',
-            }}>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, fontWeight: 500, color: 'var(--color-dark)', margin: '0 0 4px' }}>
-                {nr.display}
-              </p>
-              <p style={{ fontSize: 9, fontWeight: 400, color: 'var(--color-mid)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0, fontFamily: 'var(--font-ui)' }}>
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
+        {/* ── 2–8. Interactive sections: core rings, secondary grid, detail list, two-method cards ── */}
+        <ProfileMethodSections
+          clientId={id}
+          destiny={{ methodA: stripNumberResult(profile.destiny.methodA), methodB: stripNumberResult(profile.destiny.methodB) }}
+          soul={{ methodA: stripNumberResult(profile.soul.methodA), methodB: stripNumberResult(profile.soul.methodB) }}
+          personality={{ methodA: stripNumberResult(profile.personality.methodA), methodB: stripNumberResult(profile.personality.methodB) }}
+          lifePath={stripNumberResult(profile.lifePath)}
+          maturity={stripNumberResult(profile.maturity)}
+          birthDay={stripNumberResult(profile.birthDay)}
+          lifePathSub={lifePathContent?.overview?.slice(0, 60) ?? 'Mục đích cuộc sống'}
+          initialMethods={initialMethods}
+        />
 
         {/* ── 3. Dark forecast card ── */}
         <div style={{
@@ -426,8 +304,6 @@ export default async function ProfilePage({
               </p>
             </div>
           </div>
-
-          {/* Month strip */}
           <div style={{ display: 'flex', gap: 5, overflowX: 'auto' }} className="hide-scrollbar">
             {monthStrip.map(({ month, display }) => {
               const isActive = month === currentMonthNum
@@ -479,72 +355,8 @@ export default async function ProfilePage({
           </a>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* ── 5. CHI TIẾT SỐ (with Cách tính workings) ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 16,
-            border: '0.5px solid var(--color-border)', padding: '16px 16px 0',
-          }}>
-            <SectionLabel title="Chi Tiết Số" style={{ marginBottom: 12 }} />
-            {detailRows.map(({ num, val, isMaster, title, sub, workings }, idx) => (
-              <div key={title} style={{
-                padding: '14px 0',
-                borderBottom: idx < detailRows.length - 1 ? '0.5px solid rgba(28,22,10,0.07)' : 'none',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{
-                    fontFamily: 'Georgia, serif', fontSize: isMaster ? 26 : 36,
-                    fontWeight: 400, color: 'var(--color-dark)',
-                    minWidth: 44, lineHeight: 1, flexShrink: 0,
-                  }}>
-                    {num}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-dark)', margin: '0 0 2px', fontFamily: 'var(--font-ui)' }}>
-                      {title}
-                    </p>
-                    <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-                      {sub}
-                    </p>
-                    <div style={{ height: 4, backgroundColor: 'rgba(28,22,10,0.08)', borderRadius: 2, overflow: 'hidden' }}>
-                      <div style={{
-                        height: '100%',
-                        width: `${(Math.min(val, 9) / 9) * 100}%`,
-                        backgroundColor: '#C4922A', borderRadius: 2,
-                      }} />
-                    </div>
-                  </div>
-                </div>
-                <WorkingsBlock workings={workings} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* ── 6. SỐ VẬN MỆNH — HAI PHƯƠNG PHÁP ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <TwoMethodCard title="Số Vận Mệnh" methodA={profile.destiny.methodA} methodB={profile.destiny.methodB} />
-        </div>
-
-        {/* ── 7. SỐ LINH HỒN — HAI PHƯƠNG PHÁP ── */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <TwoMethodCard title="Số Linh Hồn" methodA={profile.soul.methodA} methodB={profile.soul.methodB} />
-        </div>
-
-        {/* ── 8. SỐ NHÂN CÁCH — HAI PHƯƠNG PHÁP ── */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <TwoMethodCard title="Số Nhân Cách" methodA={profile.personality.methodA} methodB={profile.personality.methodB} />
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {/* ── 9. SỐ THÁI ĐỘ + SỐ KẾT NỐI (side by side) ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
         <div style={{ padding: '0 16px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {/* Attitude */}
           <div style={{
             backgroundColor: 'var(--color-white)', borderRadius: 16,
             border: '0.5px solid var(--color-border)', padding: '16px',
@@ -558,8 +370,6 @@ export default async function ProfilePage({
             </p>
             <WorkingsBlock workings={profile.attitude.workings} />
           </div>
-
-          {/* Bridge */}
           <div style={{
             backgroundColor: 'var(--color-white)', borderRadius: 16,
             border: '0.5px solid var(--color-border)', padding: '16px',
@@ -575,9 +385,7 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {/* ── 10. SỐ TÊN MẸ (if exists) ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {profile.motherName && (
           <div style={{ padding: '0 16px 14px' }}>
             <div style={{
@@ -589,27 +397,22 @@ export default async function ProfilePage({
                 <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: 0, lineHeight: 1, flexShrink: 0 }}>
                   {profile.motherName.display}
                 </p>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-                    Ảnh hưởng của mẹ lên biểu đồ số học
-                  </p>
-                </div>
+                <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, lineHeight: 1.4, fontFamily: 'var(--font-ui)', flex: 1 }}>
+                  Ảnh hưởng của mẹ lên biểu đồ số học
+                </p>
               </div>
               <WorkingsBlock workings={profile.motherName.workings} />
             </div>
           </div>
         )}
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {/* ── 11. SỐ CÔ LẬP ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
         <div style={{ padding: '0 16px 14px' }}>
           <div style={{
             backgroundColor: 'var(--color-white)', borderRadius: 16,
             border: '0.5px solid var(--color-border)', padding: '16px',
           }}>
             <SectionLabel title="Số Cô Lập" style={{ marginBottom: 12 }} />
-
             {profile.isolationNumbers.length === 0 ? (
               <p style={{ fontSize: 13, color: 'var(--color-green)', margin: 0, fontFamily: 'var(--font-ui)' }}>
                 Không có số cô lập ✓
@@ -633,13 +436,9 @@ export default async function ProfilePage({
                 </p>
               </>
             )}
-
             <div style={{
-              marginTop: 8,
-              borderLeft: '2px solid var(--color-gold)',
-              backgroundColor: 'rgba(196,146,42,0.04)',
-              borderRadius: '0 6px 6px 0',
-              padding: '6px 10px',
+              marginTop: 8, borderLeft: '2px solid var(--color-gold)',
+              backgroundColor: 'rgba(196,146,42,0.04)', borderRadius: '0 6px 6px 0', padding: '6px 10px',
             }}>
               <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-gold)', margin: '0 0 2px', fontFamily: 'var(--font-ui)', letterSpacing: '0.04em' }}>
                 Cách tính:
@@ -651,16 +450,13 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
-        {/* ── 12. SỐ TINH CHẤT (Essence / Transit — kept from new design) ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
+        {/* ── 12. SỐ TINH CHẤT ── */}
         <div style={{ padding: '0 16px 14px' }}>
           <div style={{
             backgroundColor: 'var(--color-white)', borderRadius: 16,
             border: '0.5px solid var(--color-border)', padding: 16,
           }}>
             <SectionLabel title={`Số Tinh Chất — Tuổi ${currentAge}`} style={{ marginBottom: 12 }} />
-
             {transitRows.map(({ label, transit, namePart }, idx) => (
               <div key={label} style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -682,7 +478,6 @@ export default async function ProfilePage({
                 </span>
               </div>
             ))}
-
             <div style={{
               marginTop: 10, backgroundColor: 'rgba(196,146,42,0.07)',
               borderRadius: 10, padding: '10px 12px',
@@ -698,9 +493,7 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {/* ── 13. BÀI HỌC NHÂN QUẢ ── */}
-        {/* ══════════════════════════════════════════════════════════════════ */}
         {profile.karmicLessons.length > 0 && (
           <div style={{ padding: '0 16px 14px' }}>
             <div style={{

@@ -37,6 +37,9 @@ model Client {
   preferredLanguage String    @default("vi")
   shareToken        String    @unique @default(cuid())
   notes             String?
+  destinyMethod     String?   @default("A")
+  soulMethod        String?   @default("A")
+  personalityMethod String?   @default("A")
   createdAt         DateTime  @default(now())
   readings          Reading[]
 }
