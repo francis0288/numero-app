@@ -70,6 +70,10 @@
 
   /* Report page */
   --report-header-bg:          #1A1A2E;
+  --report-header-text:        #E8D9B0;
+  --report-header-sub:         rgba(212,172,110,0.7);
+  --report-header-dim:         rgba(255,255,255,0.4);
+  --report-header-accent:      #D4AC6E;
   --report-section-bg:         #0D0D1A;
   --report-alt-section-bg:     #0F0F20;
   --report-footer-bg:          #0D0D1A;
@@ -85,6 +89,7 @@
   --report-summary-border:     rgba(123,94,167,0.4);
   --report-karmic-border-left: #ef4444;
   --report-forecast-header-bg: #12122A;
+  --report-forecast-header-text:#E8D9B0;
   --report-theme-pill-bg:      rgba(212,172,110,0.15);
   --report-theme-pill-text:    #D4AC6E;
   --report-theme-pill-border:  rgba(212,172,110,0.3);
@@ -155,6 +160,10 @@
 
   /* Report page */
   --report-header-bg:          #7B5EA7;
+  --report-header-text:        #FFFFFF;
+  --report-header-sub:         rgba(255,255,255,0.7);
+  --report-header-dim:         rgba(255,255,255,0.5);
+  --report-header-accent:      #FFD000;
   --report-section-bg:         #FDF6EC;
   --report-alt-section-bg:     #F5F0FB;
   --report-footer-bg:          #2C2C2C;
@@ -170,6 +179,7 @@
   --report-summary-border:     #E8E0F0;
   --report-karmic-border-left: #f97316;
   --report-forecast-header-bg: #7B5EA7;
+  --report-forecast-header-text:#FFFFFF;
   --report-theme-pill-bg:      rgba(212,172,110,0.15);
   --report-theme-pill-text:    #8B6820;
   --report-theme-pill-border:  rgba(212,172,110,0.5);
