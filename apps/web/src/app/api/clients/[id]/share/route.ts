@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { randomUUID } from 'crypto'
 
 export async function POST(
   _req: Request,
@@ -20,11 +21,12 @@ export async function POST(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  // Set shareToken to a revoked marker (prefixed with 'revoked_')
+  const newToken = randomUUID()
+
   await prisma.client.update({
     where: { id: params.id },
-    data: { shareToken: `revoked_${Date.now()}` },
+    data: { shareToken: newToken },
   })
 
-  return NextResponse.json({ success: true, revoked: true })
+  return NextResponse.json({ success: true, shareToken: newToken })
 }

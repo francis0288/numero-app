@@ -66,6 +66,8 @@ export default function ReadingPage(): React.ReactElement {
   const [isSaving, setIsSaving] = useState(false)
   const [shareToken, setShareToken] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [isRevoked, setIsRevoked] = useState(false)
+  const [showRevokeConfirm, setShowRevokeConfirm] = useState(false)
   const [displayLanguage, setDisplayLanguage] = useState('vi')
   const [isTranslating, setIsTranslating] = useState(false)
 
@@ -218,6 +220,32 @@ export default function ReadingPage(): React.ReactElement {
     await navigator.clipboard.writeText(link)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleRevoke = async () => {
+    try {
+      const res = await fetch(`/api/clients/${id}/revoke`, { method: 'POST' })
+      if (res.ok) {
+        setShareToken(null)
+        setIsRevoked(true)
+        setShowRevokeConfirm(false)
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleRegenerateLink = async () => {
+    try {
+      const res = await fetch(`/api/clients/${id}/share`, { method: 'POST' })
+      if (res.ok) {
+        const data = await res.json() as { shareToken: string }
+        setShareToken(data.shareToken)
+        setIsRevoked(false)
+      }
+    } catch {
+      // ignore
+    }
   }
 
   const handleTranslate = async (targetLang: string) => {
@@ -558,7 +586,7 @@ export default function ReadingPage(): React.ReactElement {
         )}
 
         {/* Share panel — shown after finalising */}
-        {status === 'finalised' && shareToken && (
+        {status === 'finalised' && shareToken && !isRevoked && (
           <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mt-6">
             <p className="text-green-700 font-medium mb-3">✓ Đã hoàn tất bản đọc</p>
             <div
@@ -569,7 +597,7 @@ export default function ReadingPage(): React.ReactElement {
                 ? `${window.location.origin}/report/${shareToken}`
                 : `/report/${shareToken}`}
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <button
                 type="button"
                 onClick={() => void handleCopyLink()}
@@ -586,7 +614,55 @@ export default function ReadingPage(): React.ReactElement {
               >
                 Xem báo cáo
               </button>
+              <button
+                type="button"
+                onClick={() => setShowRevokeConfirm(true)}
+                className="text-red-500 border border-red-300 bg-transparent rounded-lg px-4 py-2 text-sm hover:bg-red-50 ml-auto"
+              >
+                🔒 Thu hồi liên kết
+              </button>
             </div>
+
+            {/* Revoke confirmation dialog */}
+            {showRevokeConfirm && (
+              <div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-red-600 text-sm font-medium mb-1">Bạn có chắc muốn thu hồi liên kết này không?</p>
+                <p className="text-red-400 text-xs mb-3">Liên kết hiện tại sẽ ngừng hoạt động ngay lập tức. Khách hàng sẽ không thể xem báo cáo nữa.</p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowRevokeConfirm(false)}
+                    className="border rounded-lg px-4 py-2 text-sm"
+                    style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleRevoke()}
+                    className="bg-red-500 text-white rounded-lg px-4 py-2 text-sm font-medium"
+                  >
+                    Thu hồi
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Revoked state */}
+        {status === 'finalised' && isRevoked && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6">
+            <p className="text-red-600 font-medium mb-1">🔒 Liên kết đã bị thu hồi</p>
+            <p className="text-red-400 text-sm mb-4">Khách hàng không thể truy cập báo cáo. Tạo liên kết mới để chia sẻ lại.</p>
+            <button
+              type="button"
+              onClick={() => void handleRegenerateLink()}
+              className="text-white rounded-xl px-5 py-2.5 text-sm font-medium transition-colors"
+              style={{ backgroundColor: 'var(--gold-main)' }}
+            >
+              Tạo liên kết mới
+            </button>
           </div>
         )}
       </main>

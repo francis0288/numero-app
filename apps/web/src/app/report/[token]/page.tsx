@@ -16,12 +16,12 @@ function reduceDigit(n: number): number {
   return n
 }
 
-const ErrorPage = ({ msg, sub }: { msg: string; sub: string }) => (
+const ErrorPage = ({ msg, sub, icon }: { msg: string; sub: string; icon?: string }) => (
   <div style={{ minHeight: '100vh', backgroundColor: 'var(--report-section-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <div style={{ textAlign: 'center', padding: 32 }}>
-      <div style={{ fontSize: 56, marginBottom: 24 }}>✨</div>
+    <div style={{ textAlign: 'center', padding: 32, maxWidth: 400 }}>
+      <div style={{ fontSize: 56, marginBottom: 24 }}>{icon ?? '✨'}</div>
       <h2 style={{ color: 'var(--gold-main)', fontSize: 20, fontWeight: 500, marginBottom: 12 }}>{msg}</h2>
-      <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>{sub}</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.6 }}>{sub}</p>
     </div>
   </div>
 )
@@ -32,7 +32,7 @@ export default async function ReportPage({ params }: { params: { token: string }
     include: { user: true },
   })
 
-  if (!client) return <ErrorPage msg="Không tìm thấy báo cáo" sub="Liên kết này không hợp lệ hoặc đã bị xóa." />
+  if (!client) return <ErrorPage icon="🔒" msg="Liên kết không khả dụng" sub="Liên kết này đã bị thu hồi hoặc không tồn tại. Vui lòng liên hệ chuyên gia của bạn để nhận liên kết mới." />
 
   const reading = await prisma.reading.findFirst({
     where: { clientId: client.id, status: 'finalised' },
