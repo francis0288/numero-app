@@ -16,7 +16,7 @@ import { NavBar } from '@/components/NavBar'
 import { BottomNav } from '@/components/BottomNav'
 import { ShareSection } from '@/components/ShareSection'
 import { DeleteClientButton } from '@/components/DeleteClientButton'
-import { formatDateShortVI, formatDateVI } from '@/lib/formatDate'
+import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 

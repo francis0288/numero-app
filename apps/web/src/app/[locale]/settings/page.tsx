@@ -69,6 +69,7 @@ function ChevronRight({ danger = false }) {
   )
 }
 
+// eslint-disable-next-line no-unused-vars
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
