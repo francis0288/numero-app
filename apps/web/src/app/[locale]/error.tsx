@@ -8,17 +8,29 @@ export default function Error({
   reset: () => void
 }) {
   return (
-    <div className="min-h-screen bg-[#FDF6EC] flex items-center justify-center">
-      <div className="text-center p-8">
-        <h2 className="text-xl font-medium text-[#2C2C2C] mb-4">
-          Something went wrong
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', padding: '32px 24px' }}>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 12px' }}>
+          Có lỗi xảy ra
         </h2>
-        <p className="text-sm text-[#888888] mb-6">{error.message}</p>
+        <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 24px', fontFamily: 'var(--font-ui)' }}>
+          {error.message}
+        </p>
         <button
           onClick={reset}
-          className="bg-[#7B5EA7] text-white rounded-xl px-6 py-3"
+          style={{
+            backgroundColor: 'var(--color-gold)',
+            color: 'white',
+            borderRadius: 12,
+            padding: '12px 24px',
+            fontSize: 14,
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+          }}
         >
-          Try again
+          Thử lại
         </button>
       </div>
     </div>

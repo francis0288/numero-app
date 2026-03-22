@@ -2,5 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-gold:        #C4922A;
+  --color-gold-light:  #FAF0DC;
+  --color-dark:        #1C1A14;
+  --color-base:        #FAF8F3;
+  --color-white:       #FFFFFF;
+  --color-mid:         #7A7568;
+  --color-border:      #E8E4DC;
+  --color-danger:      #A32D2D;
+  --color-purple:      #534AB7;
+  --color-green:       #0F6E56;
+  --color-coral:       #993C1D;
+
+  --font-number: Georgia, serif;
+  --font-ui:     -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+  --radius-card:    16px;
+  --radius-sm:      12px;
+  --radius-pill:    20px;
+  --screen-pad:     16px;
+  --card-gap:       10px;
+}
+
+html, body {
+  background-color: var(--color-base);
+  font-family: var(--font-ui);
+  color: var(--color-dark);
+}
+
 .eng-sub { display: none; }
 .show-eng .eng-sub { display: block; }
+
+/* Hide scrollbar for month strip */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

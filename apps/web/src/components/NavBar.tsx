@@ -10,7 +10,6 @@ interface NavBarProps {
 export function NavBar({ locale }: NavBarProps): React.ReactElement {
   const router = useRouter()
   const pathname = usePathname()
-
   const isVietnamese = locale === 'vi'
 
   const toggleLocale = () => {
@@ -18,32 +17,62 @@ export function NavBar({ locale }: NavBarProps): React.ReactElement {
   }
 
   return (
-    <nav className="bg-white border-b border-[#E8E0F0] px-6 py-3 flex items-center justify-between">
+    <nav style={{
+      backgroundColor: 'var(--color-base)',
+      borderBottom: '0.5px solid rgba(28,26,20,0.10)',
+      padding: '0 20px',
+      height: 52,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      position: 'sticky',
+      top: 0,
+      zIndex: 40,
+    }}>
       <a
         href={locale === 'en' ? '/dashboard' : `/${locale}/dashboard`}
-        className="text-[#7B5EA7] font-medium text-lg tracking-tight"
+        style={{
+          fontFamily: 'Georgia, serif',
+          fontSize: 17,
+          fontWeight: 400,
+          color: 'var(--color-dark)',
+          textDecoration: 'none',
+          letterSpacing: '-0.01em',
+        }}
       >
         NumeroApp
       </a>
 
-      <div className="flex items-center gap-3">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <a
           href={locale === 'en' ? '/settings' : `/${locale}/settings`}
-          className="text-[#888888] hover:text-[#7B5EA7] transition-colors text-lg leading-none"
-          title="Settings"
+          style={{
+            color: 'var(--color-mid)',
+            fontSize: 18,
+            lineHeight: 1,
+            textDecoration: 'none',
+          }}
+          title="Cài đặt"
         >
           ⚙
         </a>
-        <div className="w-px h-4 bg-[#E8E0F0]" />
+        <div style={{ width: 1, height: 16, backgroundColor: 'var(--color-border)' }} />
         <button
           onClick={toggleLocale}
-          className={
-            isVietnamese
-              ? 'border border-[#E8E0F0] text-[#888888] rounded-full px-4 py-1.5 text-sm hover:border-[#7B5EA7] hover:text-[#7B5EA7] transition-colors'
-              : 'bg-[#7B5EA7] text-white rounded-full px-4 py-1.5 text-sm transition-colors'
-          }
+          style={{
+            border: `1px solid ${isVietnamese ? 'var(--color-border)' : 'var(--color-gold)'}`,
+            color: isVietnamese ? 'var(--color-mid)' : 'var(--color-gold)',
+            backgroundColor: 'transparent',
+            borderRadius: 20,
+            padding: '5px 14px',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+          }}
         >
-          {isVietnamese ? '🌐 ENG' : '🌐 TIẾNG VIỆT'}
+          {isVietnamese ? 'ENG' : 'VIỆT'}
         </button>
       </div>
     </nav>

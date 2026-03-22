@@ -1,10 +1,25 @@
 'use client'
 
 import React, { useState } from 'react'
+import { formatDateShortVI } from '@/lib/formatDate'
 
-const LANG_LABELS: Record<string, string> = { en: 'EN', vi: 'Việt' }
+const AVATAR_COLORS = [
+  { bg: 'rgba(196,146,42,0.12)',  text: '#B8892A' },
+  { bg: 'rgba(83,74,183,0.10)',   text: '#534AB7' },
+  { bg: 'rgba(15,110,86,0.10)',   text: '#0F6E56' },
+  { bg: 'rgba(153,60,29,0.10)',   text: '#993C1D' },
+  { bg: 'rgba(136,135,128,0.12)', text: '#444441' },
+]
 
-interface Client {
+const BADGE_COLORS = [
+  { bg: 'rgba(196,146,42,0.12)',  text: '#B8892A' },
+  { bg: 'rgba(83,74,183,0.10)',   text: '#534AB7' },
+  { bg: 'rgba(15,110,86,0.10)',   text: '#0F6E56' },
+  { bg: 'rgba(153,60,29,0.10)',   text: '#993C1D' },
+  { bg: 'rgba(136,135,128,0.12)', text: '#444441' },
+]
+
+interface EnrichedClient {
   id: string
   firstName: string
   middleName: string | null
@@ -12,55 +27,55 @@ interface Client {
   dateOfBirth: Date | string
   preferredLanguage: string
   _count: { readings: number }
+  lifePathDisplay: string
+  destinyDisplay: string
+  personalYearDisplay: string
+  personalYearValue: number
+  colorIndex: number
 }
 
-function formatDate(d: Date | string) {
-  return new Date(d).toLocaleDateString('vi-VN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+function getDisplayName(c: { firstName: string; middleName?: string | null; lastName?: string | null }) {
+  return [c.lastName, c.middleName, c.firstName].filter(Boolean).join(' ')
 }
 
-function getDisplayName(client: { firstName: string; middleName?: string | null; lastName?: string | null }): string {
-  return [client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')
+function getInitials(c: { firstName: string; lastName?: string | null }) {
+  const first = c.lastName?.[0] ?? c.firstName[0] ?? ''
+  return first.toUpperCase()
 }
 
-function initials(client: { firstName: string; middleName?: string | null; lastName?: string | null }) {
-  return (getDisplayName(client)[0] ?? '').toUpperCase()
-}
-
-function TrashIcon() {
-  return (
-    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-    </svg>
-  )
-}
+type FilterKey = 'all' | 'recent'
 
 export function ClientList({
   clients,
   locale,
+  newClientPath,
 }: {
-  clients: Client[]
+  clients: EnrichedClient[]
   locale: string
+  newClientPath: string
 }): React.ReactElement {
   const [search, setSearch] = useState('')
-  const [clientList, setClientList] = useState<Client[]>(clients)
+  const [showSearch, setShowSearch] = useState(false)
+  const [clientList, setClientList] = useState<EnrichedClient[]>(clients)
+  const [filter, setFilter] = useState<FilterKey>('all')
   const [pendingDelete, setPendingDelete] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [toast, setToast] = useState('')
 
+  const now = Date.now()
+  const RECENT_MS = 30 * 24 * 60 * 60 * 1000
+
   const filtered = clientList.filter((c) => {
-    const q = search.toLowerCase()
-    return getDisplayName(c).toLowerCase().includes(q)
+    const matchSearch = !search || getDisplayName(c).toLowerCase().includes(search.toLowerCase())
+    const matchFilter =
+      filter === 'all' ? true :
+      filter === 'recent' ? (now - new Date(c.dateOfBirth).getTime()) < RECENT_MS * 12 :
+      true
+    return matchSearch && matchFilter
   })
 
   const profilePath = (id: string) =>
     locale === 'en' ? `/clients/${id}/profile` : `/${locale}/clients/${id}/profile`
-
-  const newClientPath = locale === 'en' ? '/clients/new' : `/${locale}/clients/new`
 
   const handleDelete = async (id: string) => {
     setDeleting(id)
@@ -79,42 +94,85 @@ export function ClientList({
     }
   }
 
+  const pillStyle = (active: boolean) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '5px 14px',
+    borderRadius: 20,
+    fontSize: 12,
+    fontWeight: 500,
+    cursor: 'pointer',
+    border: active ? 'none' : '0.5px solid var(--color-border)',
+    backgroundColor: active ? 'var(--color-dark)' : 'var(--color-white)',
+    color: active ? 'var(--color-base)' : 'var(--color-mid)',
+    flexShrink: 0,
+  } as React.CSSProperties)
+
   return (
     <>
       {/* Toast */}
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#2C2C2C] text-white text-sm rounded-xl px-5 py-3 shadow-lg">
+        <div style={{
+          position: 'fixed', top: 16, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 99, backgroundColor: 'var(--color-dark)', color: 'var(--color-base)',
+          fontSize: 13, borderRadius: 12, padding: '10px 20px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+        }}>
           ✓ {toast}
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative mb-4">
-        <svg
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#888888]"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-        </svg>
-        <input
-          type="search"
-          placeholder="Tìm kiếm..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-[#E8E0F0] rounded-xl pl-10 pr-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#7B5EA7] text-sm text-[#2C2C2C]"
-        />
+      {/* Search bar (expanded) */}
+      {showSearch && (
+        <div style={{ padding: '0 16px 12px' }}>
+          <input
+            autoFocus
+            type="search"
+            placeholder="Tìm kiếm khách hàng..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onBlur={() => { if (!search) setShowSearch(false) }}
+            style={{
+              width: '100%',
+              border: '0.5px solid var(--color-border)',
+              borderRadius: 12,
+              padding: '10px 14px',
+              backgroundColor: 'var(--color-white)',
+              fontSize: 14,
+              color: 'var(--color-dark)',
+              outline: 'none',
+              boxSizing: 'border-box',
+              fontFamily: 'var(--font-ui)',
+            }}
+          />
+        </div>
+      )}
+
+      {/* Filter pills */}
+      <div style={{
+        display: 'flex',
+        gap: 6,
+        padding: '0 16px 14px',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+      }}
+        className="hide-scrollbar"
+      >
+        <button onClick={() => setFilter('all')} style={pillStyle(filter === 'all')}>Tất Cả</button>
+        <button onClick={() => setFilter('recent')} style={pillStyle(filter === 'recent')}>Gần Đây</button>
       </div>
 
       {/* Empty state */}
       {clientList.length === 0 && (
-        <div className="text-center py-20">
-          <div className="text-4xl mb-4">✨</div>
-          <p className="text-lg font-medium text-[#2C2C2C] mb-1">Chưa có khách hàng</p>
-          <p className="text-[#888888] text-sm mb-6">Thêm khách hàng đầu tiên để bắt đầu</p>
+        <div style={{ textAlign: 'center', padding: '60px 16px' }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>✨</div>
+          <p style={{ fontSize: 16, fontWeight: 500, color: 'var(--color-dark)', margin: '0 0 6px' }}>Chưa có khách hàng</p>
+          <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 24px' }}>Thêm khách hàng đầu tiên để bắt đầu</p>
           <a
             href={newClientPath}
-            className="inline-block bg-[#7B5EA7] text-white rounded-xl px-6 py-3 text-sm font-medium hover:bg-[#6A4F96] transition-colors"
+            style={{
+              display: 'inline-block', backgroundColor: 'var(--color-gold)', color: 'white',
+              borderRadius: 12, padding: '10px 24px', fontSize: 14, fontWeight: 500, textDecoration: 'none',
+            }}
           >
             + Thêm khách hàng mới
           </a>
@@ -122,78 +180,110 @@ export function ClientList({
       )}
 
       {clientList.length > 0 && filtered.length === 0 && (
-        <p className="text-center text-[#888888] py-12 text-sm">Không tìm thấy &ldquo;{search}&rdquo;</p>
+        <p style={{ textAlign: 'center', color: 'var(--color-mid)', padding: '40px 16px', fontSize: 13 }}>
+          Không tìm thấy &ldquo;{search}&rdquo;
+        </p>
       )}
 
-      <div className="space-y-3">
-        {filtered.map((client) => (
-          <div key={client.id}>
-            {/* Confirmation bar */}
-            {pendingDelete === client.id && (
-              <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-1 flex items-center justify-between gap-4">
-                <p className="text-sm text-red-700">
-                  Bạn có chắc muốn xóa hồ sơ của <strong>{getDisplayName(client)}</strong>? Tất cả bài đọc sẽ bị xóa vĩnh viễn.
-                </p>
-                <div className="flex gap-2 shrink-0">
-                  <button
-                    onClick={() => setPendingDelete(null)}
-                    className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-3 py-1.5 text-sm hover:border-[#7B5EA7] transition-colors"
-                  >
-                    Hủy
-                  </button>
-                  <button
-                    onClick={() => void handleDelete(client.id)}
-                    disabled={deleting === client.id}
-                    className="bg-red-500 text-white rounded-lg px-3 py-1.5 text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
-                  >
-                    {deleting === client.id ? 'Đang xóa…' : 'Xóa'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Client card */}
-            <div className="flex items-center gap-4 bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-5 hover:shadow-md transition-shadow group">
-              <a href={profilePath(client.id)} className="flex items-center gap-4 flex-1 min-w-0">
-                {/* Avatar */}
-                <div className="w-11 h-11 rounded-full bg-[#F5F0FB] flex items-center justify-center text-[#7B5EA7] font-medium text-sm shrink-0">
-                  {initials(client)}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-medium text-[#2C2C2C]">{getDisplayName(client)}</span>
-                    <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs rounded-full px-2 py-0.5 font-medium">
-                      {LANG_LABELS[client.preferredLanguage] ?? client.preferredLanguage}
-                    </span>
-                  </div>
-                  <p className="text-sm text-[#888888]">{formatDate(client.dateOfBirth)}</p>
-                  <p className="text-xs text-[#888888] mt-0.5">
-                    {client._count.readings === 0
-                      ? 'Chưa có bài đọc'
-                      : `${client._count.readings} bài đọc`}
+      {/* Client cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '0 16px' }}>
+        {filtered.map((client) => {
+          const av = AVATAR_COLORS[client.colorIndex]
+          const bd = BADGE_COLORS[client.colorIndex]
+          return (
+            <div key={client.id}>
+              {/* Delete confirm */}
+              {pendingDelete === client.id && (
+                <div style={{
+                  backgroundColor: '#FFF0F0', border: '1px solid #FCCACA', borderRadius: 14,
+                  padding: '12px 16px', marginBottom: 6, display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', gap: 12,
+                }}>
+                  <p style={{ fontSize: 13, color: 'var(--color-danger)', margin: 0, flex: 1 }}>
+                    Xóa hồ sơ <strong>{getDisplayName(client)}</strong>? Thao tác này không thể hoàn tác.
                   </p>
+                  <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                    <button
+                      onClick={() => setPendingDelete(null)}
+                      style={{ border: '0.5px solid var(--color-border)', backgroundColor: 'white', color: 'var(--color-dark)', borderRadius: 10, padding: '6px 14px', fontSize: 13, cursor: 'pointer' }}
+                    >
+                      Hủy
+                    </button>
+                    <button
+                      onClick={() => void handleDelete(client.id)}
+                      disabled={deleting === client.id}
+                      style={{ backgroundColor: 'var(--color-danger)', color: 'white', border: 'none', borderRadius: 10, padding: '6px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', opacity: deleting === client.id ? 0.6 : 1 }}
+                    >
+                      {deleting === client.id ? '…' : 'Xóa'}
+                    </button>
+                  </div>
                 </div>
+              )}
 
-                {/* Arrow */}
-                <svg className="w-5 h-5 text-[#888888] group-hover:text-[#7B5EA7] transition-colors shrink-0"
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
+              {/* Card */}
+              <div style={{
+                backgroundColor: 'var(--color-white)',
+                borderRadius: 16,
+                padding: 14,
+                border: '0.5px solid var(--color-border)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+              }}>
+                <a href={profilePath(client.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, textDecoration: 'none' }}>
+                  {/* Avatar */}
+                  <div style={{
+                    width: 42, height: 42, borderRadius: '50%', flexShrink: 0,
+                    backgroundColor: av.bg, color: av.text,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'Georgia, serif', fontSize: 16, fontWeight: 500,
+                  }}>
+                    {getInitials(client)}
+                  </div>
 
-              {/* Delete button */}
-              <button
-                onClick={(e) => { e.preventDefault(); setPendingDelete(client.id) }}
-                className="text-[#888888] hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50 shrink-0"
-                title="Xóa hồ sơ"
-              >
-                <TrashIcon />
-              </button>
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                      <span style={{
+                        fontFamily: 'Georgia, serif', fontSize: 14, fontWeight: 500,
+                        color: 'var(--color-dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>
+                        {getDisplayName(client)}
+                      </span>
+                      {/* Year badge */}
+                      <span style={{
+                        flexShrink: 0, fontSize: 9, fontWeight: 700,
+                        backgroundColor: bd.bg, color: bd.text,
+                        borderRadius: 10, padding: '3px 8px', letterSpacing: '0.02em',
+                      }}>
+                        Năm {client.personalYearDisplay}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, fontFamily: 'var(--font-ui)' }}>
+                      {formatDateShortVI(client.dateOfBirth)} · Đường Đời {client.lifePathDisplay} · Vận Mệnh {client.destinyDisplay}
+                    </p>
+                  </div>
+
+                  {/* Chevron */}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-dark)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3, flexShrink: 0 }}>
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </a>
+
+                {/* Delete button */}
+                <button
+                  onClick={(e) => { e.preventDefault(); setPendingDelete(client.id) }}
+                  style={{ color: 'var(--color-mid)', background: 'none', border: 'none', padding: 6, cursor: 'pointer', borderRadius: 8, flexShrink: 0 }}
+                  title="Xóa hồ sơ"
+                >
+                  <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </>
   )

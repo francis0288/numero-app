@@ -19,7 +19,7 @@ export function ShareSection({ shareUrl: initialUrl, clientId }: ShareSectionPro
   }
 
   const handleRevoke = async () => {
-    if (!window.confirm('Are you sure? The current link will stop working immediately.')) return
+    if (!window.confirm('Xác nhận thu hồi? Liên kết hiện tại sẽ ngừng hoạt động ngay.')) return
     const res = await fetch(`/api/clients/${clientId}/revoke`, { method: 'POST' })
     if (res.ok) {
       const data = await res.json() as { shareToken: string }
@@ -31,37 +31,84 @@ export function ShareSection({ shareUrl: initialUrl, clientId }: ShareSectionPro
   const reportPath = shareUrl.replace(/^https?:\/\/[^/]+/, '')
 
   return (
-    <div className="bg-[#F5F0FB] rounded-2xl p-5">
-      <h2 className="text-[#7B5EA7] font-medium mb-3">Share report</h2>
+    <div style={{
+      backgroundColor: 'rgba(196,146,42,0.06)',
+      border: '0.5px solid rgba(196,146,42,0.2)',
+      borderRadius: 16,
+      padding: '16px',
+    }}>
+      <h2 style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-gold)', margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'var(--font-ui)' }}>
+        Chia sẻ báo cáo
+      </h2>
 
-      <div className="bg-white border border-[#E8E0F0] rounded-xl px-4 py-3 font-mono text-sm text-[#888888] truncate mb-3">
+      <div style={{
+        backgroundColor: 'var(--color-white)',
+        border: '0.5px solid var(--color-border)',
+        borderRadius: 10,
+        padding: '10px 12px',
+        fontFamily: 'monospace',
+        fontSize: 11,
+        color: 'var(--color-mid)',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        marginBottom: 12,
+      }}>
         {shareUrl}
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <button
           type="button"
           onClick={() => void handleCopy()}
-          className="bg-[#7B5EA7] text-white rounded-xl px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
+          style={{
+            backgroundColor: 'var(--color-gold)',
+            color: 'white',
+            borderRadius: 10,
+            padding: '8px 16px',
+            fontSize: 13,
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+          }}
         >
-          {copied ? '✓ Copied!' : 'Copy link'}
+          {copied ? '✓ Đã sao chép' : 'Sao chép liên kết'}
         </button>
 
         <a
           href={reportPath}
           target="_blank"
           rel="noopener noreferrer"
-          className="border border-[#E8E0F0] text-[#7B5EA7] rounded-xl px-4 py-2 text-sm hover:bg-white transition-colors"
+          style={{
+            border: '0.5px solid var(--color-border)',
+            color: 'var(--color-dark)',
+            borderRadius: 10,
+            padding: '8px 16px',
+            fontSize: 13,
+            textDecoration: 'none',
+            fontFamily: 'var(--font-ui)',
+          }}
         >
-          View client report →
+          Xem báo cáo →
         </a>
 
         <button
           type="button"
           onClick={() => void handleRevoke()}
-          className="text-red-500 text-sm border border-red-200 rounded-lg px-3 py-1.5 hover:bg-red-50 transition-colors ml-auto"
+          style={{
+            color: 'var(--color-danger)',
+            fontSize: 12,
+            border: '0.5px solid rgba(163,45,45,0.3)',
+            borderRadius: 8,
+            padding: '6px 12px',
+            background: 'none',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+            marginLeft: 'auto',
+          }}
         >
-          Revoke link
+          Thu hồi liên kết
         </button>
       </div>
     </div>

@@ -1,10 +1,16 @@
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#FDF6EC] flex items-center justify-center">
-      <div className="text-center p-8">
-        <h2 className="text-xl font-medium text-[#2C2C2C] mb-4">
-          Page not found
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', padding: '32px 24px' }}>
+        <p style={{ fontFamily: 'Georgia, serif', fontSize: 48, fontWeight: 300, color: 'var(--color-gold)', margin: '0 0 16px', lineHeight: 1 }}>
+          404
+        </p>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 8px' }}>
+          Không tìm thấy trang
         </h2>
+        <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: 0, fontFamily: 'var(--font-ui)' }}>
+          Trang bạn tìm kiếm không tồn tại.
+        </p>
       </div>
     </div>
   )

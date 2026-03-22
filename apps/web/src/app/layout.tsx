@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }): React.ReactElement {
   return (
     <html lang="en">
-      <body className={`${notoSans.className} bg-[#FDF6EC]`}>
+      <body className={notoSans.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

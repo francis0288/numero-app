@@ -5,9 +5,6 @@ import { useRouter } from '@/navigation'
 import { useParams } from 'next/navigation'
 import { NavBar } from '@/components/NavBar'
 
-const inputClass =
-  'w-full border border-[#E8E0F0] rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#7B5EA7] text-[#2C2C2C] text-sm'
-
 function stripVi(name: string): string {
   const map: Record<string, string> = {
     à:'a',á:'a',â:'a',ã:'a',ă:'a',ạ:'a',ả:'a',ấ:'a',ầ:'a',ẩ:'a',ẫ:'a',ậ:'a',ắ:'a',ằ:'a',ẳ:'a',ẵ:'a',ặ:'a',
@@ -26,12 +23,25 @@ function stripVi(name: string): string {
   }).join('').toUpperCase().replace(/[^A-Z\s]/g, '').replace(/\s+/g, ' ').trim()
 }
 
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  border: '0.5px solid var(--color-border)',
+  borderRadius: 12,
+  padding: '12px 14px',
+  backgroundColor: 'var(--color-white)',
+  fontSize: 14,
+  color: 'var(--color-dark)',
+  outline: 'none',
+  boxSizing: 'border-box',
+  fontFamily: 'var(--font-ui)',
+  appearance: 'none',
+}
+
 export default function EditClientPage() {
   const params = useParams()
   const id = params.id as string
   const locale = (params.locale as string) ?? 'vi'
   const router = useRouter()
-  const isVi = locale === 'vi'
 
   const [ho, setHo] = useState('')
   const [tenDem, setTenDem] = useState('')
@@ -90,13 +100,13 @@ export default function EditClientPage() {
       })
       if (!res.ok) {
         const err = await res.json() as { error?: string }
-        setServerError(err.error ?? (isVi ? 'Có lỗi xảy ra' : 'Something went wrong'))
+        setServerError(err.error ?? 'Có lỗi xảy ra')
         setSubmitting(false)
         return
       }
       router.push(`/clients/${id}/profile`)
     } catch {
-      setServerError(isVi ? 'Lỗi kết nối — vui lòng thử lại' : 'Network error — please try again')
+      setServerError('Lỗi kết nối — vui lòng thử lại')
       setSubmitting(false)
     }
   }
@@ -105,118 +115,109 @@ export default function EditClientPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDF6EC]">
+      <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>
         <NavBar locale={locale} />
-        <main className="max-w-[640px] mx-auto px-4 py-8">
-          <div className="text-[#888888] text-sm">{isVi ? 'Đang tải…' : 'Loading…'}</div>
+        <main style={{ maxWidth: 480, margin: '0 auto', padding: '40px 16px' }}>
+          <p style={{ fontSize: 13, color: 'var(--color-mid)', fontFamily: 'var(--font-ui)' }}>Đang tải…</p>
         </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>
       <NavBar locale={locale} />
-      <main className="max-w-[640px] mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium text-[#2C2C2C]">Chỉnh Sửa Hồ Sơ</h1>
-          <p className="text-[#888888] text-sm mt-1">Cập nhật thông tin khách hàng.</p>
+      <main style={{ maxWidth: 480, margin: '0 auto', padding: '0 0 60px' }}>
+
+        {/* Header */}
+        <div style={{ padding: '20px 16px 16px' }}>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 19, fontWeight: 400, color: 'var(--color-dark)', margin: 0, lineHeight: 1.2 }}>
+            Chỉnh Sửa Hồ Sơ
+          </h1>
+          <p style={{ fontSize: 12, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>
+            Cập nhật thông tin khách hàng
+          </p>
         </div>
 
-        <form onSubmit={(e) => void onSubmit(e)} noValidate className="space-y-5">
+        <form onSubmit={(e) => void onSubmit(e)} noValidate style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
           {/* Họ */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              Họ<span className="text-red-500 ml-0.5">*</span>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
+              Họ <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <input
-              type="text"
-              value={ho}
-              onChange={(e) => setHo(e.target.value)}
-              placeholder="Lê"
-              className={inputClass}
-            />
-            <p className="text-xs text-[#888888] mt-1">Tên họ — VD: Lê, Nguyễn, Trần</p>
-            {strippedHo && (
-              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedHo}</p>
-            )}
+            <input type="text" value={ho} onChange={(e) => setHo(e.target.value)} placeholder="Lê" style={inputStyle} />
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>Tên họ — VD: Lê, Nguyễn, Trần</p>
+            {strippedHo && <p style={{ fontSize: 11, color: 'var(--color-gold)', margin: '2px 0 0', fontFamily: 'monospace' }}>{strippedHo}</p>}
           </div>
 
           {/* Tên đệm */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
               Tên đệm
             </label>
-            <input
-              type="text"
-              value={tenDem}
-              onChange={(e) => setTenDem(e.target.value)}
-              placeholder="Thị"
-              className={inputClass}
-            />
-            <p className="text-xs text-[#888888] mt-1">Tên đệm nếu có — VD: Thị, Văn, Minh</p>
-            {strippedTenDem && (
-              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTenDem}</p>
-            )}
+            <input type="text" value={tenDem} onChange={(e) => setTenDem(e.target.value)} placeholder="Thị" style={inputStyle} />
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>Tên đệm nếu có — VD: Thị, Văn, Minh</p>
+            {strippedTenDem && <p style={{ fontSize: 11, color: 'var(--color-gold)', margin: '2px 0 0', fontFamily: 'monospace' }}>{strippedTenDem}</p>}
           </div>
 
           {/* Tên */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              Tên<span className="text-red-500 ml-0.5">*</span>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
+              Tên <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <input
-              type="text"
-              value={ten}
-              onChange={(e) => setTen(e.target.value)}
-              placeholder="Thanh Tình"
-              className={inputClass}
-            />
-            <p className="text-xs text-[#888888] mt-1">Tên gọi — VD: Thanh Tình, Hùng, Lan</p>
-            {strippedTen && (
-              <p className="font-mono text-xs text-[#7B5EA7] mt-0.5">{strippedTen}</p>
-            )}
+            <input type="text" value={ten} onChange={(e) => setTen(e.target.value)} placeholder="Thanh Tình" style={inputStyle} />
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>Tên gọi — VD: Thanh Tình, Hùng, Lan</p>
+            {strippedTen && <p style={{ fontSize: 11, color: 'var(--color-gold)', margin: '2px 0 0', fontFamily: 'monospace' }}>{strippedTen}</p>}
           </div>
 
           {/* Combined preview */}
           {combinedPreview && (
-            <div>
-              <p className="text-xs text-[#888888] mb-1">Tên đầy đủ để tính số:</p>
-              <div className="font-mono text-xs text-[#7B5EA7] bg-[#F5F0FB] rounded p-2 mt-1">
+            <div style={{
+              backgroundColor: 'rgba(196,146,42,0.08)',
+              border: '0.5px solid rgba(196,146,42,0.3)',
+              borderRadius: 12,
+              padding: '10px 14px',
+            }}>
+              <p style={{ fontSize: 10, color: 'var(--color-gold)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'var(--font-ui)', fontWeight: 600 }}>
+                Tên đầy đủ để tính số
+              </p>
+              <p style={{ fontSize: 12, color: 'var(--color-dark)', margin: 0, fontFamily: 'monospace', letterSpacing: '0.02em' }}>
                 {combinedPreview}
-              </div>
+              </p>
             </div>
           )}
 
-          {/* Date of birth */}
+          {/* Ngày sinh */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
-              Ngày sinh<span className="text-red-500 ml-0.5">*</span>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
+              Ngày sinh <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <input
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-              className={inputClass}
-            />
+            <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} style={inputStyle} />
           </div>
 
-          {/* Preferred language */}
+          {/* Ngôn ngữ */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
               Ngôn ngữ báo cáo
             </label>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: 8 }}>
               {(['vi', 'en'] as const).map((lang) => (
                 <button
                   key={lang}
                   type="button"
                   onClick={() => setPreferredLanguage(lang)}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    preferredLanguage === lang
-                      ? 'bg-[#7B5EA7] text-white'
-                      : 'border border-[#E8E0F0] text-[#888888] hover:border-[#7B5EA7] hover:text-[#7B5EA7]'
-                  }`}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: 12,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-ui)',
+                    border: preferredLanguage === lang ? 'none' : '0.5px solid var(--color-border)',
+                    backgroundColor: preferredLanguage === lang ? 'var(--color-gold)' : 'var(--color-white)',
+                    color: preferredLanguage === lang ? 'white' : 'var(--color-mid)',
+                  }}
                 >
                   {lang === 'vi' ? 'Tiếng Việt' : 'Tiếng Anh'}
                 </button>
@@ -224,9 +225,9 @@ export default function EditClientPage() {
             </div>
           </div>
 
-          {/* Notes */}
+          {/* Ghi chú */}
           <div>
-            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
               Ghi chú (tùy chọn)
             </label>
             <textarea
@@ -234,27 +235,59 @@ export default function EditClientPage() {
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
               placeholder="Ghi chú buổi làm việc hôm nay..."
-              className={`${inputClass} resize-none`}
+              style={{ ...inputStyle, resize: 'none' }}
             />
           </div>
 
           {serverError && (
-            <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm">
+            <div style={{
+              backgroundColor: 'rgba(163,45,45,0.06)',
+              border: '0.5px solid rgba(163,45,45,0.3)',
+              borderRadius: 12,
+              padding: '12px 14px',
+              fontSize: 13,
+              color: 'var(--color-danger)',
+            }}>
               {serverError}
             </div>
           )}
 
-          <div className="pt-2 space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: 4 }}>
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-[#7B5EA7] text-white rounded-xl px-6 py-3 font-medium hover:bg-[#6A4F96] transition-colors disabled:opacity-60"
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--color-gold)',
+                color: 'white',
+                borderRadius: 14,
+                padding: '14px 24px',
+                fontSize: 15,
+                fontWeight: 500,
+                fontFamily: 'var(--font-ui)',
+                border: 'none',
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                opacity: submitting ? 0.6 : 1,
+              }}
             >
               {submitting ? 'Đang lưu…' : 'Lưu thay đổi'}
             </button>
             <a
               href={profilePath}
-              className="block w-full text-center border border-[#7B5EA7] text-[#7B5EA7] rounded-xl px-6 py-3 text-sm font-medium hover:bg-[#F5F0FB] transition-colors"
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'center',
+                border: '0.5px solid var(--color-border)',
+                color: 'var(--color-mid)',
+                borderRadius: 14,
+                padding: '14px 24px',
+                fontSize: 14,
+                fontWeight: 500,
+                fontFamily: 'var(--font-ui)',
+                textDecoration: 'none',
+                boxSizing: 'border-box',
+              } as React.CSSProperties}
             >
               Hủy
             </a>

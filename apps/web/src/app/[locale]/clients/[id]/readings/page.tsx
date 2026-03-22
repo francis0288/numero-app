@@ -4,6 +4,8 @@ import { redirect, notFound } from 'next/navigation'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NavBar } from '@/components/NavBar'
+import { BottomNav } from '@/components/BottomNav'
+import { formatDateShortVI } from '@/lib/formatDate'
 
 const LANG_DISPLAY: Record<string, string> = {
   en: '🇬🇧 English',
@@ -12,14 +14,10 @@ const LANG_DISPLAY: Record<string, string> = {
 }
 
 const TONE_LABELS: Record<string, string> = {
-  warm: '✨ Warm',
-  analytical: '📊 Analytical',
-  spiritual: '🌙 Spiritual',
-  practical: '⚡ Practical',
-}
-
-function formatDate(d: Date) {
-  return `${d.getDate()} tháng ${d.getMonth() + 1} năm ${d.getFullYear()}`
+  warm: 'Ấm áp',
+  analytical: 'Phân tích',
+  spiritual: 'Tâm linh',
+  practical: 'Thực tiễn',
 }
 
 export default async function ReadingsPage({
@@ -46,61 +44,132 @@ export default async function ReadingsPage({
   const readingPath = locale === 'en' ? `/clients/${id}/reading` : `/${locale}/clients/${id}/reading`
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>
       <NavBar locale={locale} />
-      <main className="max-w-[800px] mx-auto px-4 py-8">
-        <div className="flex items-center gap-3 mb-6 flex-wrap">
-          <a href={profilePath} className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors">
+      <main style={{ maxWidth: 480, margin: '0 auto', padding: '0 0 100px' }}>
+
+        {/* Header */}
+        <div style={{ padding: '20px 16px 16px' }}>
+          <a
+            href={profilePath}
+            style={{ fontSize: 13, color: 'var(--color-mid)', textDecoration: 'none', display: 'inline-block', marginBottom: 10 }}
+          >
             ← Quay lại hồ sơ
           </a>
-          <h1 className="text-xl font-medium text-[#2C2C2C]">
-            {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')} — Lịch sử bài đọc
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 19, fontWeight: 400, color: 'var(--color-dark)', margin: 0, lineHeight: 1.2 }}>
+            Lịch Sử Bài Đọc
           </h1>
+          <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '3px 0 0', fontFamily: 'var(--font-ui)' }}>
+            {[client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')}
+          </p>
         </div>
 
         {readings.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-[#E8E0F0] p-8 text-center">
-            <p className="text-[#888888] mb-4">Chưa có bài đọc.</p>
+          <div style={{
+            margin: '0 16px',
+            backgroundColor: 'var(--color-white)',
+            borderRadius: 16,
+            border: '0.5px solid var(--color-border)',
+            padding: '40px 24px',
+            textAlign: 'center',
+          }}>
+            <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 20px' }}>Chưa có bài đọc.</p>
             <a
               href={readingPath}
-              className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
+              style={{
+                display: 'inline-block',
+                backgroundColor: 'var(--color-gold)',
+                color: 'white',
+                borderRadius: 12,
+                padding: '10px 24px',
+                fontSize: 14,
+                fontWeight: 500,
+                textDecoration: 'none',
+              }}
             >
               Tạo bài đọc đầu tiên →
             </a>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '0 16px' }}>
             {readings.map((r) => {
               const preview = (r.editedNarrative ?? r.aiNarrative ?? '').slice(0, 150)
               return (
-                <div key={r.id} className="bg-white rounded-2xl border border-[#E8E0F0] p-5">
-                  <div className="flex items-start justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs px-2 py-1 rounded-full font-medium">
+                <div
+                  key={r.id}
+                  style={{
+                    backgroundColor: 'var(--color-white)',
+                    borderRadius: 16,
+                    border: '0.5px solid var(--color-border)',
+                    padding: '14px 16px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <span style={{
+                        backgroundColor: 'rgba(196,146,42,0.12)',
+                        color: 'var(--color-gold)',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        padding: '3px 10px',
+                        borderRadius: 10,
+                      }}>
                         v{r.version}
                       </span>
-                      <span className="bg-[#F5F5F5] text-[#555] text-xs px-2 py-1 rounded-full">
+                      <span style={{
+                        backgroundColor: 'var(--color-base)',
+                        color: 'var(--color-mid)',
+                        fontSize: 11,
+                        padding: '3px 10px',
+                        borderRadius: 10,
+                        border: '0.5px solid var(--color-border)',
+                      }}>
                         {LANG_DISPLAY[r.language] ?? r.language}
                       </span>
-                      <span className="text-[#888888] text-xs">
+                      <span style={{ fontSize: 11, color: 'var(--color-mid)' }}>
                         {TONE_LABELS[r.tone] ?? r.tone}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {r.status === 'finalised' ? (
-                        <span className="bg-green-50 text-green-700 border border-green-200 text-xs px-2 py-1 rounded-full">
-                          Đã hoàn thành
+                        <span style={{
+                          backgroundColor: 'rgba(15,110,86,0.08)',
+                          color: 'var(--color-green)',
+                          fontSize: 11,
+                          padding: '3px 10px',
+                          borderRadius: 10,
+                          border: '0.5px solid rgba(15,110,86,0.2)',
+                        }}>
+                          Hoàn thành
                         </span>
                       ) : (
-                        <span className="bg-amber-50 text-amber-700 border border-amber-200 text-xs px-2 py-1 rounded-full">
+                        <span style={{
+                          backgroundColor: 'rgba(196,146,42,0.08)',
+                          color: '#B8892A',
+                          fontSize: 11,
+                          padding: '3px 10px',
+                          borderRadius: 10,
+                          border: '0.5px solid rgba(196,146,42,0.2)',
+                        }}>
                           Bản nháp
                         </span>
                       )}
-                      <span className="text-[#888888] text-xs">{formatDate(r.createdAt)}</span>
+                      <span style={{ fontSize: 11, color: 'var(--color-mid)', fontFamily: 'var(--font-ui)' }}>
+                        {formatDateShortVI(r.createdAt)}
+                      </span>
                     </div>
                   </div>
                   {preview && (
-                    <p className="text-[#888888] text-sm mt-3 leading-relaxed line-clamp-2">
+                    <p style={{
+                      fontSize: 12,
+                      color: 'var(--color-mid)',
+                      margin: '10px 0 0',
+                      lineHeight: 1.5,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    } as React.CSSProperties}>
                       {preview}…
                     </p>
                   )}
@@ -110,15 +179,27 @@ export default async function ReadingsPage({
           </div>
         )}
 
-        <div className="mt-6">
-          <a
-            href={readingPath}
-            className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
-          >
-            Tạo bài đọc mới →
-          </a>
-        </div>
+        {readings.length > 0 && (
+          <div style={{ padding: '16px 16px 0' }}>
+            <a
+              href={readingPath}
+              style={{
+                display: 'inline-block',
+                backgroundColor: 'var(--color-gold)',
+                color: 'white',
+                borderRadius: 12,
+                padding: '10px 24px',
+                fontSize: 14,
+                fontWeight: 500,
+                textDecoration: 'none',
+              }}
+            >
+              Tạo bài đọc mới →
+            </a>
+          </div>
+        )}
       </main>
+      <BottomNav locale={locale} clientId={id} />
     </div>
   )
 }
