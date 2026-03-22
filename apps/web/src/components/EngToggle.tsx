@@ -14,8 +14,8 @@ export function EngToggle(): React.ReactElement {
       onClick={toggle}
       className={`text-xs rounded-full px-3 py-1 border transition-colors ${
         active
-          ? 'bg-[#E8E0F0] text-[#7B5EA7] border-[#7B5EA7]'
-          : 'border-[#E8E0F0] text-[#888888] hover:border-[#7B5EA7] hover:text-[#7B5EA7]'
+          ? 'bg-[var(--border-subtle)] text-[var(--purple-main)] border-[var(--purple-main)]'
+          : 'border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--purple-main)] hover:text-[var(--purple-main)]'
       }`}
     >
       {active ? 'ENG ✓' : 'ENG'}

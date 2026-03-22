@@ -133,17 +133,18 @@ export default function FollowUpPage(): React.ReactElement {
     isStreaming && lastMessage?.role === 'assistant' && lastMessage.content === ''
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
       <main className="max-w-[700px] mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
           <Link
             href={`/clients/${id}/reading`}
-            className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors block mb-3"
+            className="text-sm transition-colors block mb-3"
+            style={{ color: 'var(--text-muted)' }}
           >
             ← Quay lại bài đọc
           </Link>
-          <h1 className="text-2xl font-medium text-[#2C2C2C]">
+          <h1 className="text-2xl font-medium" style={{ color: 'var(--text-primary)' }}>
             {clientName ? `${clientName} — Hỏi & Đáp` : 'Hỏi & Đáp'}
           </h1>
         </div>
@@ -152,13 +153,20 @@ export default function FollowUpPage(): React.ReactElement {
         <div className="min-h-[400px] space-y-4 mb-6">
           {messages.length === 0 ? (
             <div>
-              <p className="text-sm text-[#888888] mb-3">Gợi ý câu hỏi:</p>
+              <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Gợi ý câu hỏi:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestionChips.map((chip) => (
                   <button
                     key={chip}
                     onClick={() => setInputText(chip)}
-                    className="bg-white border border-[#E8E0F0] rounded-full px-3 py-1.5 text-sm text-[#7B5EA7] hover:bg-[#F5F0FB] cursor-pointer transition-colors"
+                    className="rounded-full px-3 py-1.5 text-sm cursor-pointer transition-colors"
+                    style={{
+                      backgroundColor: 'var(--bg-primary)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'var(--border-subtle)',
+                      color: 'var(--gold-main)',
+                    }}
                   >
                     {chip}
                   </button>
@@ -170,16 +178,28 @@ export default function FollowUpPage(): React.ReactElement {
           {messages.map((msg) => (
             <div key={msg.id}>
               {msg.role === 'user' ? (
-                <div className="bg-[#F5F0FB] rounded-2xl rounded-tr-sm p-4 ml-16 text-[#2C2C2C] text-sm">
+                <div
+                  className="rounded-2xl rounded-tr-sm p-4 ml-16 text-sm"
+                  style={{ backgroundColor: 'var(--gold-bg)', color: 'var(--text-primary)' }}
+                >
                   {msg.content}
                 </div>
               ) : (
-                <div className="bg-white border border-[#E8E0F0] rounded-2xl rounded-tl-sm p-4 mr-16 text-[#2C2C2C] leading-relaxed text-sm">
+                <div
+                  className="rounded-2xl rounded-tl-sm p-4 mr-16 leading-relaxed text-sm"
+                  style={{
+                    backgroundColor: 'var(--bg-primary)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--border-subtle)',
+                    color: 'var(--text-primary)',
+                  }}
+                >
                   {msg.content === '' && showLoadingDots ? (
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-[#7B5EA7] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-2 h-2 bg-[#7B5EA7] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-2 h-2 bg-[#7B5EA7] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: 'var(--gold-main)', animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: 'var(--gold-main)', animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: 'var(--gold-main)', animationDelay: '300ms' }} />
                     </div>
                   ) : (
                     msg.content
@@ -191,7 +211,15 @@ export default function FollowUpPage(): React.ReactElement {
         </div>
 
         {/* Input area */}
-        <div className="sticky bottom-0 bg-[#FDF6EC] pt-4 border-t border-[#E8E0F0]">
+        <div
+          className="sticky bottom-0 pt-4"
+          style={{
+            backgroundColor: 'var(--bg-tertiary)',
+            borderTopWidth: '1px',
+            borderTopStyle: 'solid',
+            borderTopColor: 'var(--border-subtle)',
+          }}
+        >
           <div className="flex gap-2 items-end">
             <textarea
               ref={textareaRef}
@@ -200,17 +228,26 @@ export default function FollowUpPage(): React.ReactElement {
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={clientName ? `Hỏi về biểu đồ số học của ${clientName}...` : 'Hỏi về biểu đồ số học...'}
-              className="w-full p-3 border border-[#E8E0F0] rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+              className="w-full p-3 rounded-xl text-sm resize-none focus:outline-none"
+              style={{
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: 'var(--border-subtle)',
+              }}
             />
             <button
               onClick={() => void handleSubmit()}
               disabled={isStreaming || !inputText.trim()}
-              className="bg-[#7B5EA7] text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 hover:bg-[#6B4E97] transition-colors shrink-0"
+              className="px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors shrink-0"
+              style={{
+                backgroundColor: 'var(--gold-main)',
+                color: 'var(--text-on-gold)',
+              }}
             >
               Gửi
             </button>
           </div>
-          <p className="text-xs text-[#888888] mt-1">⌘ + Enter để gửi</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>⌘ + Enter để gửi</p>
         </div>
       </main>
     </div>

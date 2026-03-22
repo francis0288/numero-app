@@ -82,7 +82,7 @@ function WorkingsBlock({ workings }: { workings?: string }) {
     <div style={{
       marginTop: 6,
       borderLeft: '2px solid var(--color-gold)',
-      backgroundColor: 'rgba(196,146,42,0.04)',
+      backgroundColor: 'var(--gold-bg)',
       borderRadius: '0 6px 6px 0',
       padding: '6px 10px',
     }}>
@@ -231,9 +231,9 @@ export default async function ProfilePage({
         }}>
           <div style={{
             width: 60, height: 60, borderRadius: '50%',
-            backgroundColor: '#C4922A',
+            backgroundColor: 'var(--gold-main)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 600, color: 'white',
+            fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 600, color: 'var(--bg-card)',
           }}>
             {getInitial(client)}
           </div>
@@ -279,27 +279,27 @@ export default async function ProfilePage({
 
         {/* ── 3. Dark forecast card ── */}
         <div style={{
-          backgroundColor: '#1C1A14', borderRadius: 20,
+          backgroundColor: 'var(--bg-primary)', borderRadius: 20,
           margin: '0 16px 14px', padding: '18px 20px',
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
             <div>
               <SectionLabel title="Năm Cá Nhân" style={{ color: 'var(--color-gold)', marginBottom: 6 }} />
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: 44, fontWeight: 300, color: 'white', lineHeight: 1, margin: '0 0 4px' }}>
+              <p style={{ fontFamily: 'Georgia, serif', fontSize: 44, fontWeight: 300, color: 'var(--bg-card)', lineHeight: 1, margin: '0 0 4px' }}>
                 {personalYear.display}
               </p>
-              <p style={{ fontSize: 11, color: 'rgba(250,248,243,0.5)', margin: 0, fontFamily: 'var(--font-ui)' }}>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0, fontFamily: 'var(--font-ui)' }}>
                 {today.getFullYear()}
               </p>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <p style={{ color: 'rgba(250,248,243,0.4)', fontSize: 10, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)' }}>
+              <p style={{ color: 'var(--text-dim)', fontSize: 10, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)' }}>
                 Tháng Cá Nhân
               </p>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, fontWeight: 500, color: '#E8C97A', margin: 0 }}>
+              <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, fontWeight: 500, color: 'var(--gold-bright)', margin: 0 }}>
                 {personalMonth.display}
               </p>
-              <p style={{ fontSize: 10, color: 'rgba(250,248,243,0.4)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>
+              <p style={{ fontSize: 10, color: 'var(--text-dim)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>
                 Ngày: {personalDay.display}
               </p>
             </div>
@@ -310,17 +310,17 @@ export default async function ProfilePage({
               return (
                 <div key={month} style={{
                   flexShrink: 0, borderRadius: 20, padding: '5px 9px',
-                  backgroundColor: isActive ? '#E8C97A' : 'rgba(250,248,243,0.08)',
+                  backgroundColor: isActive ? 'var(--gold-bright)' : 'var(--bg-secondary)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
                 }}>
                   <span style={{
-                    fontSize: 11, color: isActive ? '#1C1A14' : 'rgba(250,248,243,0.5)',
+                    fontSize: 11, color: isActive ? 'var(--bg-primary)' : 'var(--text-muted)',
                     fontFamily: 'var(--font-ui)', fontWeight: isActive ? 600 : 400,
                   }}>
                     T{month}
                   </span>
                   <span style={{
-                    fontSize: 9, color: isActive ? '#1C1A14' : 'rgba(250,248,243,0.5)',
+                    fontSize: 9, color: isActive ? 'var(--bg-primary)' : 'var(--text-muted)',
                     fontFamily: 'Georgia, serif', fontWeight: 500,
                   }}>
                     {display}
@@ -336,7 +336,7 @@ export default async function ProfilePage({
           <a
             href={readingPath}
             style={{
-              flex: 1, backgroundColor: 'var(--color-gold)', color: 'white',
+              flex: 1, backgroundColor: 'var(--color-gold)', color: 'var(--bg-card)',
               borderRadius: 12, padding: '11px 16px', fontSize: 14, fontWeight: 600,
               textAlign: 'center', textDecoration: 'none', fontFamily: 'var(--font-ui)',
             }}
@@ -423,7 +423,7 @@ export default async function ProfilePage({
                   {profile.isolationNumbers.map((num) => (
                     <div key={num} style={{
                       width: 40, height: 40, borderRadius: 10,
-                      backgroundColor: 'rgba(163,45,45,0.08)',
+                      backgroundColor: 'color-mix(in srgb, var(--status-error) 8%, transparent)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-danger)',
                     }}>
@@ -438,7 +438,7 @@ export default async function ProfilePage({
             )}
             <div style={{
               marginTop: 8, borderLeft: '2px solid var(--color-gold)',
-              backgroundColor: 'rgba(196,146,42,0.04)', borderRadius: '0 6px 6px 0', padding: '6px 10px',
+              backgroundColor: 'var(--gold-bg)', borderRadius: '0 6px 6px 0', padding: '6px 10px',
             }}>
               <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-gold)', margin: '0 0 2px', fontFamily: 'var(--font-ui)', letterSpacing: '0.04em' }}>
                 Cách tính:
@@ -461,7 +461,7 @@ export default async function ProfilePage({
               <div key={label} style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 padding: '8px 0',
-                borderBottom: idx < transitRows.length - 1 ? '0.5px solid rgba(28,22,10,0.07)' : 'none',
+                borderBottom: idx < transitRows.length - 1 ? '1px solid var(--border-subtle)' : 'none',
               }}>
                 <span style={{ fontSize: 11, color: 'var(--color-mid)', width: 110, fontFamily: 'var(--font-ui)', lineHeight: 1.3 }}>
                   {label}
@@ -471,7 +471,7 @@ export default async function ProfilePage({
                 </span>
                 <span style={{
                   fontSize: 10, color: 'var(--color-gold)',
-                  backgroundColor: 'rgba(196,146,42,0.08)', borderRadius: 10,
+                  backgroundColor: 'var(--gold-bg)', borderRadius: 10,
                   padding: '2px 8px', fontFamily: 'var(--font-ui)', fontWeight: 500,
                 }}>
                   {namePart}
@@ -479,7 +479,7 @@ export default async function ProfilePage({
               </div>
             ))}
             <div style={{
-              marginTop: 10, backgroundColor: 'rgba(196,146,42,0.07)',
+              marginTop: 10, backgroundColor: 'var(--gold-bg)',
               borderRadius: 10, padding: '10px 12px',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
             }}>
@@ -513,7 +513,7 @@ export default async function ProfilePage({
                     <a key={num} href={detailPath} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textDecoration: 'none' }}>
                       <div style={{
                         width: 44, height: 44, borderRadius: 12,
-                        backgroundColor: 'rgba(196,146,42,0.08)',
+                        backgroundColor: 'var(--gold-bg)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-gold)',
                       }}>

@@ -31,84 +31,6 @@ export interface ReportClientProps {
   isolationNumber: number
 }
 
-// ── Themes ─────────────────────────────────────────────────────────────────────
-
-const THEMES = {
-  dark: {
-    pageBg: '#0D0D1A',
-    cardBg: '#1A1A2E',
-    cardBorder: '#2D2D4E',
-    heading: '#D4AC6E',
-    body: '#C8C8D4',
-    muted: '#888899',
-    accent: '#7B5EA7',
-    number: '#D4AC6E',
-    divider: '#2D2D4E',
-    headerBg: '#1A1A2E',
-    sectionBg: '#0D0D1A',
-    altSectionBg: '#0F0F20',
-    footerBg: '#0D0D1A',
-    footerBorder: '#2D2D4E',
-    masterBadgeBg: 'rgba(212,172,110,0.12)',
-    masterBadgeBorder: '#D4AC6E',
-    masterBadgeText: '#D4AC6E',
-    karmicBadgeBg: 'rgba(239,68,68,0.1)',
-    karmicBadgeBorder: '#ef4444',
-    karmicBadgeText: '#f87171',
-    summaryBoxBg: 'rgba(123,94,167,0.2)',
-    summaryBoxBorder: 'rgba(123,94,167,0.4)',
-    karmicCardBorderLeft: '#ef4444',
-    forecastHeaderBg: '#12122A',
-    themePillBg: 'rgba(212,172,110,0.15)',
-    themePillText: '#D4AC6E',
-    themePillBorder: 'rgba(212,172,110,0.3)',
-    tagBg: 'rgba(123,94,167,0.15)',
-    tagText: '#9B7DC8',
-    tagBorder: 'rgba(123,94,167,0.3)',
-    toggleBg: 'rgba(255,255,255,0.08)',
-    toggleText: '#C8C8D4',
-    toggleBorder: 'rgba(255,255,255,0.12)',
-  },
-  light: {
-    pageBg: '#FDF6EC',
-    cardBg: '#FFFFFF',
-    cardBorder: '#E8E0F0',
-    heading: '#7B5EA7',
-    body: '#2C2C2C',
-    muted: '#888888',
-    accent: '#D4AC6E',
-    number: '#7B5EA7',
-    divider: '#E8E0F0',
-    headerBg: '#7B5EA7',
-    sectionBg: '#FDF6EC',
-    altSectionBg: '#F5F0FB',
-    footerBg: '#2C2C2C',
-    footerBorder: 'transparent',
-    masterBadgeBg: '#FFFBF0',
-    masterBadgeBorder: '#D4AC6E',
-    masterBadgeText: '#A07830',
-    karmicBadgeBg: '#FFF0F0',
-    karmicBadgeBorder: '#ef4444',
-    karmicBadgeText: '#dc2626',
-    summaryBoxBg: '#F5F0FB',
-    summaryBoxBorder: '#E8E0F0',
-    karmicCardBorderLeft: '#f97316',
-    forecastHeaderBg: '#7B5EA7',
-    themePillBg: 'rgba(212,172,110,0.15)',
-    themePillText: '#8B6820',
-    themePillBorder: 'rgba(212,172,110,0.5)',
-    tagBg: 'rgba(123,94,167,0.08)',
-    tagText: '#7B5EA7',
-    tagBorder: 'rgba(123,94,167,0.25)',
-    toggleBg: 'rgba(0,0,0,0.12)',
-    toggleText: '#FFFFFF',
-    toggleBorder: 'rgba(255,255,255,0.3)',
-  },
-} as const
-
-type ThemeKey = 'dark' | 'light'
-type TC = typeof THEMES[ThemeKey]
-
 // ── Personal Year info ─────────────────────────────────────────────────────────
 
 const PY_INFO: Record<number, { theme: string; bullets: string[] }> = {
@@ -207,50 +129,49 @@ const DEBT_LABELS: Record<number, [string, number]> = {
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
-function SectionHeading({ title, tc }: { title: string; tc: TC }) {
+function SectionHeading({ title }: { title: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-      <div style={{ width: 4, height: 24, borderRadius: 2, backgroundColor: tc.heading, flexShrink: 0 }} />
-      <h2 style={{ color: tc.heading, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>
+      <div style={{ width: 4, height: 24, borderRadius: 2, backgroundColor: 'var(--gold-main)', flexShrink: 0 }} />
+      <h2 style={{ color: 'var(--gold-main)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>
         {title}
       </h2>
     </div>
   )
 }
 
-function NumberCard({ label, result, interp, tc }: {
+function NumberCard({ label, result, interp }: {
   label: string
   result: { display: string; value: number; isMasterNumber?: boolean; isKarmicDebt?: boolean }
   interp?: Interpretation
-  tc: TC
 }) {
   return (
-    <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 20 }}>
+    <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 20 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-        <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>{label}</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>{label}</p>
         <div style={{ display: 'flex', gap: 4 }}>
           {result.isMasterNumber && (
-            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, border: `1px solid ${tc.masterBadgeBorder}`, backgroundColor: tc.masterBadgeBg, color: tc.masterBadgeText }}>
-              Số Master
+            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, border: '1px solid var(--report-master-badge-border)', backgroundColor: 'var(--report-master-badge-bg)', color: 'var(--report-master-badge-text)' }}>
+              S&#7889; Master
             </span>
           )}
           {result.isKarmicDebt && (
-            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, border: `1px solid ${tc.karmicBadgeBorder}`, backgroundColor: tc.karmicBadgeBg, color: tc.karmicBadgeText }}>
-              Số Nghiệp
+            <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, border: '1px solid var(--report-karmic-badge-border)', backgroundColor: 'var(--report-karmic-badge-bg)', color: 'var(--report-karmic-badge-text)' }}>
+              S&#7889; Nghi&#7879;p
             </span>
           )}
         </div>
       </div>
-      <div style={{ fontSize: 48, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 8 }}>{result.display}</div>
-      {interp?.title && <p style={{ fontSize: 13, fontWeight: 600, color: tc.body, margin: '0 0 6px' }}>{interp.title}</p>}
+      <div style={{ fontSize: 48, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 8 }}>{result.display}</div>
+      {interp?.title && <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 6px' }}>{interp.title}</p>}
       {interp?.overview && (
-        <p style={{ fontSize: 11, color: tc.muted, lineHeight: 1.6, margin: 0 }}>{interp.overview.slice(0, 80)}…</p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{interp.overview.slice(0, 80)}…</p>
       )}
     </div>
   )
 }
 
-function MarkdownNarrative({ text, tc }: { text: string; tc: TC }) {
+function MarkdownNarrative({ text }: { text: string }) {
   const sections = text.split(/\n(?=## )/)
   return (
     <div>
@@ -261,12 +182,12 @@ function MarkdownNarrative({ text, tc }: { text: string; tc: TC }) {
         return (
           <div key={i}>
             {heading && (
-              <h2 style={{ color: tc.heading, fontSize: 17, fontWeight: 500, marginTop: 32, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${tc.divider}` }}>
+              <h2 style={{ color: 'var(--gold-main)', fontSize: 17, fontWeight: 500, marginTop: 32, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--border-subtle)' }}>
                 {heading}
               </h2>
             )}
             {paras.map((p, j) => (
-              <p key={j} style={{ color: tc.body, fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>{p}</p>
+              <p key={j} style={{ color: 'var(--text-primary)', fontSize: 14, lineHeight: 1.8, marginBottom: 16 }}>{p}</p>
             ))}
           </div>
         )
@@ -281,32 +202,38 @@ export function ReportClient({
   clientData, readingData, profile, forecastCurr, forecastNext, currentYear, nextYear,
   interpretations_vi, interpretations_en, practitioner, token, karmicDebtNums, isolationNumber,
 }: ReportClientProps) {
-  const [theme, setTheme] = useState<ThemeKey>('dark')
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [reportLang, setReportLang] = useState('vi')
 
   useEffect(() => {
     const saved = localStorage.getItem('report-theme')
-    if (saved === 'dark' || saved === 'light') setTheme(saved)
+    if (saved === 'dark' || saved === 'light') {
+      setTheme(saved)
+      document.documentElement.setAttribute('data-theme', saved)
+    } else {
+      // Ensure default dark theme is set on mount
+      document.documentElement.setAttribute('data-theme', 'dark')
+    }
   }, [])
 
   const toggleTheme = () => {
-    const next: ThemeKey = theme === 'dark' ? 'light' : 'dark'
+    const next = theme === 'dark' ? 'light' : 'dark'
     setTheme(next)
     localStorage.setItem('report-theme', next)
+    document.documentElement.setAttribute('data-theme', next)
   }
 
-  const tc = THEMES[theme]
   const interpretations = reportLang === 'en' ? interpretations_en : interpretations_vi
   const narrative = readingData.editedNarrative ?? readingData.aiNarrative ?? ''
 
   const CORE_CARDS = [
-    { key: 'lifePath', label: 'Đường Đời', result: profile.lifePath },
-    { key: 'destiny', label: 'Vận Mệnh', result: profile.destiny.methodA },
-    { key: 'soul', label: 'Linh Hồn', result: profile.soul.methodA },
-    { key: 'personality', label: 'Nhân Cách', result: profile.personality.methodA },
-    { key: 'maturity', label: 'Trưởng Thành', result: profile.maturity },
-    { key: 'birthDay', label: 'Ngày Sinh', result: profile.birthDay },
-    { key: 'currentName', label: 'Tên Hiện Tại', result: profile.currentName },
+    { key: 'lifePath', label: '\u0110\u01B0\u1EDDng \u0110\u1EDDi', result: profile.lifePath },
+    { key: 'destiny', label: 'V\u1EADn M\u1EC7nh', result: profile.destiny.methodA },
+    { key: 'soul', label: 'Linh H\u1ED3n', result: profile.soul.methodA },
+    { key: 'personality', label: 'Nh\u00E2n C\u00E1ch', result: profile.personality.methodA },
+    { key: 'maturity', label: 'Tr\u01B0\u1EDFng Th\u00E0nh', result: profile.maturity },
+    { key: 'birthDay', label: 'Ng\u00E0y Sinh', result: profile.birthDay },
+    { key: 'currentName', label: 'T\u00EAn Hi\u1EC7n T\u1EA1i', result: profile.currentName },
   ]
 
   const lifePathInterp = interpretations[getNumberKey(profile.lifePath)]
@@ -330,10 +257,10 @@ export function ReportClient({
   ]
   const closingText = narrative ? extractClosing(narrative) : ''
 
-  const S_DIVIDER = { borderTop: `1px solid ${tc.divider}`, borderBottom: `1px solid ${tc.divider}` }
+  const S_DIVIDER = { borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }
 
   return (
-    <div style={{ backgroundColor: tc.pageBg, minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--report-section-bg)', minHeight: '100vh' }}>
 
       {/* ── Theme toggle ── */}
       <button
@@ -341,11 +268,11 @@ export function ReportClient({
         style={{
           position: 'fixed', top: 16, right: 16, zIndex: 50,
           padding: '8px 16px', borderRadius: 99, fontSize: 13, fontWeight: 500, cursor: 'pointer',
-          backgroundColor: tc.toggleBg, color: tc.toggleText, border: `1px solid ${tc.toggleBorder}`,
+          backgroundColor: 'var(--report-toggle-bg)', color: 'var(--report-toggle-text)', border: '1px solid var(--report-toggle-border)',
           backdropFilter: 'blur(8px)',
         }}
       >
-        {theme === 'dark' ? '☀ Sáng' : '🌙 Tối'}
+        {theme === 'dark' ? '\u2600 S\u00E1ng' : '\uD83C\uDF19 T\u1ED1i'}
       </button>
 
       {/* ── Language toggle ── */}
@@ -354,9 +281,9 @@ export function ReportClient({
         style={{
           position: 'fixed', top: 16, right: 120, zIndex: 50,
           padding: '8px 16px', borderRadius: 99, fontSize: 13, fontWeight: 500, cursor: 'pointer',
-          backgroundColor: reportLang === 'vi' ? 'rgba(255,255,255,0.12)' : '#7B5EA7',
-          color: reportLang === 'vi' ? tc.toggleText : '#ffffff',
-          border: `1px solid ${reportLang === 'vi' ? tc.toggleBorder : '#7B5EA7'}`,
+          backgroundColor: reportLang === 'vi' ? 'rgba(255,255,255,0.12)' : 'var(--report-accent)',
+          color: reportLang === 'vi' ? 'var(--report-toggle-text)' : 'var(--bg-card)',
+          border: `1px solid ${reportLang === 'vi' ? 'var(--report-toggle-border)' : 'var(--report-accent)'}`,
           backdropFilter: 'blur(8px)',
         }}
       >
@@ -365,7 +292,7 @@ export function ReportClient({
 
       {/* ── HEADER ── */}
       <header style={{
-        backgroundColor: tc.headerBg,
+        backgroundColor: 'var(--report-header-bg)',
         backgroundImage: theme === 'dark' ? STARFIELD : undefined,
         padding: '64px 16px',
         textAlign: 'center',
@@ -378,7 +305,7 @@ export function ReportClient({
               style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 12px', display: 'block', border: '2px solid rgba(212,172,110,0.4)' }} />
           )}
           <p style={{ color: 'rgba(212,172,110,0.7)', fontSize: 13, marginBottom: 24 }}>
-            Bản đọc bởi {practitioner.name}
+            B\u1EA3n \u0111\u1ECDc b\u1EDFi {practitioner.name}
           </p>
 
           {/* Decorative number badges */}
@@ -386,7 +313,7 @@ export function ReportClient({
             {CORE_CARDS.map(({ key, result }) => (
               <div key={key} style={{
                 width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: 700, color: '#D4AC6E',
+                fontSize: 11, fontWeight: 700, color: 'var(--gold-main)',
                 backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(212,172,110,0.3)',
               }}>
                 {result.display.split('/')[0]}
@@ -394,58 +321,58 @@ export function ReportClient({
             ))}
           </div>
 
-          <h1 style={{ fontSize: 40, fontWeight: 700, color: '#D4AC6E', margin: '0 0 12px' }}>
+          <h1 style={{ fontSize: 40, fontWeight: 700, color: 'var(--gold-main)', margin: '0 0 12px' }}>
             {[clientData.lastName, clientData.middleName, clientData.firstName].filter(Boolean).join(' ')}
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: '0 0 6px' }}>
-            Sinh ngày {formatLong(clientData.dateOfBirth)}
+            Sinh ng\u00E0y {formatLong(clientData.dateOfBirth)}
           </p>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, margin: 0 }}>
-            Bản đọc được lập {formatShort(readingData.createdAt)}
+            B\u1EA3n \u0111\u1ECDc \u0111\u01B0\u1EE3c l\u1EADp {formatShort(readingData.createdAt)}
           </p>
         </div>
       </header>
 
       {/* ── SECTION 1: Key Indicators ── */}
-      <section style={{ backgroundColor: tc.sectionBg, padding: '64px 16px' }}>
+      <section style={{ backgroundColor: 'var(--report-section-bg)', padding: '64px 16px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Chỉ Số Chính" tc={tc} />
+          <SectionHeading title="Ch\u1EC9 S\u1ED1 Ch\u00EDnh" />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
             {CORE_CARDS.map(({ key, label, result }) => (
-              <NumberCard key={key} label={label} result={result} interp={interpretations[getNumberKey(result)]} tc={tc} />
+              <NumberCard key={key} label={label} result={result} interp={interpretations[getNumberKey(result)]} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ── SECTION 2: Name Index & Isolation Number ── */}
-      <section style={{ backgroundColor: tc.altSectionBg, padding: '64px 16px', ...S_DIVIDER }}>
+      <section style={{ backgroundColor: 'var(--report-alt-section-bg)', padding: '64px 16px', ...S_DIVIDER }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Chỉ Số Tên & Số Cô Lập" tc={tc} />
+          <SectionHeading title="Ch\u1EC9 S\u1ED1 T\u00EAn & S\u1ED1 C\u00F4 L\u1EADp" />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
 
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
-              <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Chỉ Số Tên — Số Vận Mệnh</p>
-              <div style={{ fontSize: 56, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 12 }}>{profile.destiny.methodA.display}</div>
-              {destinyInterp?.title && <p style={{ fontSize: 16, fontWeight: 600, color: tc.body, margin: '0 0 12px' }}>{destinyInterp.title}</p>}
-              {destinyInterp?.overview && <p style={{ fontSize: 13, color: tc.body, lineHeight: 1.8, margin: 0 }}>{destinyInterp.overview}</p>}
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Ch\u1EC9 S\u1ED1 T\u00EAn — S\u1ED1 V\u1EADn M\u1EC7nh</p>
+              <div style={{ fontSize: 56, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 12 }}>{profile.destiny.methodA.display}</div>
+              {destinyInterp?.title && <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px' }}>{destinyInterp.title}</p>}
+              {destinyInterp?.overview && <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.8, margin: 0 }}>{destinyInterp.overview}</p>}
             </div>
 
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
-              <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Số Cô Lập</p>
-              <div style={{ fontSize: 56, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 12 }}>
-                {isolationNumber === 0 ? '∞' : isolationNumber}
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>S\u1ED1 C\u00F4 L\u1EADp</p>
+              <div style={{ fontSize: 56, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 12 }}>
+                {isolationNumber === 0 ? '\u221E' : isolationNumber}
               </div>
-              <p style={{ fontSize: 16, fontWeight: 600, color: tc.body, margin: '0 0 12px' }}>
-                {isolationNumber === 0 ? 'Hòa Hợp Hoàn Hảo' : `Điểm Kết Hợp ${isolationNumber}`}
+              <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px' }}>
+                {isolationNumber === 0 ? 'H\u00F2a H\u1EE3p Ho\u00E0n H\u1EA3o' : `\u0110i\u1EC3m K\u1EBFt H\u1EE3p ${isolationNumber}`}
               </p>
-              <p style={{ fontSize: 13, color: tc.body, lineHeight: 1.8, margin: '0 0 12px' }}>
+              <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.8, margin: '0 0 12px' }}>
                 {isolationNumber === 0
-                  ? 'Vận mệnh bên ngoài và linh hồn bên trong của bạn hoàn toàn hòa hợp — một sự kết hợp hiếm có và mạnh mẽ giữa mục đích và khao khát.'
-                  : 'Khoảng cách giữa vận mệnh bên ngoài và linh hồn bên trong của bạn cho thấy nơi cần phát triển và hòa hợp nhất.'}
+                  ? 'V\u1EADn m\u1EC7nh b\u00EAn ngo\u00E0i v\u00E0 linh h\u1ED3n b\u00EAn trong c\u1EE7a b\u1EA1n ho\u00E0n to\u00E0n h\u00F2a h\u1EE3p — m\u1ED9t s\u1EF1 k\u1EBFt h\u1EE3p hi\u1EBFm c\u00F3 v\u00E0 m\u1EA1nh m\u1EBD gi\u1EEFa m\u1EE5c \u0111\u00EDch v\u00E0 khao kh\u00E1t.'
+                  : 'Kho\u1EA3ng c\u00E1ch gi\u1EEFa v\u1EADn m\u1EC7nh b\u00EAn ngo\u00E0i v\u00E0 linh h\u1ED3n b\u00EAn trong c\u1EE7a b\u1EA1n cho th\u1EA5y n\u01A1i c\u1EA7n ph\u00E1t tri\u1EC3n v\u00E0 h\u00F2a h\u1EE3p nh\u1EA5t.'}
               </p>
               {isolationNumber > 0 && interpretations[`life_path_${isolationNumber}`]?.overview && (
-                <p style={{ fontSize: 12, color: tc.muted, lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
                   {interpretations[`life_path_${isolationNumber}`].overview?.slice(0, 200)}…
                 </p>
               )}
@@ -456,28 +383,28 @@ export function ReportClient({
       </section>
 
       {/* ── SECTION 3: Missing Numbers & Karmic Lessons ── */}
-      <section style={{ backgroundColor: tc.sectionBg, padding: '64px 16px' }}>
+      <section style={{ backgroundColor: 'var(--report-section-bg)', padding: '64px 16px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Số Thiếu & Bài Học Nghiệp" tc={tc} />
+          <SectionHeading title="S\u1ED1 Thi\u1EBFu & B\u00E0i H\u1ECDc Nghi\u1EC7p" />
           {profile.karmicLessons.length === 0 ? (
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 32, textAlign: 'center' }}>
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 32, textAlign: 'center' }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>✓</div>
-              <p style={{ fontWeight: 600, color: tc.body, margin: '0 0 4px' }}>Đã có đủ các số 1–9 trong tên của bạn.</p>
-              <p style={{ fontSize: 13, color: tc.muted, margin: 0 }}>Không có bài học nghiệp — rung động hoàn chỉnh.</p>
+              <p style={{ fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 4px' }}>\u0110\u00E3 c\u00F3 \u0111\u1EE7 c\u00E1c s\u1ED1 1\u20139 trong t\u00EAn c\u1EE7a b\u1EA1n.</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Kh\u00F4ng c\u00F3 b\u00E0i h\u1ECDc nghi\u1EC7p — rung \u0111\u1ED9ng ho\u00E0n ch\u1EC9nh.</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
               {profile.karmicLessons.map(n => {
                 const interp = interpretations[`karmic_lesson_${n}`]
                 return (
-                  <div key={n} style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 20 }}>
-                    <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px' }}>Số Thiếu</p>
-                    <div style={{ fontSize: 48, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 8 }}>{n}</div>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: tc.body, margin: '0 0 8px' }}>
-                      {interp?.title ?? `Bài Học Nghiệp ${n}`}
+                  <div key={n} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 20 }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px' }}>S\u1ED1 Thi\u1EBFu</p>
+                    <div style={{ fontSize: 48, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 8 }}>{n}</div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 8px' }}>
+                      {interp?.title ?? `B\u00E0i H\u1ECDc Nghi\u1EC7p ${n}`}
                     </p>
-                    {interp?.overview && <p style={{ fontSize: 11, color: tc.muted, lineHeight: 1.6, margin: '0 0 8px' }}>{interp.overview}</p>}
-                    <p style={{ fontSize: 11, fontStyle: 'italic', color: tc.muted, margin: 0 }}>Vắng mặt trong tên khai sinh</p>
+                    {interp?.overview && <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: '0 0 8px' }}>{interp.overview}</p>}
+                    <p style={{ fontSize: 11, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>V\u1EAFng m\u1EB7t trong t\u00EAn khai sinh</p>
                   </div>
                 )
               })}
@@ -487,14 +414,14 @@ export function ReportClient({
       </section>
 
       {/* ── SECTION 4: Life Lessons — Karma from Past Lives ── */}
-      <section style={{ backgroundColor: tc.altSectionBg, padding: '64px 16px', ...S_DIVIDER }}>
+      <section style={{ backgroundColor: 'var(--report-alt-section-bg)', padding: '64px 16px', ...S_DIVIDER }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Bài Học Cuộc Đời — Nghiệp Từ Kiếp Trước" tc={tc} />
+          <SectionHeading title="B\u00E0i H\u1ECDc Cu\u1ED9c \u0110\u1EDDi — Nghi\u1EC7p T\u1EEB Ki\u1EBFp Tr\u01B0\u1EDBc" />
           {karmicDebtNums.length === 0 ? (
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 32, textAlign: 'center' }}>
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 32, textAlign: 'center' }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>✓</div>
-              <p style={{ fontWeight: 600, color: tc.body, margin: '0 0 4px' }}>Không phát hiện số nghiệp trong các chỉ số.</p>
-              <p style={{ fontSize: 13, color: tc.muted, margin: 0 }}>Linh hồn bạn bước vào kiếp này không mang nghiệp.</p>
+              <p style={{ fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 4px' }}>Kh\u00F4ng ph\u00E1t hi\u1EC7n s\u1ED1 nghi\u1EC7p trong c\u00E1c ch\u1EC9 s\u1ED1.</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Linh h\u1ED3n b\u1EA1n b\u01B0\u1EDBc v\u00E0o ki\u1EBFp n\u00E0y kh\u00F4ng mang nghi\u1EC7p.</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
@@ -502,12 +429,12 @@ export function ReportClient({
                 const interp = interpretations[`karmic_debt_${n}`]
                 const [, base] = DEBT_LABELS[n] ?? [`Debt ${n}`, n % 9 || 9]
                 return (
-                  <div key={n} style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderLeft: `4px solid ${tc.karmicCardBorderLeft}`, borderRadius: 12, padding: 24 }}>
-                    <div style={{ fontSize: 48, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 8 }}>{n}/{base}</div>
-                    <p style={{ fontSize: 15, fontWeight: 600, color: tc.body, margin: '0 0 12px' }}>
-                      {interp?.title ?? `Nghiệp ${n}/${base}`}
+                  <div key={n} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderLeft: '4px solid var(--report-karmic-border-left)', borderRadius: 12, padding: 24 }}>
+                    <div style={{ fontSize: 48, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 8 }}>{n}/{base}</div>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px' }}>
+                      {interp?.title ?? `Nghi\u1EC7p ${n}/${base}`}
                     </p>
-                    {interp?.overview && <p style={{ fontSize: 13, color: tc.body, lineHeight: 1.8, margin: 0 }}>{interp.overview}</p>}
+                    {interp?.overview && <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.8, margin: 0 }}>{interp.overview}</p>}
                   </div>
                 )
               })}
@@ -517,33 +444,33 @@ export function ReportClient({
       </section>
 
       {/* ── SECTION 5: Summary of Life's Journey ── */}
-      <section style={{ backgroundColor: tc.sectionBg, padding: '64px 16px' }}>
+      <section style={{ backgroundColor: 'var(--report-section-bg)', padding: '64px 16px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Tóm Tắt Hành Trình Cuộc Đời" tc={tc} />
-          <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 16, padding: 32 }}>
+          <SectionHeading title="T\u00F3m T\u1EAFt H\u00E0nh Tr\u00ECnh Cu\u1ED9c \u0110\u1EDDi" />
+          <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 32 }}>
             {narrative
-              ? <MarkdownNarrative text={narrative} tc={tc} />
-              : <p style={{ color: tc.muted }}>Nội dung bản đọc chưa có.</p>}
+              ? <MarkdownNarrative text={narrative} />
+              : <p style={{ color: 'var(--text-muted)' }}>N\u1ED9i dung b\u1EA3n \u0111\u1ECDc ch\u01B0a c\u00F3.</p>}
           </div>
         </div>
       </section>
 
       {/* ── SECTION 6: Annual Forecast ── */}
-      <section style={{ backgroundColor: tc.altSectionBg, padding: '64px 16px', ...S_DIVIDER }}>
+      <section style={{ backgroundColor: 'var(--report-alt-section-bg)', padding: '64px 16px', ...S_DIVIDER }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title={`Dự Báo Năm ${currentYear} & ${nextYear}`} tc={tc} />
+          <SectionHeading title={`D\u1EF1 B\u00E1o N\u0103m ${currentYear} & ${nextYear}`} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             {([
               { year: currentYear, py: pyCurr, info: pyCurrInfo, pin: pinCurr, ch: chCurr },
               { year: nextYear, py: pyNext, info: pyNextInfo, pin: pinNext, ch: chNext },
             ] as const).map(({ year, py, info, pin, ch }) => (
-              <div key={year} style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 16, overflow: 'hidden' }}>
+              <div key={year} style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, overflow: 'hidden' }}>
 
                 {/* Year header */}
-                <div style={{ backgroundColor: tc.forecastHeaderBg, borderBottom: `1px solid ${tc.cardBorder}`, padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 32, fontWeight: 700, color: tc.heading }}>{year}</span>
-                  <span style={{ fontSize: 13, padding: '6px 16px', borderRadius: 99, fontWeight: 600, backgroundColor: tc.themePillBg, color: tc.themePillText, border: `1px solid ${tc.themePillBorder}` }}>
-                    Năm Cá Nhân {py.display}
+                <div style={{ backgroundColor: 'var(--report-forecast-header-bg)', borderBottom: '1px solid var(--border-subtle)', padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 32, fontWeight: 700, color: 'var(--gold-main)' }}>{year}</span>
+                  <span style={{ fontSize: 13, padding: '6px 16px', borderRadius: 99, fontWeight: 600, backgroundColor: 'var(--report-theme-pill-bg)', color: 'var(--report-theme-pill-text)', border: '1px solid var(--report-theme-pill-border)' }}>
+                    N\u0103m C\u00E1 Nh\u00E2n {py.display}
                   </span>
                 </div>
 
@@ -551,24 +478,24 @@ export function ReportClient({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
                   {[
                     {
-                      num: py.display, numVal: py.value, sublabel: 'Năm Cá Nhân', title: info.theme,
+                      num: py.display, numVal: py.value, sublabel: 'N\u0103m C\u00E1 Nh\u00E2n', title: info.theme,
                       interpKey: `life_path_${py.value}`,
                     },
                     {
-                      num: pin?.number.display ?? '—', numVal: pin?.number.value, sublabel: 'Đỉnh Cao', title: translateOrdinalLabel(pin?.label, 'Chu Kỳ Đỉnh Cao'),
+                      num: pin?.number.display ?? '—', numVal: pin?.number.value, sublabel: '\u0110\u1EC9nh Cao', title: translateOrdinalLabel(pin?.label, 'Chu K\u1EF3 \u0110\u1EC9nh Cao'),
                       interpKey: pin ? `life_path_${pin.number.value}` : null,
                     },
                     {
-                      num: ch?.number != null ? String(ch.number) : '0', numVal: ch?.number, sublabel: 'Thách Thức', title: translateOrdinalLabel(ch?.label, 'Chu Kỳ Thách Thức'),
+                      num: ch?.number != null ? String(ch.number) : '0', numVal: ch?.number, sublabel: 'Th\u00E1ch Th\u1EE9c', title: translateOrdinalLabel(ch?.label, 'Chu K\u1EF3 Th\u00E1ch Th\u1EE9c'),
                       interpKey: ch?.number != null ? `life_path_${ch.number}` : null,
                     },
                   ].map((col, ci) => (
-                    <div key={ci} style={{ padding: 24, borderRight: ci < 2 ? `1px solid ${tc.divider}` : undefined }}>
-                      <div style={{ fontSize: 40, fontWeight: 700, color: tc.number, lineHeight: 1, marginBottom: 8 }}>{col.num}</div>
-                      <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>{col.sublabel}</p>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: tc.body, margin: '0 0 8px' }}>{col.title}</p>
+                    <div key={ci} style={{ padding: 24, borderRight: ci < 2 ? '1px solid var(--border-subtle)' : undefined }}>
+                      <div style={{ fontSize: 40, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 8 }}>{col.num}</div>
+                      <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>{col.sublabel}</p>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 8px' }}>{col.title}</p>
                       {col.interpKey && interpretations[col.interpKey]?.overview && (
-                        <p style={{ fontSize: 11, color: tc.muted, lineHeight: 1.6, margin: 0 }}>
+                        <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
                           {interpretations[col.interpKey]!.overview!.slice(0, 140)}…
                         </p>
                       )}
@@ -577,11 +504,11 @@ export function ReportClient({
                 </div>
 
                 {/* Key themes */}
-                <div style={{ padding: '16px 32px', borderTop: `1px solid ${tc.divider}` }}>
-                  <p style={{ color: tc.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>Chủ Đề Chính</p>
+                <div style={{ padding: '16px 32px', borderTop: '1px solid var(--border-subtle)' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>Ch\u1EE7 \u0110\u1EC1 Ch\u00EDnh</p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {info.bullets.map((b, i) => (
-                      <span key={i} style={{ fontSize: 12, padding: '5px 14px', borderRadius: 99, backgroundColor: tc.tagBg, color: tc.tagText, border: `1px solid ${tc.tagBorder}` }}>
+                      <span key={i} style={{ fontSize: 12, padding: '5px 14px', borderRadius: 99, backgroundColor: 'var(--report-tag-bg)', color: 'var(--report-tag-text)', border: '1px solid var(--report-tag-border)' }}>
                         {b}
                       </span>
                     ))}
@@ -594,54 +521,54 @@ export function ReportClient({
       </section>
 
       {/* ── SECTION 7: Summary & Future Directions ── */}
-      <section style={{ backgroundColor: tc.sectionBg, padding: '64px 16px' }}>
+      <section style={{ backgroundColor: 'var(--report-section-bg)', padding: '64px 16px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <SectionHeading title="Tóm Tắt & Hướng Đi Tương Lai" tc={tc} />
+          <SectionHeading title="T\u00F3m T\u1EAFt & H\u01B0\u1EDBng \u0110i T\u01B0\u01A1ng Lai" />
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginBottom: 32 }}>
             {/* Strengths */}
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: tc.heading, margin: '0 0 16px' }}>Điểm Mạnh Của Bạn</p>
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold-main)', margin: '0 0 16px' }}>\u0110i\u1EC3m M\u1EA1nh C\u1EE7a B\u1EA1n</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {(strengthBullets.length > 0 ? strengthBullets : [
-                  'Tài năng tự nhiên của bạn tuôn chảy qua Đường Đời.',
-                  'Bạn có trí tuệ độc đáo để cống hiến cho thế giới.',
-                  'Linh hồn bạn mang tiềm năng sâu sắc và bền vững.',
+                  'T\u00E0i n\u0103ng t\u1EF1 nhi\u00EAn c\u1EE7a b\u1EA1n tu\u00F4n ch\u1EA3y qua \u0110\u01B0\u1EDDng \u0110\u1EDDi.',
+                  'B\u1EA1n c\u00F3 tr\u00ED tu\u1EC7 \u0111\u1ED9c \u0111\u00E1o \u0111\u1EC3 c\u1ED1ng hi\u1EBFn cho th\u1EBF gi\u1EDBi.',
+                  'Linh h\u1ED3n b\u1EA1n mang ti\u1EC1m n\u0103ng s\u00E2u s\u1EAFc v\u00E0 b\u1EC1n v\u1EEFng.',
                 ]).slice(0, 3).map((b, i) => (
-                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: tc.body }}>
-                    <span style={{ color: '#D4AC6E', flexShrink: 0 }}>✓</span><span>{b}</span>
+                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--text-primary)' }}>
+                    <span style={{ color: 'var(--gold-main)', flexShrink: 0 }}>✓</span><span>{b}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Growth */}
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: tc.heading, margin: '0 0 16px' }}>Lĩnh Vực Cần Phát Triển</p>
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold-main)', margin: '0 0 16px' }}>L\u0129nh V\u1EF1c C\u1EA7n Ph\u00E1t Tri\u1EC3n</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {(growthBullets.length > 0 ? growthBullets : [
-                  'Đón nhận sự dễ tổn thương và cởi mở.',
-                  'Cân bằng nhu cầu cá nhân với việc phục vụ người khác.',
-                  'Tin tưởng vào hành trình ngay cả khi con đường chưa rõ ràng.',
+                  '\u0110\u00F3n nh\u1EADn s\u1EF1 d\u1EC5 t\u1ED5n th\u01B0\u01A1ng v\u00E0 c\u1EDFi m\u1EDF.',
+                  'C\u00E2n b\u1EB1ng nhu c\u1EA7u c\u00E1 nh\u00E2n v\u1EDBi vi\u1EC7c ph\u1EE5c v\u1EE5 ng\u01B0\u1EDDi kh\u00E1c.',
+                  'Tin t\u01B0\u1EDFng v\u00E0o h\u00E0nh tr\u00ECnh ngay c\u1EA3 khi con \u0111\u01B0\u1EDDng ch\u01B0a r\u00F5 r\u00E0ng.',
                 ]).slice(0, 3).map((b, i) => (
-                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: tc.body }}>
-                    <span style={{ color: tc.accent, flexShrink: 0 }}>○</span><span>{b}</span>
+                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--text-primary)' }}>
+                    <span style={{ color: 'var(--report-accent)', flexShrink: 0 }}>○</span><span>{b}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Path Forward */}
-            <div style={{ backgroundColor: tc.cardBg, border: `1px solid ${tc.cardBorder}`, borderRadius: 12, padding: 24 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: tc.heading, margin: '0 0 16px' }}>Con Đường Phía Trước</p>
+            <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold-main)', margin: '0 0 16px' }}>Con \u0110\u01B0\u1EDDng Ph\u00EDa Tr\u01B0\u1EDBc</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {(pathBullets.length > 0 ? pathBullets : [
-                  'Theo đuổi tiếng gọi của những giá trị sâu sắc nhất của bạn.',
-                  'Liên kết hành động hàng ngày với mục đích linh hồn của bạn.',
-                  'Tin rằng bạn đang ở đúng nơi bạn cần ở.',
+                  'Theo \u0111u\u1ED5i ti\u1EBFng g\u1ECDi c\u1EE7a nh\u1EEFng gi\u00E1 tr\u1ECB s\u00E2u s\u1EAFc nh\u1EA5t c\u1EE7a b\u1EA1n.',
+                  'Li\u00EAn k\u1EBFt h\u00E0nh \u0111\u1ED9ng h\u00E0ng ng\u00E0y v\u1EDBi m\u1EE5c \u0111\u00EDch linh h\u1ED3n c\u1EE7a b\u1EA1n.',
+                  'Tin r\u1EB1ng b\u1EA1n \u0111ang \u1EDF \u0111\u00FAng n\u01A1i b\u1EA1n c\u1EA7n \u1EDF.',
                 ]).slice(0, 3).map((b, i) => (
-                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: tc.body }}>
-                    <span style={{ color: tc.accent, flexShrink: 0 }}>→</span><span>{b}</span>
+                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--text-primary)' }}>
+                    <span style={{ color: 'var(--report-accent)', flexShrink: 0 }}>\u2192</span><span>{b}</span>
                   </li>
                 ))}
               </ul>
@@ -649,21 +576,21 @@ export function ReportClient({
           </div>
 
           {/* Summary Conclusion */}
-          <div style={{ backgroundColor: tc.summaryBoxBg, border: `1px solid ${tc.summaryBoxBorder}`, borderRadius: 16, padding: 40, textAlign: 'center' }}>
+          <div style={{ backgroundColor: 'var(--report-summary-bg)', border: '1px solid var(--report-summary-border)', borderRadius: 16, padding: 40, textAlign: 'center' }}>
             <div style={{ fontSize: 32, marginBottom: 16 }}>✨</div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: tc.heading, margin: '0 0 24px' }}>Kết Luận Tổng Hợp</h3>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gold-main)', margin: '0 0 24px' }}>K\u1EBFt Lu\u1EADn T\u1ED5ng H\u1EE3p</h3>
             <div style={{ maxWidth: 640, margin: '0 auto' }}>
               {closingText ? (
                 closingText.split('\n\n').filter(Boolean).slice(0, 2).map((p, i) => (
-                  <p key={i} style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: '0 0 16px' }}>{p}</p>
+                  <p key={i} style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.8, margin: '0 0 16px' }}>{p}</p>
                 ))
               ) : (
                 <>
-                  <p style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: '0 0 16px' }}>
-                    Với Đường Đời {profile.lifePath.display} và Vận Mệnh {profile.destiny.methodA.display}, bạn mang một bản thiết kế độc nhất cho kiếp này — sự kết hợp của tài năng, bài học và mục đích hoàn toàn là của riêng bạn.
+                  <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.8, margin: '0 0 16px' }}>
+                    V\u1EDBi \u0110\u01B0\u1EDDng \u0110\u1EDDi {profile.lifePath.display} v\u00E0 V\u1EADn M\u1EC7nh {profile.destiny.methodA.display}, b\u1EA1n mang m\u1ED9t b\u1EA3n thi\u1EBFt k\u1EBF \u0111\u1ED9c nh\u1EA5t cho ki\u1EBFp n\u00E0y — s\u1EF1 k\u1EBFt h\u1EE3p c\u1EE7a t\u00E0i n\u0103ng, b\u00E0i h\u1ECDc v\u00E0 m\u1EE5c \u0111\u00EDch ho\u00E0n to\u00E0n l\u00E0 c\u1EE7a ri\u00EAng b\u1EA1n.
                   </p>
-                  <p style={{ fontSize: 14, color: tc.body, lineHeight: 1.8, margin: 0 }}>
-                    Khi bạn trải qua Năm Cá Nhân {pyCurr.display} trong năm {currentYear}, đây là lời mời để bạn bước vào đầy đủ tiềm năng của mình. Hãy tin tưởng vào trí tuệ của các con số, đón nhận hành trình, và biết rằng mỗi bước bạn đi là một phần của kế hoạch được sắp xếp hoàn hảo.
+                  <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.8, margin: 0 }}>
+                    Khi b\u1EA1n tr\u1EA3i qua N\u0103m C\u00E1 Nh\u00E2n {pyCurr.display} trong n\u0103m {currentYear}, \u0111\u00E2y l\u00E0 l\u1EDDi m\u1EDDi \u0111\u1EC3 b\u1EA1n b\u01B0\u1EDBc v\u00E0o \u0111\u1EA7y \u0111\u1EE7 ti\u1EC1m n\u0103ng c\u1EE7a m\u00ECnh. H\u00E3y tin t\u01B0\u1EDFng v\u00E0o tr\u00ED tu\u1EC7 c\u1EE7a c\u00E1c con s\u1ED1, \u0111\u00F3n nh\u1EADn h\u00E0nh tr\u00ECnh, v\u00E0 bi\u1EBFt r\u1EB1ng m\u1ED7i b\u01B0\u1EDBc b\u1EA1n \u0111i l\u00E0 m\u1ED9t ph\u1EA7n c\u1EE7a k\u1EBF ho\u1EA1ch \u0111\u01B0\u1EE3c s\u1EAFp x\u1EBFp ho\u00E0n h\u1EA3o.
                   </p>
                 </>
               )}
@@ -673,12 +600,12 @@ export function ReportClient({
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ backgroundColor: tc.footerBg, borderTop: `1px solid ${tc.footerBorder}`, padding: '48px 16px', textAlign: 'center' }}>
+      <footer style={{ backgroundColor: 'var(--report-footer-bg)', borderTop: '1px solid var(--report-footer-border)', padding: '48px 16px', textAlign: 'center' }}>
         {practitioner.logoUrl && (
           <img src={practitioner.logoUrl} alt={practitioner.name}
             style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 12px', display: 'block', border: '1px solid rgba(255,255,255,0.2)' }} />
         )}
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>Báo Cáo Được Thực Hiện Bởi</p>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>B\u00E1o C\u00E1o \u0110\u01B0\u1EE3c Th\u1EF1c Hi\u1EC7n B\u1EDFi</p>
         <p style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 600, margin: '0 0 4px' }}>{practitioner.name}</p>
         {practitioner.brandingFooter && (
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, margin: '0 0 4px' }}>{practitioner.brandingFooter}</p>
@@ -696,31 +623,31 @@ export function ReportClient({
             padding: '24px 32px',
           }}>
             <p style={{ color: 'rgba(212,172,110,0.6)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.15em', margin: '0 0 12px' }}>
-              LIÊN HỆ
+              LI\u00CAN H\u1EC6
             </p>
             {practitioner.phone ? (
-              <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: '#D4AC6E', fontWeight: 700, fontSize: 18, margin: '0 0 12px', textDecoration: 'none', opacity: 1, transition: 'opacity 0.2s' }}
+              <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: 'var(--gold-main)', fontWeight: 700, fontSize: 18, margin: '0 0 12px', textDecoration: 'none', opacity: 1, transition: 'opacity 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.75')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
                 {practitioner.name}
               </a>
             ) : (
-              <p style={{ color: '#D4AC6E', fontWeight: 700, fontSize: 18, margin: '0 0 12px' }}>
+              <p style={{ color: 'var(--gold-main)', fontWeight: 700, fontSize: 18, margin: '0 0 12px' }}>
                 {practitioner.name}
               </p>
             )}
             {practitioner.phone && (
               <a href={`tel:${practitioner.phone}`} style={{ display: 'block', color: 'rgba(255,255,255,0.8)', fontSize: 15, margin: '0 0 8px', textDecoration: 'none', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#D4AC6E')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--gold-main)')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.8)')}
               >
-                📞 {formatPhone(practitioner.phone)}
+                \uD83D\uDCDE {formatPhone(practitioner.phone)}
               </a>
             )}
             {practitioner.brandingEmail && (
               <a href={`mailto:${practitioner.brandingEmail}`} style={{ display: 'block', color: 'rgba(255,255,255,0.75)', fontSize: 14, textDecoration: 'none' }}>
-                ✉ {practitioner.brandingEmail}
+                \u2709 {practitioner.brandingEmail}
               </a>
             )}
           </div>
@@ -730,9 +657,9 @@ export function ReportClient({
           href={`/api/report/${token}/pdf`}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ display: 'inline-block', backgroundColor: '#D4AC6E', color: '#0D0D1A', fontWeight: 600, borderRadius: 12, padding: '16px 32px', fontSize: 15, textDecoration: 'none' }}
+          style={{ display: 'inline-block', backgroundColor: 'var(--gold-main)', color: 'var(--report-section-bg)', fontWeight: 600, borderRadius: 12, padding: '16px 32px', fontSize: 15, textDecoration: 'none' }}
         >
-          ⬇ Tải PDF
+          \u2B07 T\u1EA3i PDF
         </a>
       </footer>
 

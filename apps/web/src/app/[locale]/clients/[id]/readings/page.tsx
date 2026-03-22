@@ -107,7 +107,7 @@ export default async function ReadingsPage({
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       <span style={{
-                        backgroundColor: 'rgba(196,146,42,0.12)',
+                        backgroundColor: 'var(--gold-bg)',
                         color: 'var(--color-gold)',
                         fontSize: 11,
                         fontWeight: 600,
@@ -133,23 +133,23 @@ export default async function ReadingsPage({
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {r.status === 'finalised' ? (
                         <span style={{
-                          backgroundColor: 'rgba(15,110,86,0.08)',
+                          backgroundColor: 'color-mix(in srgb, var(--status-success) 8%, transparent)',
                           color: 'var(--color-green)',
                           fontSize: 11,
                           padding: '3px 10px',
                           borderRadius: 10,
-                          border: '0.5px solid rgba(15,110,86,0.2)',
+                          border: '0.5px solid color-mix(in srgb, var(--status-success) 20%, transparent)',
                         }}>
                           Hoàn thành
                         </span>
                       ) : (
                         <span style={{
-                          backgroundColor: 'rgba(196,146,42,0.08)',
-                          color: '#B8892A',
+                          backgroundColor: 'var(--gold-bg)',
+                          color: 'var(--gold-main)',
                           fontSize: 11,
                           padding: '3px 10px',
                           borderRadius: 10,
-                          border: '0.5px solid rgba(196,146,42,0.2)',
+                          border: '0.5px solid color-mix(in srgb, var(--gold-main) 20%, transparent)',
                         }}>
                           Bản nháp
                         </span>

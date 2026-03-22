@@ -29,12 +29,15 @@ function MarkdownReading({ text }: { text: string }): React.ReactElement {
         return (
           <div key={i}>
             {heading && (
-              <h2 className="text-[#7B5EA7] font-medium text-lg mt-8 mb-3 pb-2 border-b border-[#E8E0F0]">
+              <h2
+                className="font-medium text-lg mt-8 mb-3 pb-2 border-b"
+                style={{ color: 'var(--gold-main)', borderColor: 'var(--border-subtle)' }}
+              >
                 {heading}
               </h2>
             )}
             {paragraphs.map((para, j) => (
-              <p key={j} className="text-[#2C2C2C] leading-relaxed mb-4">
+              <p key={j} className="leading-relaxed mb-4" style={{ color: 'var(--text-primary)' }}>
                 {para}
               </p>
             ))}
@@ -299,24 +302,28 @@ export default function ReadingPage(): React.ReactElement {
   const showReadingDisplay = streamedText || isStreaming
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
       <main className="max-w-[800px] mx-auto px-4 py-8">
         {/* Top bar */}
         <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
           <div className="flex items-center gap-3 flex-wrap">
             <Link
               href={`/clients/${id}/profile`}
-              className="text-sm text-[#888888] hover:text-[#7B5EA7] transition-colors"
+              className="text-sm transition-colors"
+              style={{ color: 'var(--text-muted)' }}
             >
               ← Quay lại hồ sơ
             </Link>
             {clientName && (
-              <h1 className="text-xl font-medium text-[#2C2C2C]">{clientName}</h1>
+              <h1 className="text-xl font-medium" style={{ color: 'var(--text-primary)' }}>{clientName}</h1>
             )}
           </div>
           <div className="flex items-center gap-2">
             {version !== null && (
-              <span className="bg-[#F5F0FB] text-[#7B5EA7] text-xs px-2 py-1 rounded-full">
+              <span
+                className="text-xs px-2 py-1 rounded-full"
+                style={{ backgroundColor: 'var(--gold-bg)', color: 'var(--gold-main)' }}
+              >
                 Phiên bản {version}
               </span>
             )}
@@ -335,8 +342,11 @@ export default function ReadingPage(): React.ReactElement {
 
         {/* Section A — Generation panel */}
         {showGenerationPanel && (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-6">
-            <h2 className="text-[#7B5EA7] font-medium text-lg mb-5">Tạo Bản Đọc AI</h2>
+          <div
+            className="rounded-2xl shadow-sm border p-6"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+          >
+            <h2 className="font-medium text-lg mb-5" style={{ color: 'var(--gold-main)' }}>Tạo Bản Đọc AI</h2>
 
             {/* Tone selector */}
             <div className="flex flex-wrap gap-2 mb-4">
@@ -346,8 +356,13 @@ export default function ReadingPage(): React.ReactElement {
                   onClick={() => setTone(value)}
                   className={
                     tone === value
-                      ? 'bg-[#7B5EA7] text-white rounded-full px-4 py-2 text-sm font-medium'
-                      : 'bg-white border border-[#E8E0F0] text-[#888888] rounded-full px-4 py-2 text-sm hover:border-[#7B5EA7] cursor-pointer'
+                      ? 'text-white rounded-full px-4 py-2 text-sm font-medium'
+                      : 'border rounded-full px-4 py-2 text-sm cursor-pointer'
+                  }
+                  style={
+                    tone === value
+                      ? { backgroundColor: 'var(--gold-main)' }
+                      : { backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }
                   }
                 >
                   {label}
@@ -359,7 +374,8 @@ export default function ReadingPage(): React.ReactElement {
             {!showCustomFocus ? (
               <button
                 onClick={() => setShowCustomFocus(true)}
-                className="text-[#7B5EA7] text-sm"
+                className="text-sm"
+                style={{ color: 'var(--gold-main)' }}
               >
                 + Thêm chủ đề tập trung (tùy chọn)
               </button>
@@ -369,14 +385,16 @@ export default function ReadingPage(): React.ReactElement {
                 onChange={(e) => setCustomFocus(e.target.value)}
                 placeholder="VD: Cô ấy đang cân nhắc thay đổi nghề nghiệp trong năm nay..."
                 rows={3}
-                className="w-full mt-3 p-3 border border-[#E8E0F0] rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+                className="w-full mt-3 p-3 border rounded-xl text-sm resize-none focus:outline-none focus:ring-2"
+                style={{ borderColor: 'var(--border-subtle)', '--tw-ring-color': 'var(--gold-main)' } as React.CSSProperties}
               />
             )}
 
             <button
               type="button"
               onClick={() => void handleGenerate()}
-              className="w-full mt-6 bg-[#7B5EA7] text-white rounded-xl py-3 font-medium hover:bg-[#6B4E97] transition-colors"
+              className="w-full mt-6 text-white rounded-xl py-3 font-medium transition-colors"
+              style={{ backgroundColor: 'var(--gold-main)' }}
             >
               Tạo Bản Đọc
             </button>
@@ -387,16 +405,19 @@ export default function ReadingPage(): React.ReactElement {
         {showReadingDisplay && (
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-[#888888] text-sm">Ngôn ngữ:</span>
-              <span className="bg-[#F5F0FB] text-[#7B5EA7] rounded-full px-3 py-1 text-sm">
+              <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Ngôn ngữ:</span>
+              <span
+                className="rounded-full px-3 py-1 text-sm"
+                style={{ backgroundColor: 'var(--gold-bg)', color: 'var(--gold-main)' }}
+              >
                 {displayLanguage === 'vi' ? 'Tiếng Việt' : 'English'}
               </span>
             </div>
             <div className="flex items-center gap-2">
               {isTranslating ? (
-                <span className="text-[#7B5EA7] text-xs animate-pulse">Đang dịch…</span>
+                <span className="text-xs animate-pulse" style={{ color: 'var(--gold-main)' }}>Đang dịch…</span>
               ) : (
-                <span className="text-[#888888] text-xs">Dịch sang:</span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Dịch sang:</span>
               )}
               {(['vi', 'en'] as const).map((lang) => {
                 const labels = { vi: 'Việt', en: 'EN' }
@@ -409,8 +430,13 @@ export default function ReadingPage(): React.ReactElement {
                     onClick={() => void handleTranslate(lang)}
                     className={
                       isActive
-                        ? 'bg-[#7B5EA7] text-white rounded-full px-3 py-1 text-xs font-medium cursor-default'
-                        : 'bg-white border border-[#E8E0F0] text-[#888888] rounded-full px-3 py-1 text-xs hover:border-[#7B5EA7] hover:text-[#7B5EA7] transition-colors disabled:opacity-40'
+                        ? 'text-white rounded-full px-3 py-1 text-xs font-medium cursor-default'
+                        : 'border rounded-full px-3 py-1 text-xs transition-colors disabled:opacity-40'
+                    }
+                    style={
+                      isActive
+                        ? { backgroundColor: 'var(--gold-main)' }
+                        : { backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }
                     }
                   >
                     {labels[lang]}
@@ -423,13 +449,17 @@ export default function ReadingPage(): React.ReactElement {
 
         {/* Section B — Reading display */}
         {showReadingDisplay && (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#E8E0F0] p-6 md:p-8">
+          <div
+            className="rounded-2xl shadow-sm border p-6 md:p-8"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+          >
             {/* Progress bar while streaming or translating */}
             {(isStreaming || isTranslating) && (
-              <div className="w-full h-1 bg-[#E8E0F0] rounded-full mb-6 overflow-hidden">
+              <div className="w-full h-1 rounded-full mb-6 overflow-hidden" style={{ backgroundColor: 'var(--border-subtle)' }}>
                 <div
-                  className="h-full bg-[#7B5EA7] rounded-full"
+                  className="h-full rounded-full"
                   style={{
+                    backgroundColor: 'var(--gold-main)',
                     animation: 'progressBar 30s ease-out forwards',
                     width: '0%',
                   }}
@@ -448,13 +478,14 @@ export default function ReadingPage(): React.ReactElement {
               <textarea
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
-                className="w-full min-h-[500px] p-4 border border-[#E8E0F0] rounded-xl font-mono text-sm resize-y focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+                className="w-full min-h-[500px] p-4 border rounded-xl font-mono text-sm resize-y focus:outline-none focus:ring-2"
+                style={{ borderColor: 'var(--border-subtle)', '--tw-ring-color': 'var(--gold-main)' } as React.CSSProperties}
               />
             ) : (
               <div>
                 <MarkdownReading text={streamedText} />
                 {(isStreaming || isTranslating) && (
-                  <span className="inline-block w-0.5 h-4 bg-[#7B5EA7] animate-pulse ml-0.5" />
+                  <span className="inline-block w-0.5 h-4 animate-pulse ml-0.5" style={{ backgroundColor: 'var(--gold-main)' }} />
                 )}
               </div>
             )}
@@ -468,7 +499,8 @@ export default function ReadingPage(): React.ReactElement {
                       setEditText(streamedText)
                       setIsEditing(true)
                     }}
-                    className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
+                    className="border rounded-lg px-4 py-2 text-sm transition-colors"
+                    style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
                   >
                     Chỉnh sửa
                   </button>
@@ -478,13 +510,15 @@ export default function ReadingPage(): React.ReactElement {
                     <button
                       onClick={() => void handleSaveEdits()}
                       disabled={isSaving}
-                      className="bg-[#7B5EA7] text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] disabled:opacity-50 transition-colors"
+                      className="text-white rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50 transition-colors"
+                      style={{ backgroundColor: 'var(--gold-main)' }}
                     >
                       {isSaving ? 'Đang lưu…' : 'Lưu chỉnh sửa'}
                     </button>
                     <button
                       onClick={() => setIsEditing(false)}
-                      className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
+                      className="border rounded-lg px-4 py-2 text-sm transition-colors"
+                      style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
                     >
                       Hủy
                     </button>
@@ -493,7 +527,8 @@ export default function ReadingPage(): React.ReactElement {
                 {!isStreaming && !isTranslating && !isEditing && (
                   <button
                     onClick={handleRegenerate}
-                    className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
+                    className="border rounded-lg px-4 py-2 text-sm transition-colors"
+                    style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
                   >
                     Tạo lại
                   </button>
@@ -503,14 +538,16 @@ export default function ReadingPage(): React.ReactElement {
               <div className="flex items-center gap-2">
                 <Link
                   href={`/clients/${id}/followup`}
-                  className="border border-[#E8E0F0] text-[#7B5EA7] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] hover:bg-[#F5F0FB] transition-colors"
+                  className="border rounded-lg px-4 py-2 text-sm transition-colors"
+                  style={{ borderColor: 'var(--border-subtle)', color: 'var(--gold-main)' }}
                 >
                   Hỏi đáp thêm →
                 </Link>
                 {status !== 'finalised' && !isStreaming && !isTranslating && readingId && (
                   <button
                     onClick={() => void handleFinalise()}
-                    className="bg-[#7B5EA7] text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
+                    className="text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                    style={{ backgroundColor: 'var(--gold-main)' }}
                   >
                     Hoàn tất →
                   </button>
@@ -524,7 +561,10 @@ export default function ReadingPage(): React.ReactElement {
         {status === 'finalised' && shareToken && (
           <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mt-6">
             <p className="text-green-700 font-medium mb-3">✓ Đã hoàn tất bản đọc</p>
-            <div className="bg-white border border-[#E8E0F0] rounded-xl px-4 py-3 font-mono text-sm text-[#888888] truncate mb-4">
+            <div
+              className="border rounded-xl px-4 py-3 font-mono text-sm truncate mb-4"
+              style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}
+            >
               {typeof window !== 'undefined'
                 ? `${window.location.origin}/report/${shareToken}`
                 : `/report/${shareToken}`}
@@ -533,14 +573,16 @@ export default function ReadingPage(): React.ReactElement {
               <button
                 type="button"
                 onClick={() => void handleCopyLink()}
-                className="bg-[#7B5EA7] text-white rounded-xl px-5 py-2.5 text-sm font-medium hover:bg-[#6B4E97] transition-colors"
+                className="text-white rounded-xl px-5 py-2.5 text-sm font-medium transition-colors"
+                style={{ backgroundColor: 'var(--gold-main)' }}
               >
                 {copied ? '✓ Đã sao chép!' : 'Sao chép liên kết'}
               </button>
               <button
                 type="button"
                 onClick={() => window.open(`/report/${shareToken}`, '_blank')}
-                className="border border-[#E8E0F0] text-[#2C2C2C] rounded-xl px-5 py-2.5 text-sm hover:border-[#7B5EA7] transition-colors"
+                className="border rounded-xl px-5 py-2.5 text-sm transition-colors"
+                style={{ borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
               >
                 Xem báo cáo
               </button>

@@ -46,7 +46,7 @@ export function DeleteClientButton({ clientId, clientName, locale }: {
       <div className="flex gap-2">
         <button
           onClick={() => setConfirming(false)}
-          className="border border-[#E8E0F0] text-[#2C2C2C] rounded-lg px-4 py-2 text-sm hover:border-[#7B5EA7] transition-colors"
+          className="border border-[var(--border-subtle)] text-[var(--text-primary)] rounded-lg px-4 py-2 text-sm hover:border-[var(--purple-main)] transition-colors"
         >
           Hủy
         </button>

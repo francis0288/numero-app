@@ -17,11 +17,11 @@ function reduceDigit(n: number): number {
 }
 
 const ErrorPage = ({ msg, sub }: { msg: string; sub: string }) => (
-  <div style={{ minHeight: '100vh', backgroundColor: '#0D0D1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <div style={{ minHeight: '100vh', backgroundColor: 'var(--report-section-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <div style={{ textAlign: 'center', padding: 32 }}>
       <div style={{ fontSize: 56, marginBottom: 24 }}>✨</div>
-      <h2 style={{ color: '#D4AC6E', fontSize: 20, fontWeight: 500, marginBottom: 12 }}>{msg}</h2>
-      <p style={{ color: '#888899', fontSize: 14 }}>{sub}</p>
+      <h2 style={{ color: 'var(--gold-main)', fontSize: 20, fontWeight: 500, marginBottom: 12 }}>{msg}</h2>
+      <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>{sub}</p>
     </div>
   </div>
 )

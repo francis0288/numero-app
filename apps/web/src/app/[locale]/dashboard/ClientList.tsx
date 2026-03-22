@@ -4,19 +4,19 @@ import React, { useState } from 'react'
 import { formatDateShortVI } from '@/lib/formatDate'
 
 const AVATAR_COLORS = [
-  { bg: 'rgba(196,146,42,0.12)',  text: '#B8892A' },
-  { bg: 'rgba(83,74,183,0.10)',   text: '#534AB7' },
-  { bg: 'rgba(15,110,86,0.10)',   text: '#0F6E56' },
-  { bg: 'rgba(153,60,29,0.10)',   text: '#993C1D' },
-  { bg: 'rgba(136,135,128,0.12)', text: '#444441' },
+  { bg: 'var(--gold-bg)',    text: 'var(--gold-main)' },
+  { bg: 'var(--purple-bg)',  text: 'var(--purple-bright)' },
+  { bg: 'var(--gold-bg)',    text: 'var(--status-success)' },
+  { bg: 'var(--amber-bg)',   text: 'var(--amber-main)' },
+  { bg: 'var(--gold-bg)',    text: 'var(--text-muted)' },
 ]
 
 const BADGE_COLORS = [
-  { bg: 'rgba(196,146,42,0.12)',  text: '#B8892A' },
-  { bg: 'rgba(83,74,183,0.10)',   text: '#534AB7' },
-  { bg: 'rgba(15,110,86,0.10)',   text: '#0F6E56' },
-  { bg: 'rgba(153,60,29,0.10)',   text: '#993C1D' },
-  { bg: 'rgba(136,135,128,0.12)', text: '#444441' },
+  { bg: 'var(--gold-bg)',    text: 'var(--gold-main)' },
+  { bg: 'var(--purple-bg)',  text: 'var(--purple-bright)' },
+  { bg: 'var(--gold-bg)',    text: 'var(--status-success)' },
+  { bg: 'var(--amber-bg)',   text: 'var(--amber-main)' },
+  { bg: 'var(--gold-bg)',    text: 'var(--text-muted)' },
 ]
 
 interface EnrichedClient {
@@ -195,7 +195,7 @@ export function ClientList({
               {/* Delete confirm */}
               {pendingDelete === client.id && (
                 <div style={{
-                  backgroundColor: '#FFF0F0', border: '1px solid #FCCACA', borderRadius: 14,
+                  backgroundColor: 'color-mix(in srgb, var(--status-error) 8%, transparent)', border: '1px solid var(--status-error)', borderRadius: 14,
                   padding: '12px 16px', marginBottom: 6, display: 'flex', alignItems: 'center',
                   justifyContent: 'space-between', gap: 12,
                 }}>

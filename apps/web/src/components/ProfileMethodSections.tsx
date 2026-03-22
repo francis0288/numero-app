@@ -32,7 +32,7 @@ function WorkingsBlock({ workings }: { workings?: string }) {
     <div style={{
       marginTop: 6,
       borderLeft: '2px solid var(--color-gold)',
-      backgroundColor: 'rgba(196,146,42,0.04)',
+      backgroundColor: 'var(--gold-bg)',
       borderRadius: '0 6px 6px 0',
       padding: '6px 10px',
     }}>
@@ -119,11 +119,11 @@ export function ProfileMethodSections({
               return (
                 <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
                   <svg viewBox="0 0 72 72" width="72" height="72">
-                    <circle cx="36" cy="36" r="28" stroke="rgba(196,146,42,0.12)" strokeWidth="5" fill="none" />
+                    <circle cx="36" cy="36" r="28" stroke="var(--gold-bg)" strokeWidth="5" fill="none" />
                     {capped > 0 && (
                       <circle
                         cx="36" cy="36" r="28"
-                        stroke="#C4922A" strokeWidth="5" fill="none"
+                        stroke="var(--gold-main)" strokeWidth="5" fill="none"
                         strokeLinecap="round"
                         strokeDasharray={dasharray}
                         transform="rotate(-90 36 36)"
@@ -132,7 +132,7 @@ export function ProfileMethodSections({
                     <text
                       x="36" y="41" textAnchor="middle"
                       fontSize={nr.isMasterNumber ? '14' : '20'} fontWeight="500"
-                      fill="#1C1A14" fontFamily="Georgia,serif"
+                      fill="var(--text-primary)" fontFamily="Georgia,serif"
                     >
                       {nr.value > 0 ? nr.display : '—'}
                     </text>
@@ -184,7 +184,7 @@ export function ProfileMethodSections({
           {detailRows.map(({ num, val, isMaster, title, sub, workings, methodNote }, idx) => (
             <div key={title} style={{
               padding: '14px 0',
-              borderBottom: idx < detailRows.length - 1 ? '0.5px solid rgba(28,22,10,0.07)' : 'none',
+              borderBottom: idx < detailRows.length - 1 ? '0.5px solid var(--border-subtle)' : 'none',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{
@@ -208,11 +208,11 @@ export function ProfileMethodSections({
                   <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '2px 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
                     {sub}
                   </p>
-                  <div style={{ height: 4, backgroundColor: 'rgba(28,22,10,0.08)', borderRadius: 2, overflow: 'hidden' }}>
+                  <div style={{ height: 4, backgroundColor: 'var(--border-subtle)', borderRadius: 2, overflow: 'hidden' }}>
                     <div style={{
                       height: '100%',
                       width: `${(Math.min(val, 9) / 9) * 100}%`,
-                      backgroundColor: '#C4922A', borderRadius: 2,
+                      backgroundColor: 'var(--gold-main)', borderRadius: 2,
                     }} />
                   </div>
                 </div>

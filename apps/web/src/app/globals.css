@@ -3,34 +3,338 @@
 @tailwind utilities;
 
 :root {
-  --color-gold:        #C4922A;
-  --color-gold-light:  #FAF0DC;
-  --color-dark:        #1C1A14;
-  --color-base:        #FAF8F3;
-  --color-white:       #FFFFFF;
-  --color-mid:         #7A7568;
-  --color-border:      #E8E4DC;
-  --color-danger:      #A32D2D;
-  --color-purple:      #534AB7;
-  --color-green:       #0F6E56;
-  --color-coral:       #993C1D;
+  /* ── DARK COSMIC THEME (default) ── */
 
+  /* Backgrounds */
+  --bg-primary:     #1C1A12;
+  --bg-secondary:   #141209;
+  --bg-tertiary:    #0E0C08;
+  --bg-card:        #1C1A12;
+  --bg-card-hover:  #242118;
+  --bg-input:       #14120988;
+
+  /* Borders */
+  --border-subtle:  #2E2A1A;
+  --border-default: #3E3820;
+  --border-strong:  #5A5030;
+
+  /* Gold — primary accent */
+  --gold-bright:    #ffd000;
+  --gold-main:      #C4922A;
+  --gold-muted:     #8A7A4A;
+  --gold-dim:       #5A5030;
+  --gold-bg:        #C4922A18;
+
+  /* Purple — secondary accent */
+  --purple-bright:  #C090E0;
+  --purple-main:    #7e069c;
+  --purple-muted:   #5A045A;
+  --purple-bg:      #7e069c22;
+
+  /* Amber — highlight */
+  --amber-main:     #d97511;
+  --amber-bg:       #d9751122;
+
+  /* Text */
+  --text-primary:   #E8D9B0;
+  --text-secondary: #A09070;
+  --text-muted:     #7A7060;
+  --text-dim:       #5A5040;
+
+  /* Status */
+  --status-success: #4ABA7A;
+  --status-warning: #E8A030;
+  --status-error:   #E85040;
+  --status-info:    #60A8E0;
+
+  /* Legacy aliases (backward compat during migration) */
+  --color-gold:     var(--gold-main);
+  --color-dark:     var(--text-primary);
+  --color-base:     var(--bg-tertiary);
+  --color-white:    var(--bg-card);
+  --color-mid:      var(--text-secondary);
+  --color-border:   var(--border-subtle);
+  --color-danger:   var(--status-error);
+  --color-green:    var(--status-success);
+
+  /* Fonts */
   --font-number: Georgia, serif;
   --font-ui:     -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
+  /* Spacing / radius */
   --radius-card:    16px;
   --radius-sm:      12px;
   --radius-pill:    20px;
   --screen-pad:     16px;
   --card-gap:       10px;
+
+  /* Report page */
+  --report-header-bg:          #1A1A2E;
+  --report-section-bg:         #0D0D1A;
+  --report-alt-section-bg:     #0F0F20;
+  --report-footer-bg:          #0D0D1A;
+  --report-footer-border:      #2D2D4E;
+  --report-accent:             #7B5EA7;
+  --report-master-badge-bg:    rgba(212,172,110,0.12);
+  --report-master-badge-border:#D4AC6E;
+  --report-master-badge-text:  #D4AC6E;
+  --report-karmic-badge-bg:    rgba(239,68,68,0.1);
+  --report-karmic-badge-border:#ef4444;
+  --report-karmic-badge-text:  #f87171;
+  --report-summary-bg:         rgba(123,94,167,0.2);
+  --report-summary-border:     rgba(123,94,167,0.4);
+  --report-karmic-border-left: #ef4444;
+  --report-forecast-header-bg: #12122A;
+  --report-theme-pill-bg:      rgba(212,172,110,0.15);
+  --report-theme-pill-text:    #D4AC6E;
+  --report-theme-pill-border:  rgba(212,172,110,0.3);
+  --report-tag-bg:             rgba(123,94,167,0.15);
+  --report-tag-text:           #9B7DC8;
+  --report-tag-border:         rgba(123,94,167,0.3);
+  --report-toggle-bg:          rgba(255,255,255,0.08);
+  --report-toggle-text:        #C8C8D4;
+  --report-toggle-border:      rgba(255,255,255,0.12);
+
+  --theme: "dark";
 }
 
+[data-theme="light"] {
+  /* ── WARM CREAM THEME ── */
+
+  /* Backgrounds */
+  --bg-primary:     #FDFAF4;
+  --bg-secondary:   #F5EFE4;
+  --bg-tertiary:    #EDE5D8;
+  --bg-card:        #FFFFFF;
+  --bg-card-hover:  #F8F4EC;
+  --bg-input:       #FFFFFF;
+
+  /* Borders */
+  --border-subtle:  #E8DFC8;
+  --border-default: #D8CDB8;
+  --border-strong:  #C0B098;
+
+  /* Purple — primary accent in light mode */
+  --gold-bright:    #ffd000;
+  --gold-main:      #7e069c;
+  --gold-muted:     #A060B0;
+  --gold-dim:       #D0A0E0;
+  --gold-bg:        #7e069c12;
+
+  /* Amber — accent in light mode */
+  --purple-bright:  #7e069c;
+  --purple-main:    #d97511;
+  --purple-muted:   #B06010;
+  --purple-bg:      #d9751118;
+
+  /* Gold highlight */
+  --amber-main:     #d97511;
+  --amber-bg:       #ffd00033;
+
+  /* Text */
+  --text-primary:   #3A2040;
+  --text-secondary: #806090;
+  --text-muted:     #A090A0;
+  --text-dim:       #C0B0C0;
+
+  /* Status */
+  --status-success: #2A8A50;
+  --status-warning: #B07010;
+  --status-error:   #C03030;
+  --status-info:    #2060A0;
+
+  /* Legacy aliases */
+  --color-gold:     var(--gold-main);
+  --color-dark:     var(--text-primary);
+  --color-base:     var(--bg-tertiary);
+  --color-white:    var(--bg-card);
+  --color-mid:      var(--text-secondary);
+  --color-border:   var(--border-subtle);
+  --color-danger:   var(--status-error);
+  --color-green:    var(--status-success);
+
+  /* Report page */
+  --report-header-bg:          #7B5EA7;
+  --report-section-bg:         #FDF6EC;
+  --report-alt-section-bg:     #F5F0FB;
+  --report-footer-bg:          #2C2C2C;
+  --report-footer-border:      transparent;
+  --report-accent:             #D4AC6E;
+  --report-master-badge-bg:    #FFFBF0;
+  --report-master-badge-border:#D4AC6E;
+  --report-master-badge-text:  #A07830;
+  --report-karmic-badge-bg:    #FFF0F0;
+  --report-karmic-badge-border:#ef4444;
+  --report-karmic-badge-text:  #dc2626;
+  --report-summary-bg:         #F5F0FB;
+  --report-summary-border:     #E8E0F0;
+  --report-karmic-border-left: #f97316;
+  --report-forecast-header-bg: #7B5EA7;
+  --report-theme-pill-bg:      rgba(212,172,110,0.15);
+  --report-theme-pill-text:    #8B6820;
+  --report-theme-pill-border:  rgba(212,172,110,0.5);
+  --report-tag-bg:             rgba(123,94,167,0.08);
+  --report-tag-text:           #7B5EA7;
+  --report-tag-border:         rgba(123,94,167,0.25);
+  --report-toggle-bg:          rgba(0,0,0,0.12);
+  --report-toggle-text:        #FFFFFF;
+  --report-toggle-border:      rgba(255,255,255,0.3);
+
+  --theme: "light";
+}
+
+/* ── GLOBAL BASE STYLES ── */
 html, body {
-  background-color: var(--color-base);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   font-family: var(--font-ui);
-  color: var(--color-dark);
+  transition: background 0.2s, color 0.2s;
 }
 
+/* Number rings */
+.number-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2.5px solid var(--gold-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--gold-main);
+  background: var(--gold-bg);
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+/* Cách tính box */
+.calc-box {
+  background: var(--bg-secondary);
+  border-left: 2px solid var(--gold-main);
+  border-radius: 0 6px 6px 0;
+  padding: 6px 10px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Labels */
+.label-muted {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Badges */
+.badge-gold {
+  background: var(--gold-bg);
+  color: var(--gold-main);
+  border: 1px solid var(--gold-dim);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+}
+.badge-purple {
+  background: var(--purple-bg);
+  color: var(--purple-bright);
+  border: 1px solid var(--purple-muted);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--gold-main);
+  color: var(--bg-primary);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--gold-main);
+  border: 1px solid var(--gold-dim);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-ghost:hover { background: var(--gold-bg); }
+
+/* Method selection cards */
+.method-card {
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  opacity: 0.6;
+}
+.method-card.selected {
+  border-color: var(--gold-main);
+  background: var(--gold-bg);
+  opacity: 1;
+}
+.method-card .method-value {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.method-card.selected .method-value {
+  color: var(--gold-main);
+}
+
+/* Forecast month pills */
+.month-pill {
+  flex: 1;
+  text-align: center;
+  padding: 6px 2px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.month-pill.active {
+  background: var(--gold-bg);
+  border-color: var(--gold-dim);
+}
+.month-pill .month-num {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.month-pill.active .month-num {
+  color: var(--gold-main);
+}
+
+/* Dividers */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 12px 0;
+}
+
+/* English subtitles */
 .eng-sub { display: none; }
 .show-eng .eng-sub { display: block; }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { usePathname, useRouter } from '@/navigation'
 
 interface NavBarProps {
@@ -11,15 +11,29 @@ export function NavBar({ locale }: NavBarProps): React.ReactElement {
   const router = useRouter()
   const pathname = usePathname()
   const isVietnamese = locale === 'vi'
+  const [isDark, setIsDark] = useState(true)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'dark'
+    document.documentElement.setAttribute('data-theme', saved)
+    setIsDark(saved !== 'light')
+  }, [])
 
   const toggleLocale = () => {
     router.replace(pathname, { locale: isVietnamese ? 'en' : 'vi' })
   }
 
+  const toggleTheme = () => {
+    const next = isDark ? 'light' : 'dark'
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('theme', next)
+    setIsDark(!isDark)
+  }
+
   return (
     <nav style={{
-      backgroundColor: 'var(--color-base)',
-      borderBottom: '0.5px solid rgba(28,26,20,0.10)',
+      backgroundColor: 'var(--bg-primary)',
+      borderBottom: '1px solid var(--border-subtle)',
       padding: '0 20px',
       height: 52,
       display: 'flex',
@@ -35,7 +49,7 @@ export function NavBar({ locale }: NavBarProps): React.ReactElement {
           fontFamily: 'Georgia, serif',
           fontSize: 17,
           fontWeight: 400,
-          color: 'var(--color-dark)',
+          color: 'var(--text-primary)',
           textDecoration: 'none',
           letterSpacing: '-0.01em',
         }}
@@ -43,11 +57,27 @@ export function NavBar({ locale }: NavBarProps): React.ReactElement {
         NumeroApp
       </a>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: 16,
+            cursor: 'pointer',
+            padding: 4,
+            lineHeight: 1,
+            color: 'var(--text-secondary)',
+          }}
+          title={isDark ? 'Chế độ sáng' : 'Chế độ tối'}
+        >
+          {isDark ? '☀' : '☾'}
+        </button>
         <a
           href={locale === 'en' ? '/settings' : `/${locale}/settings`}
           style={{
-            color: 'var(--color-mid)',
+            color: 'var(--text-secondary)',
             fontSize: 18,
             lineHeight: 1,
             textDecoration: 'none',
@@ -56,12 +86,12 @@ export function NavBar({ locale }: NavBarProps): React.ReactElement {
         >
           ⚙
         </a>
-        <div style={{ width: 1, height: 16, backgroundColor: 'var(--color-border)' }} />
+        <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-subtle)' }} />
         <button
           onClick={toggleLocale}
           style={{
-            border: `1px solid ${isVietnamese ? 'var(--color-border)' : 'var(--color-gold)'}`,
-            color: isVietnamese ? 'var(--color-mid)' : 'var(--color-gold)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-secondary)',
             backgroundColor: 'transparent',
             borderRadius: 20,
             padding: '5px 14px',
