@@ -223,16 +223,17 @@ export default function SettingsPage() {
         <SettingsGroup>
           {[
             { field: 'name', label: 'Tên', value: name, setter: setName, placeholder: 'Tên hiển thị' },
-            { field: 'phone', label: 'Số điện thoại', value: phone, setter: setPhone, placeholder: '0901 234 567' },
+            { field: 'phone', label: 'Số điện thoại', value: phone, setter: setPhone, placeholder: '0987 846 956', helper: 'Hiển thị trên báo cáo khách hàng' },
             { field: 'email', label: 'Email liên hệ', value: brandingEmail, setter: setBrandingEmail, placeholder: 'hello@yoursite.com' },
             { field: 'footer', label: 'Chân trang thương hiệu', value: brandingFooter, setter: setBrandingFooter, placeholder: 'yoursite.com' },
-          ].map(({ field, label, value, setter, placeholder }, i) => (
+          ].map(({ field, label, value, setter, placeholder, helper }: { field: string; label: string; value: string; setter: React.Dispatch<React.SetStateAction<string>>; placeholder: string; helper?: string }, i) => (
             <div key={field} style={{
               borderTop: i === 0 ? 'none' : '0.5px solid rgba(28,22,10,0.07)',
               padding: '12px 16px',
             }}>
               <label style={{ display: 'block', fontSize: 11, color: 'var(--color-mid)', marginBottom: 4, fontWeight: 500 }}>{label}</label>
               <input
+                type={field === 'phone' ? 'tel' : 'text'}
                 value={value}
                 onChange={(e) => setter(e.target.value)}
                 placeholder={placeholder}
@@ -242,6 +243,9 @@ export default function SettingsPage() {
                   padding: 0, boxSizing: 'border-box',
                 }}
               />
+              {helper && (
+                <p style={{ fontSize: 10, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)', opacity: 0.7 }}>{helper}</p>
+              )}
             </div>
           ))}
           <div style={{ borderTop: '0.5px solid rgba(28,22,10,0.07)', padding: '12px 16px' }}>

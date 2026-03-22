@@ -95,6 +95,8 @@ export async function GET(
       name: client.user.name,
       logoUrl: client.user.logoUrl,
       brandingFooter: client.user.brandingFooter,
+      phone: client.user.phone,
+      brandingEmail: client.user.brandingEmail,
     },
   })
 }

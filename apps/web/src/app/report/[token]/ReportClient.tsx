@@ -121,10 +121,10 @@ const STARFIELD = [
 ].join(', ')
 
 const DEBT_LABELS: Record<number, [string, number]> = {
-  13: ['The Hard Worker', 4],
-  14: ['The Adventurer', 5],
-  16: ['The Humbling', 7],
-  19: ['The Independent', 1],
+  13: ['Người Lao Động', 4],
+  14: ['Nhà Phiêu Lưu', 5],
+  16: ['Sự Khiêm Nhường', 7],
+  19: ['Người Độc Lập', 1],
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
