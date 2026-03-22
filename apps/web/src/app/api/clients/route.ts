@@ -9,7 +9,6 @@ const createClientSchema = z.object({
   ho: z.string().min(1),
   tenDem: z.string().optional().default(''),
   ten: z.string().min(1),
-  motherName: z.string().optional(),
   dateOfBirth: z.string().min(1),
   preferredLanguage: z.string().default('vi'),
   notes: z.string().optional(),
@@ -42,7 +41,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const { ho, tenDem, ten, motherName, dateOfBirth, preferredLanguage, notes } = parsed.data
+  const { ho, tenDem, ten, dateOfBirth, preferredLanguage, notes } = parsed.data
 
   const strippedLast  = stripVietnamese(ho)
   const strippedMid   = tenDem ? stripVietnamese(tenDem) : ''
@@ -78,7 +77,6 @@ export async function POST(request: Request) {
     birthDate: dateOfBirth,
     birthCertName,
     currentName: birthCertName,
-    motherName: motherName ? stripVietnamese(motherName) : undefined,
     nameParts,
   })
 

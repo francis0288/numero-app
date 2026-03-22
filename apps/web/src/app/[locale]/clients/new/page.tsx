@@ -42,7 +42,6 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
   const [ho, setHo] = useState('')
   const [tenDem, setTenDem] = useState('')
   const [ten, setTen] = useState('')
-  const [motherName, setMotherName] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [preferredLanguage, setPreferredLanguage] = useState<'vi' | 'en'>('vi')
   const [notes, setNotes] = useState('')
@@ -53,8 +52,6 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
   const strippedHo     = stripVi(ho)
   const strippedTenDem = stripVi(tenDem)
   const strippedTen    = stripVi(ten)
-  const strippedMother = stripVi(motherName)
-
   const combinedPreview = [strippedHo, strippedTenDem, strippedTen].filter(Boolean).join(' | ')
 
   const validate = () => {
@@ -80,7 +77,6 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
           ho,
           tenDem: tenDem || undefined,
           ten,
-          motherName: motherName || undefined,
           dateOfBirth,
           preferredLanguage,
           notes: notes || undefined,
@@ -210,25 +206,6 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
               style={inputStyle}
             />
             {errors.dateOfBirth && <p style={{ fontSize: 11, color: 'var(--color-danger)', margin: '4px 0 0' }}>{errors.dateOfBirth}</p>}
-          </div>
-
-          {/* Tên mẹ */}
-          <div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-dark)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-ui)' }}>
-              Tên mẹ (tùy chọn)
-            </label>
-            <input
-              type="text"
-              value={motherName}
-              onChange={(e) => setMotherName(e.target.value)}
-              placeholder="VD: Trần Thị Mai"
-              style={inputStyle}
-            />
-            {strippedMother && (
-              <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '4px 0 0', fontFamily: 'var(--font-ui)' }}>
-                Dùng để tính số: <span style={{ color: 'var(--color-gold)', fontWeight: 500 }}>{strippedMother}</span>
-              </p>
-            )}
           </div>
 
           {/* Ngôn ngữ */}
