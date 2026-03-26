@@ -2,12 +2,14 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
-import { getInterpretation } from '@/lib/numerology/getInterpretation'
+import { getInterpretation, toInterpretationKey } from '@/lib/numerology/getInterpretation'
 import {
   calculateFullProfile,
   calculateFullForecast,
   buildReadingPrompt,
   stripVietnamese,
+  calculatePyramidPeaks,
+  getActivePeak,
 } from '@numero-app/core'
 import type { NumerologyProfile } from '@numero-app/core'
 
@@ -63,9 +65,33 @@ export async function POST(
 
   const language = client.preferredLanguage || 'en'
 
-  // Active Buchanan pinnacle — reuse already-calculated forecast.pinnacles
-  const activePinnacle = forecast.pinnacles.find(p => p.isCurrent)
-  const pinnacleKey = activePinnacle?.number.display ?? null
+  // Determine active pinnacle based on selected system
+  const pinnacleSystem = ((client.pinnacleSystem ?? 'buchanan') as string) as 'buchanan' | 'phillips'
+  let pinnacleKey: string | null = null
+  let pinnacleNote: string | null = null
+
+  if (pinnacleSystem === 'phillips') {
+    const birthDate = client.dateOfBirth
+    const today2 = new Date()
+    let currentAge = today2.getFullYear() - birthDate.getFullYear()
+    const mm = today2.getMonth() - birthDate.getMonth()
+    if (mm < 0 || (mm === 0 && today2.getDate() < birthDate.getDate())) currentAge--
+    const pyramidResult = calculatePyramidPeaks(
+      birthDate.getDate(),
+      birthDate.getMonth() + 1,
+      birthDate.getFullYear(),
+      profile.lifePath.value,
+      today2.getFullYear()
+    )
+    const activePeak = getActivePeak(pyramidResult.peaks, currentAge)
+    if (activePeak) {
+      pinnacleKey = activePeak.number <= 9 ? toInterpretationKey(activePeak.number) : null
+      pinnacleNote = `Số Đỉnh Kim Tự Tháp (David Phillips) hiện tại: ${activePeak.label} — ${activePeak.description}`
+    }
+  } else {
+    const activePinnacle = forecast.pinnacles.find(p => p.isCurrent)
+    pinnacleKey = activePinnacle?.number.display ?? null
+  }
 
   // Fetch MB book interpretations for RAG injection
   const [lpInterp, pyInterp, pinnacleInterp] = await Promise.all([
@@ -74,7 +100,7 @@ export async function POST(
     pinnacleKey ? getInterpretation(pinnacleKey, 'pinnacle') : Promise.resolve(null),
   ])
 
-  console.log('Reading route: pinnacleKey=', pinnacleKey, '| pinnacle keywords=', pinnacleInterp?.keywordsEn)
+  console.log('Reading route: system=', pinnacleSystem, '| pinnacleKey=', pinnacleKey, '| keywords=', pinnacleInterp?.keywordsEn)
 
   // Build prompt
   const prompts = buildReadingPrompt({
@@ -97,6 +123,7 @@ export async function POST(
       personalYear: pyInterp?.textEn ?? undefined,
       pinnacle: pinnacleInterp?.textEn ?? undefined,
       pinnacleKey: pinnacleKey ?? undefined,
+      pinnacleNote: (!pinnacleInterp && pinnacleNote) ? pinnacleNote : undefined,
     },
   })
 

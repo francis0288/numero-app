@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 const VALID = ['A', 'B'] as const
+const VALID_PINNACLE_SYSTEMS = ['buchanan', 'phillips'] as const
 
 export async function PATCH(
   req: Request,
@@ -25,6 +26,7 @@ export async function PATCH(
     destinyMethod?: string
     soulMethod?: string
     personalityMethod?: string
+    pinnacleSystem?: string
   }
 
   const data: Record<string, string> = {}
@@ -36,6 +38,9 @@ export async function PATCH(
   }
   if (body.personalityMethod && VALID.includes(body.personalityMethod as typeof VALID[number])) {
     data.personalityMethod = body.personalityMethod
+  }
+  if (body.pinnacleSystem && VALID_PINNACLE_SYSTEMS.includes(body.pinnacleSystem as typeof VALID_PINNACLE_SYSTEMS[number])) {
+    data.pinnacleSystem = body.pinnacleSystem
   }
 
   if (Object.keys(data).length > 0) {

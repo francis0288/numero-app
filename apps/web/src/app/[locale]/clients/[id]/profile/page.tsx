@@ -10,7 +10,7 @@ import {
   calculatePersonalDay,
   calculateWorldYearNumber,
   calculatePyramidPeaks,
-  formatPeakPeriod,
+  calculatePinnacles,
   getActivePeak,
   stripVietnamese,
   PYTHAGOREAN_MAP,
@@ -21,6 +21,8 @@ import { BottomNav } from '@/components/BottomNav'
 import { ShareSection } from '@/components/ShareSection'
 import { DeleteClientButton } from '@/components/DeleteClientButton'
 import { ProfileMethodSections } from '@/components/ProfileMethodSections'
+import { PinnacleSection } from '@/components/PinnacleSection'
+import type { BuchananPeakData, PhillipsPeakData } from '@/components/PinnacleSection'
 import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -221,6 +223,30 @@ export default async function ProfilePage({
     today.getFullYear()
   )
   const activePyramidPeak = getActivePeak(pyramidPeaks.peaks, currentAge)
+
+  // Buchanan Pinnacles
+  const birthYear = client.dateOfBirth.getFullYear()
+  const buchananPinnacles = calculatePinnacles(birthDateStr, profile.lifePath, currentAge)
+  const buchananPeaks: BuchananPeakData[] = buchananPinnacles.map((p) => ({
+    display: p.number.display,
+    startAge: p.startAge,
+    endAge: p.endAge,
+    startYear: birthYear + p.startAge,
+    isCurrent: p.isCurrent,
+  }))
+
+  // Phillips peaks serialised for client component
+  const phillipsPeaks: PhillipsPeakData[] = pyramidPeaks.peaks.map((peak) => ({
+    number: peak.number,
+    label: peak.label,
+    startAge: peak.startAge,
+    endAge: peak.endAge,
+    startYear: peak.startYear,
+    description: peak.description,
+    isActive: activePyramidPeak?.startAge === peak.startAge,
+  }))
+
+  const initialPinnacleSystem = ((client.pinnacleSystem ?? 'buchanan') as string) as 'buchanan' | 'phillips'
 
   // Isolation
   const birthDigits = birthDateStr.replace(/-/g, '').split('').map(Number).filter((d) => d > 0)
@@ -518,67 +544,14 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ── 12b. KIM TỰ THÁP (David Phillips) ── */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 16,
-            border: '0.5px solid var(--color-border)', padding: 16,
-          }}>
-            <div style={{ marginBottom: 10 }}>
-              <SectionLabel title="Kim Tự Tháp" />
-              <p style={{ fontSize: 10, color: 'var(--color-mid)', margin: '3px 0 0', fontFamily: 'var(--font-ui)' }}>
-                David Phillips · 4 đỉnh trưởng thành
-              </p>
-            </div>
-            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 12px', fontFamily: 'var(--font-ui)' }}>
-              Cơ số: Tháng {pyramidPeaks.baseNumbers.month} · Ngày {pyramidPeaks.baseNumbers.day} · Năm {pyramidPeaks.baseNumbers.year}
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {pyramidPeaks.peaks.map((peak, idx) => {
-                const isActive = activePyramidPeak?.startAge === peak.startAge
-                const isSpecial = peak.number === 10 || peak.number === 11
-                return (
-                  <div key={idx} style={{
-                    borderRadius: 12, padding: '12px 14px',
-                    backgroundColor: isActive ? 'var(--gold-bg)' : 'var(--color-base)',
-                    border: isActive ? '1.5px solid var(--color-gold)' : '0.5px solid var(--color-border)',
-                  }}>
-                    <p style={{
-                      fontSize: 9, fontWeight: 700, margin: '0 0 4px',
-                      color: isActive ? 'var(--color-gold)' : 'var(--color-mid)',
-                      textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)',
-                    }}>
-                      Đỉnh {idx + 1}
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-                      <p style={{
-                        fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 400, lineHeight: 1, margin: 0,
-                        color: isActive ? 'var(--color-gold)' : 'var(--color-dark)',
-                      }}>
-                        {peak.label}
-                      </p>
-                      {isSpecial && (
-                        <span style={{
-                          fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-ui)',
-                          color: 'var(--color-gold)', opacity: 0.8,
-                        }}>★</span>
-                      )}
-                    </div>
-                    <p style={{ fontSize: 9, color: 'var(--color-mid)', margin: '0 0 5px', fontFamily: 'var(--font-ui)', lineHeight: 1.3 }}>
-                      {formatPeakPeriod(peak)}
-                    </p>
-                    <p style={{
-                      fontSize: 10, margin: 0, fontFamily: 'var(--font-ui)', lineHeight: 1.4,
-                      color: isActive ? 'var(--color-dark)' : 'var(--color-mid)',
-                    }}>
-                      {peak.description}
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+        {/* ── 12b. SỐ ĐỈNH — Buchanan + Phillips side by side ── */}
+        <PinnacleSection
+          clientId={id}
+          buchananPeaks={buchananPeaks}
+          phillipsPeaks={phillipsPeaks}
+          phillipsBaseNumbers={pyramidPeaks.baseNumbers}
+          initialSystem={initialPinnacleSystem}
+        />
 
         {/* ── 13. BÀI HỌC NHÂN QUẢ ── */}
         {profile.karmicLessons.length > 0 && (

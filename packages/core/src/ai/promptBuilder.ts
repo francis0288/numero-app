@@ -26,6 +26,7 @@ export interface ReadingPromptInput {
     personalYear?: string
     pinnacle?: string
     pinnacleKey?: string
+    pinnacleNote?: string
   }
 }
 
@@ -124,7 +125,9 @@ ${chartSummary}`
       user += `\n--- DIỄN GIẢI SÁCH: SỐ NĂM CÁ NHÂN ${input.forecast.personalYear.display} ---\n${input.bookTexts.personalYear}`
     }
     if (input.bookTexts.pinnacle && input.bookTexts.pinnacleKey) {
-      user += `\n--- DIỄN GIẢI SÁCH: SỐ ĐỈNH (PINNACLE) HIỆN TẠI ${input.bookTexts.pinnacleKey} ---\nGiai đoạn đỉnh hiện tại của thân chủ:\n${input.bookTexts.pinnacle}`
+      user += `\n--- DIỄN GIẢI SÁCH: SỐ ĐỈNH HIỆN TẠI ---\n${input.bookTexts.pinnacle}`
+    } else if (input.bookTexts.pinnacleNote) {
+      user += `\n--- SỐ ĐỈNH KIM TỰ THÁP HIỆN TẠI ---\n${input.bookTexts.pinnacleNote}`
     }
     user += `\n\nHãy dựa trên các diễn giải từ sách để viết bài đọc bằng tiếng Việt. Diễn đạt lại bằng ngôn ngữ của bạn — không dịch thẳng. Hãy đề cập ngắn gọn đến Số Đỉnh hiện tại và ý nghĩa của nó trong bài đọc.`
   }
