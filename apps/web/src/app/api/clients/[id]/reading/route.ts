@@ -63,11 +63,18 @@ export async function POST(
 
   const language = client.preferredLanguage || 'en'
 
+  // Active Buchanan pinnacle — reuse already-calculated forecast.pinnacles
+  const activePinnacle = forecast.pinnacles.find(p => p.isCurrent)
+  const pinnacleKey = activePinnacle?.number.display ?? null
+
   // Fetch MB book interpretations for RAG injection
-  const [lpInterp, pyInterp] = await Promise.all([
+  const [lpInterp, pyInterp, pinnacleInterp] = await Promise.all([
     getInterpretation(profile.lifePath.display, 'life_path'),
     getInterpretation(forecast.personalYear.display, 'personal_year'),
+    pinnacleKey ? getInterpretation(pinnacleKey, 'pinnacle') : Promise.resolve(null),
   ])
+
+  console.log('Reading route: pinnacleKey=', pinnacleKey, '| pinnacle keywords=', pinnacleInterp?.keywordsEn)
 
   // Build prompt
   const prompts = buildReadingPrompt({
@@ -88,6 +95,8 @@ export async function POST(
     bookTexts: {
       lifePath: lpInterp?.textEn ?? undefined,
       personalYear: pyInterp?.textEn ?? undefined,
+      pinnacle: pinnacleInterp?.textEn ?? undefined,
+      pinnacleKey: pinnacleKey ?? undefined,
     },
   })
 
