@@ -40,6 +40,15 @@ function ForecastIcon({ active }: { active: boolean }) {
   )
 }
 
+function CyclesIcon({ active }: { active: boolean }) {
+  const c = active ? 'var(--color-gold)' : 'var(--color-mid)'
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 13 C3 13 3 5 5 5 C7 5 7 11 9 9 C11 7 11 3 13 3 C15 3 15 9 17 9" />
+    </svg>
+  )
+}
+
 function SettingsIcon({ active }: { active: boolean }) {
   const c = active ? 'var(--color-gold)' : 'var(--color-mid)'
   return (
@@ -72,6 +81,12 @@ export function BottomNav({ locale, clientId }: BottomNavProps) {
       href: clientId ? `${base}/clients/${clientId}/reading` : `${base}/dashboard`,
       icon: (a: boolean) => <ForecastIcon active={a} />,
       active: pathname.includes('/reading') && !pathname.includes('/readings'),
+    },
+    {
+      label: 'Chu Kỳ',
+      href: clientId ? `${base}/clients/${clientId}/cycles` : `${base}/dashboard`,
+      icon: (a: boolean) => <CyclesIcon active={a} />,
+      active: pathname.includes('/cycles'),
     },
     {
       label: 'Cài Đặt',
