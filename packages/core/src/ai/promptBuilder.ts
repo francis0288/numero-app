@@ -21,6 +21,10 @@ export interface ReadingPromptInput {
   tone: 'warm' | 'analytical' | 'spiritual' | 'practical'
   customFocus?: string
   selectedMethods?: SelectedMethods
+  bookTexts?: {
+    lifePath?: string
+    personalYear?: string
+  }
 }
 
 export interface FollowUpPromptInput {
@@ -107,9 +111,20 @@ Structure your response with exactly these 6 markdown headings and no others.`
 
   let user = `Please write a numerology reading for ${input.client.firstName}.
 
-${chartSummary}
+${chartSummary}`
 
-Write a reading with these 6 sections:
+  if (input.bookTexts?.lifePath || input.bookTexts?.personalYear) {
+    user += `\n\nREFERENCE MATERIAL — use these interpretations as the basis for your reading. Paraphrase in your own voice; do not quote or translate directly.\n`
+    if (input.bookTexts.lifePath) {
+      user += `\n--- DIỄN GIẢI SÁCH: SỐ ĐƯỜNG ĐỜI ${input.profile.lifePath.display} ---\n${input.bookTexts.lifePath}`
+    }
+    if (input.bookTexts.personalYear) {
+      user += `\n--- DIỄN GIẢI SÁCH: SỐ NĂM CÁ NHÂN ${input.forecast.personalYear.display} ---\n${input.bookTexts.personalYear}`
+    }
+    user += `\n\nHãy dựa trên các diễn giải từ sách để viết bài đọc bằng tiếng Việt. Diễn đạt lại bằng ngôn ngữ của bạn — không dịch thẳng.`
+  }
+
+  user += `\n\nWrite a reading with these 6 sections:
 ${sectionHeadings}
 Each section: 2-3 paragraphs. End with one specific, actionable piece of guidance.`
 

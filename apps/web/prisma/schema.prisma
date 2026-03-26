@@ -81,3 +81,16 @@ model Interpretation {
 
   @@unique([numberKey, locale])
 }
+
+model MbInterpretation {
+  id         Int      @id @default(autoincrement())
+  numberKey  String   @map("number_key")
+  category   String
+  catVi      String?  @map("cat_vi")
+  keywordsEn String?  @map("keywords_en")
+  textEn     String   @map("text_en")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([numberKey, category])
+  @@map("interpretations")
+}

@@ -8,6 +8,10 @@ import {
   calculatePersonalYear,
   calculatePersonalMonth,
   calculatePersonalDay,
+  calculateWorldYearNumber,
+  calculatePyramidPeaks,
+  formatPeakPeriod,
+  getActivePeak,
   stripVietnamese,
   PYTHAGOREAN_MAP,
 } from '@numero-app/core'
@@ -130,6 +134,7 @@ export default async function ProfilePage({
   // Forecast
   const today = new Date()
   const personalYear = calculatePersonalYear(birthDateStr, today.getFullYear())
+  const worldYear = calculateWorldYearNumber(today.getFullYear())
   const personalMonth = calculatePersonalMonth(personalYear, today.getMonth() + 1)
   const personalDay = calculatePersonalDay(personalMonth, today.getDate())
   const currentMonthNum = today.getMonth() + 1
@@ -206,6 +211,16 @@ export default async function ProfilePage({
     ...(mentalTransit ? [{ label: 'Tinh Thần (Tên đệm)', transit: mentalTransit, namePart: nameParts.middleName ?? '' }] : []),
     { label: 'Tâm Linh (Họ)', transit: spiritualTransit, namePart: nameParts.lastName },
   ]
+
+  // Pyramid Peaks (David Phillips)
+  const pyramidPeaks = calculatePyramidPeaks(
+    client.dateOfBirth.getDate(),
+    client.dateOfBirth.getMonth() + 1,
+    client.dateOfBirth.getFullYear(),
+    profile.lifePath.value,
+    today.getFullYear()
+  )
+  const activePyramidPeak = getActivePeak(pyramidPeaks.peaks, currentAge)
 
   // Isolation
   const birthDigits = birthDateStr.replace(/-/g, '').split('').map(Number).filter((d) => d > 0)
@@ -285,9 +300,19 @@ export default async function ProfilePage({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
             <div>
               <SectionLabel title="Năm Cá Nhân" style={{ color: 'var(--color-gold)', marginBottom: 6 }} />
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: 44, fontWeight: 300, color: 'var(--bg-card)', lineHeight: 1, margin: '0 0 4px' }}>
-                {personalYear.display}
-              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: 44, fontWeight: 300, color: 'var(--bg-card)', lineHeight: 1, margin: '0 0 4px' }}>
+                  {personalYear.display}
+                </p>
+                <div style={{ opacity: 0.75 }}>
+                  <p style={{ fontSize: 9, color: 'var(--text-muted)', margin: '0 0 1px', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'var(--font-ui)' }}>
+                    Năm Thế Giới
+                  </p>
+                  <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, fontWeight: 300, color: 'var(--bg-card)', lineHeight: 1, margin: 0 }}>
+                    {worldYear}
+                  </p>
+                </div>
+              </div>
               <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0, fontFamily: 'var(--font-ui)' }}>
                 {today.getFullYear()}
               </p>
@@ -489,6 +514,68 @@ export default async function ProfilePage({
               <span style={{ fontFamily: 'Georgia, serif', fontSize: 24, fontWeight: 400, color: 'var(--color-gold)' }}>
                 {essenceValue || '—'}
               </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 12b. KIM TỰ THÁP (David Phillips) ── */}
+        <div style={{ padding: '0 16px 14px' }}>
+          <div style={{
+            backgroundColor: 'var(--color-white)', borderRadius: 16,
+            border: '0.5px solid var(--color-border)', padding: 16,
+          }}>
+            <div style={{ marginBottom: 10 }}>
+              <SectionLabel title="Kim Tự Tháp" />
+              <p style={{ fontSize: 10, color: 'var(--color-mid)', margin: '3px 0 0', fontFamily: 'var(--font-ui)' }}>
+                David Phillips · 4 đỉnh trưởng thành
+              </p>
+            </div>
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 12px', fontFamily: 'var(--font-ui)' }}>
+              Cơ số: Tháng {pyramidPeaks.baseNumbers.month} · Ngày {pyramidPeaks.baseNumbers.day} · Năm {pyramidPeaks.baseNumbers.year}
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {pyramidPeaks.peaks.map((peak, idx) => {
+                const isActive = activePyramidPeak?.startAge === peak.startAge
+                const isSpecial = peak.number === 10 || peak.number === 11
+                return (
+                  <div key={idx} style={{
+                    borderRadius: 12, padding: '12px 14px',
+                    backgroundColor: isActive ? 'var(--gold-bg)' : 'var(--color-base)',
+                    border: isActive ? '1.5px solid var(--color-gold)' : '0.5px solid var(--color-border)',
+                  }}>
+                    <p style={{
+                      fontSize: 9, fontWeight: 700, margin: '0 0 4px',
+                      color: isActive ? 'var(--color-gold)' : 'var(--color-mid)',
+                      textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'var(--font-ui)',
+                    }}>
+                      Đỉnh {idx + 1}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                      <p style={{
+                        fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 400, lineHeight: 1, margin: 0,
+                        color: isActive ? 'var(--color-gold)' : 'var(--color-dark)',
+                      }}>
+                        {peak.label}
+                      </p>
+                      {isSpecial && (
+                        <span style={{
+                          fontSize: 9, fontWeight: 700, fontFamily: 'var(--font-ui)',
+                          color: 'var(--color-gold)', opacity: 0.8,
+                        }}>★</span>
+                      )}
+                    </div>
+                    <p style={{ fontSize: 9, color: 'var(--color-mid)', margin: '0 0 5px', fontFamily: 'var(--font-ui)', lineHeight: 1.3 }}>
+                      {formatPeakPeriod(peak)}
+                    </p>
+                    <p style={{
+                      fontSize: 10, margin: 0, fontFamily: 'var(--font-ui)', lineHeight: 1.4,
+                      color: isActive ? 'var(--color-dark)' : 'var(--color-mid)',
+                    }}>
+                      {peak.description}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>

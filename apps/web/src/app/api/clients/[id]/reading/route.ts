@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { getAnthropicClient } from '@/lib/anthropic'
+import { getInterpretation } from '@/lib/numerology/getInterpretation'
 import {
   calculateFullProfile,
   calculateFullForecast,
@@ -62,6 +63,12 @@ export async function POST(
 
   const language = client.preferredLanguage || 'en'
 
+  // Fetch MB book interpretations for RAG injection
+  const [lpInterp, pyInterp] = await Promise.all([
+    getInterpretation(profile.lifePath.display, 'life_path'),
+    getInterpretation(forecast.personalYear.display, 'personal_year'),
+  ])
+
   // Build prompt
   const prompts = buildReadingPrompt({
     client: {
@@ -77,6 +84,10 @@ export async function POST(
       destinyMethod: (client.destinyMethod as 'A' | 'B') ?? 'A',
       soulMethod: (client.soulMethod as 'A' | 'B') ?? 'A',
       personalityMethod: (client.personalityMethod as 'A' | 'B') ?? 'A',
+    },
+    bookTexts: {
+      lifePath: lpInterp?.textEn ?? undefined,
+      personalYear: pyInterp?.textEn ?? undefined,
     },
   })
 
