@@ -44,7 +44,7 @@ export default async function ReadingsPage({
   })
 
   const profilePath = locale === 'en' ? `/clients/${id}/profile` : `/${locale}/clients/${id}/profile`
-  const readingPath = locale === 'en' ? `/clients/${id}/reading` : `/${locale}/clients/${id}/reading`
+  const newReadingPath = locale === 'en' ? `/clients/${id}/reading?new=1` : `/${locale}/clients/${id}/reading?new=1`
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>
@@ -78,7 +78,7 @@ export default async function ReadingsPage({
           }}>
             <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 20px' }}>Chưa có bài đọc.</p>
             <a
-              href={readingPath}
+              href={newReadingPath}
               style={{
                 display: 'inline-block',
                 backgroundColor: 'var(--color-gold)',
@@ -194,7 +194,7 @@ export default async function ReadingsPage({
         {readings.length > 0 && (
           <div style={{ padding: '16px 16px 0' }}>
             <a
-              href={readingPath}
+              href={newReadingPath}
               style={{
                 display: 'inline-block',
                 backgroundColor: 'var(--color-gold)',

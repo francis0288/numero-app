@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 
 type ReadingMode = 'book' | 'warm' | 'practical' | 'truth'
 type Status = 'draft' | 'finalised' | null
@@ -136,7 +136,9 @@ function MarkdownReading({ text }: { text: string }): React.ReactElement {
 
 export default function ReadingPage(): React.ReactElement {
   const params = useParams()
+  const searchParams = useSearchParams()
   const id = params.id as string
+  const isNewMode = searchParams.get('new') === '1'
 
   const [readingMode, setReadingMode] = useState<ReadingMode>('warm')
   const [isPrivate, setIsPrivate] = useState(false)
@@ -208,8 +210,8 @@ export default function ReadingPage(): React.ReactElement {
   }, [id])
 
   useEffect(() => {
-    void loadLatestReading()
-  }, [loadLatestReading])
+    if (!isNewMode) void loadLatestReading()
+  }, [loadLatestReading, isNewMode])
 
   useEffect(() => {
     try {
