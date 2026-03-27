@@ -24,6 +24,9 @@ import { ProfileMethodSections } from '@/components/ProfileMethodSections'
 import { PinnacleSection } from '@/components/PinnacleSection'
 import type { BuchananPeakData, PhillipsPeakData } from '@/components/PinnacleSection'
 import { BirthChartGrid } from '@/components/BirthChartGrid'
+import { CyclesScreen } from '@/components/CyclesScreen'
+import type { YearPoint } from '@/app/[locale]/clients/[id]/cycles/page'
+import { getInterpretation } from '@/lib/numerology/getInterpretation'
 import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -141,6 +144,26 @@ export default async function ProfilePage({
   const personalMonth = calculatePersonalMonth(personalYear, today.getMonth() + 1)
   const personalDay = calculatePersonalDay(personalMonth, today.getDate())
   const currentMonthNum = today.getMonth() + 1
+
+  // Chu Kỳ — 5-year data for CyclesScreen
+  const cyclesBirthDay = client.dateOfBirth.getUTCDate()
+  const cyclesBirthMonth = client.dateOfBirth.getUTCMonth() + 1
+  const currentYear = today.getFullYear()
+  const yearPoints: YearPoint[] = []
+  for (let i = 0; i < 5; i++) {
+    const year = currentYear + i
+    const py = calculatePersonalYear(birthDateStr, year)
+    const wy = calculateWorldYearNumber(year)
+    yearPoints.push({
+      year,
+      personalYear: py.value,
+      personalYearDisplay: py.display,
+      worldYear: wy,
+      worldYearDisplay: String(wy),
+      isCurrent: i === 0,
+    })
+  }
+  const cyclesMbInterp = await getInterpretation(yearPoints[0].personalYearDisplay, 'personal_year')
 
   const monthStrip = Array.from({ length: 12 }, (_, i) => {
     const m = i + 1
@@ -314,6 +337,23 @@ export default async function ProfilePage({
           lifePathSub={lifePathContent?.overview?.slice(0, 60) ?? 'Mục đích cuộc sống'}
           initialMethods={initialMethods}
         />
+
+        {/* ── CHU KỲ CÁ NHÂN & THẾ GIỚI ── */}
+        <div style={{
+          margin: '0 16px 14px',
+          borderRadius: 20,
+          overflow: 'hidden',
+          backgroundColor: 'var(--bg-primary)',
+        }}>
+          <CyclesScreen
+            clientName={client.firstName}
+            birthDay={cyclesBirthDay}
+            birthMonth={cyclesBirthMonth}
+            yearPoints={yearPoints}
+            currentPersonalYearDisplay={yearPoints[0].personalYearDisplay}
+            mbText={cyclesMbInterp?.textEn ?? null}
+          />
+        </div>
 
         {/* ── 3. Dark forecast card ── */}
         <div style={{
