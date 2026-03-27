@@ -309,8 +309,8 @@ export function PinnacleSection({
           </div>
         </div>
 
-        {/* ── Two-column panels ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {/* ── Stacked panels ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
           {/* Buchanan panel */}
           <div style={{
