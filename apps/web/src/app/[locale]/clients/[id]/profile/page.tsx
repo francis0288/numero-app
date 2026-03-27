@@ -23,6 +23,7 @@ import { DeleteClientButton } from '@/components/DeleteClientButton'
 import { ProfileMethodSections } from '@/components/ProfileMethodSections'
 import { PinnacleSection } from '@/components/PinnacleSection'
 import type { BuchananPeakData, PhillipsPeakData } from '@/components/PinnacleSection'
+import { BirthChartGrid } from '@/components/BirthChartGrid'
 import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -248,10 +249,6 @@ export default async function ProfilePage({
 
   const initialPinnacleSystem = ((client.pinnacleSystem ?? 'buchanan') as string) as 'buchanan' | 'phillips'
 
-  // Isolation
-  const birthDigits = birthDateStr.replace(/-/g, '').split('').map(Number).filter((d) => d > 0)
-  const uniqueBirthDigits = [...new Set(birthDigits)].sort()
-
   // Method selections from DB
   const initialMethods = {
     destinyMethod: (client.destinyMethod as 'A' | 'B') ?? 'A',
@@ -457,49 +454,16 @@ export default async function ProfilePage({
           </div>
         )}
 
-        {/* ── 11. SỐ CÔ LẬP ── */}
-        <div style={{ padding: '0 16px 14px' }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 16,
-            border: '0.5px solid var(--color-border)', padding: '16px',
-          }}>
-            <SectionLabel title="Số Cô Lập" style={{ marginBottom: 12 }} />
-            {profile.isolationNumbers.length === 0 ? (
-              <p style={{ fontSize: 13, color: 'var(--color-green)', margin: 0, fontFamily: 'var(--font-ui)' }}>
-                Không có số cô lập ✓
-              </p>
-            ) : (
-              <>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
-                  {profile.isolationNumbers.map((num) => (
-                    <div key={num} style={{
-                      width: 40, height: 40, borderRadius: 10,
-                      backgroundColor: 'color-mix(in srgb, var(--status-error) 8%, transparent)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-danger)',
-                    }}>
-                      {num}
-                    </div>
-                  ))}
-                </div>
-                <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-                  Số xuất hiện trong ngày sinh nhưng bị cô lập trên lưới 3×3
-                </p>
-              </>
-            )}
-            <div style={{
-              marginTop: 8, borderLeft: '2px solid var(--color-gold)',
-              backgroundColor: 'var(--gold-bg)', borderRadius: '0 6px 6px 0', padding: '6px 10px',
-            }}>
-              <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--color-gold)', margin: '0 0 2px', fontFamily: 'var(--font-ui)', letterSpacing: '0.04em' }}>
-                Cách tính:
-              </p>
-              <pre style={{ fontSize: 11, color: 'var(--color-mid)', fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.5, margin: 0 }}>
-                {`Ngày sinh: ${birthDateStr} → Chữ số: ${uniqueBirthDigits.join(', ')}\nSố cô lập: ${profile.isolationNumbers.length > 0 ? profile.isolationNumbers.join(', ') : 'Không có'}`}
-              </pre>
-            </div>
-          </div>
-        </div>
+        {/* ── 11. BIỂU ĐỒ NGÀY SINH ── */}
+        <BirthChartGrid
+          birthDay={client.dateOfBirth.getDate()}
+          birthMonth={client.dateOfBirth.getMonth() + 1}
+          birthYear={client.dateOfBirth.getFullYear()}
+          firstName={client.firstName}
+          middleName={client.middleName ?? ''}
+          lastName={client.lastName}
+          isolatedDigits={profile.isolationNumbers}
+        />
 
         {/* ── 12. SỐ TINH CHẤT ── */}
         <div style={{ padding: '0 16px 14px' }}>
