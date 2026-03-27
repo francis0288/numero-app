@@ -169,10 +169,10 @@ export function BirthChartGrid({
                       border: isIsolated
                         ? '1.5px solid #C4922A'
                         : isEmpty
-                        ? '1px solid rgba(28,22,10,0.08)'
+                        ? '1px solid color-mix(in srgb, var(--color-dark) 8%, transparent)'
                         : '1px solid rgba(196,146,42,0.30)',
                       backgroundColor: isEmpty
-                        ? 'rgba(28,22,10,0.03)'
+                        ? 'color-mix(in srgb, var(--color-dark) 3%, transparent)'
                         : 'rgba(196,146,42,0.08)',
                       display: 'flex',
                       flexDirection: 'column',
@@ -184,7 +184,7 @@ export function BirthChartGrid({
                       <span style={{
                         fontFamily: 'Georgia, serif',
                         fontSize: 14,
-                        color: 'rgba(28,22,10,0.15)',
+                        color: 'color-mix(in srgb, var(--color-dark) 15%, transparent)',
                       }}>
                         {digit}
                       </span>
@@ -194,7 +194,7 @@ export function BirthChartGrid({
                           fontFamily: 'Georgia, serif',
                           fontSize,
                           fontWeight: 700,
-                          color: isIsolated ? '#C4922A' : '#1C1A14',
+                          color: isIsolated ? '#C4922A' : 'var(--color-dark)',
                           lineHeight: 1,
                         }}>
                           {content}
@@ -235,7 +235,7 @@ export function BirthChartGrid({
               >
                 <span style={{
                   fontSize: 9,
-                  color: '#7A7568',
+                  color: 'var(--color-mid)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
                   fontFamily: 'var(--font-ui)',
@@ -309,8 +309,8 @@ export function BirthChartGrid({
 
         {/* Missing digits summary */}
         <div style={{
-          borderLeft: `2px solid ${missingDigits.length > 0 ? 'var(--color-gold)' : 'rgba(28,22,10,0.08)'}`,
-          backgroundColor: missingDigits.length > 0 ? 'var(--gold-bg)' : 'rgba(28,22,10,0.03)',
+          borderLeft: `2px solid ${missingDigits.length > 0 ? 'var(--color-gold)' : 'color-mix(in srgb, var(--color-dark) 8%, transparent)'}`,
+          backgroundColor: missingDigits.length > 0 ? 'var(--gold-bg)' : 'color-mix(in srgb, var(--color-dark) 3%, transparent)',
           borderRadius: '0 6px 6px 0',
           padding: '6px 10px',
         }}>
