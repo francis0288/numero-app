@@ -139,6 +139,7 @@ export default function ReadingPage(): React.ReactElement {
   const searchParams = useSearchParams()
   const id = params.id as string
   const isNewMode = searchParams.get('new') === '1'
+  const specificReadingId = searchParams.get('id')
 
   const [readingMode, setReadingMode] = useState<ReadingMode>('warm')
   const [isPrivate, setIsPrivate] = useState(false)
@@ -210,8 +211,37 @@ export default function ReadingPage(): React.ReactElement {
   }, [id])
 
   useEffect(() => {
-    if (!isNewMode) void loadLatestReading()
-  }, [loadLatestReading, isNewMode])
+    if (isNewMode) return
+    if (specificReadingId) {
+      // Load a specific reading by ID
+      void (async () => {
+        try {
+          const readingRes = await fetch(`/api/clients/${id}/reading/${specificReadingId}`)
+          if (!readingRes.ok) return
+          const readingData = await readingRes.json() as {
+            reading: { aiNarrative: string | null; editedNarrative: string | null; isPrivate?: boolean; readingMode?: string; version?: number; status?: string; language?: string }
+            firstName: string
+            shareToken?: string
+          }
+          setClientName(readingData.firstName)
+          const r = readingData.reading
+          setReadingId(specificReadingId)
+          setVersion(r.version ?? null)
+          setStatus((r.status as Status) ?? null)
+          setDisplayLanguage(r.language ?? 'vi')
+          const priv = r.isPrivate ?? false
+          setIsPrivate(priv)
+          const narrative = r.editedNarrative ?? r.aiNarrative ?? ''
+          setStreamedText(narrative)
+          if (r.status === 'finalised' && readingData.shareToken && !priv) {
+            setShareToken(readingData.shareToken)
+          }
+        } catch { /* ignore */ }
+      })()
+    } else {
+      void loadLatestReading()
+    }
+  }, [loadLatestReading, isNewMode, specificReadingId, id])
 
   useEffect(() => {
     try {

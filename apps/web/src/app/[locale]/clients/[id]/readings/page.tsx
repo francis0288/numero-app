@@ -97,14 +97,20 @@ export default async function ReadingsPage({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '0 16px' }}>
             {readings.map((r) => {
               const preview = (r.editedNarrative ?? r.aiNarrative ?? '').slice(0, 150)
+              const readingLink = locale === 'en'
+                ? `/clients/${id}/reading?id=${r.id}`
+                : `/${locale}/clients/${id}/reading?id=${r.id}`
               return (
-                <div
+                <a
                   key={r.id}
+                  href={readingLink}
                   style={{
+                    display: 'block',
                     backgroundColor: 'var(--color-white)',
                     borderRadius: 16,
                     border: '0.5px solid var(--color-border)',
                     padding: '14px 16px',
+                    textDecoration: 'none',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
@@ -185,7 +191,7 @@ export default async function ReadingsPage({
                       {preview}…
                     </p>
                   )}
-                </div>
+                </a>
               )
             })}
           </div>
