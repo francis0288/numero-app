@@ -7,6 +7,30 @@ import { useParams } from 'next/navigation'
 type Tone = 'warm' | 'analytical' | 'spiritual' | 'practical'
 type Status = 'draft' | 'finalised' | null
 
+type NumberKey =
+  | 'life_path' | 'destiny' | 'soul' | 'personality' | 'personal_year'
+  | 'pinnacle' | 'maturity' | 'birth_day' | 'essence' | 'missing_numbers'
+  | 'attitude' | 'bridge' | 'world_year'
+
+const NUMBER_OPTIONS: Array<{ key: NumberKey; label: string; defaultChecked: boolean }> = [
+  { key: 'life_path',       label: 'Số Đường Đời',            defaultChecked: true  },
+  { key: 'destiny',         label: 'Số Sứ Mệnh',              defaultChecked: true  },
+  { key: 'soul',            label: 'Số Linh Hồn',             defaultChecked: true  },
+  { key: 'personality',     label: 'Số Nhân Cách',            defaultChecked: true  },
+  { key: 'personal_year',   label: 'Số Năm Cá Nhân',          defaultChecked: true  },
+  { key: 'pinnacle',        label: 'Số Đỉnh hiện tại',        defaultChecked: true  },
+  { key: 'maturity',        label: 'Số Trưởng Thành',         defaultChecked: false },
+  { key: 'birth_day',       label: 'Số Ngày Sinh',            defaultChecked: false },
+  { key: 'essence',         label: 'Số Tinh Chất (Essence)',  defaultChecked: true  },
+  { key: 'missing_numbers', label: 'Số Thiếu (Missing)',      defaultChecked: true  },
+  { key: 'attitude',        label: 'Số Thái Độ',              defaultChecked: false },
+  { key: 'bridge',          label: 'Số Kết Nối',              defaultChecked: false },
+  { key: 'world_year',      label: 'Năm Thế Giới',            defaultChecked: false },
+]
+
+const LS_KEY = 'numeroapp_reading_number_selection'
+const DEFAULT_SELECTION: NumberKey[] = NUMBER_OPTIONS.filter(o => o.defaultChecked).map(o => o.key)
+
 interface ReadingItem {
   id: string
   version: number
@@ -53,6 +77,7 @@ export default function ReadingPage(): React.ReactElement {
   const id = params.id as string
 
   const [tone, setTone] = useState<Tone>('warm')
+  const [selectedNumbers, setSelectedNumbers] = useState<NumberKey[]>(DEFAULT_SELECTION)
   const [customFocus, setCustomFocus] = useState('')
   const [showCustomFocus, setShowCustomFocus] = useState(false)
   const [streamedText, setStreamedText] = useState('')
@@ -119,6 +144,29 @@ export default function ReadingPage(): React.ReactElement {
     void loadLatestReading()
   }, [loadLatestReading])
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(LS_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored) as unknown
+        if (Array.isArray(parsed)) {
+          const valid = (parsed as string[]).filter(k =>
+            NUMBER_OPTIONS.some(o => o.key === k)
+          ) as NumberKey[]
+          setSelectedNumbers(valid)
+        }
+      }
+    } catch { /* ignore */ }
+  }, [])
+
+  const handleNumberToggle = (key: NumberKey) => {
+    setSelectedNumbers(prev => {
+      const next = prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+      try { localStorage.setItem(LS_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+      return next
+    })
+  }
+
   const handleGenerate = async () => {
     console.log('handleGenerate called, clientId:', id)
     setIsStreaming(true)
@@ -130,7 +178,7 @@ export default function ReadingPage(): React.ReactElement {
       const response = await fetch(`/api/clients/${id}/reading`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tone, customFocus: showCustomFocus ? customFocus : undefined }),
+        body: JSON.stringify({ tone, customFocus: showCustomFocus ? customFocus : undefined, selectedNumbers }),
       })
 
       if (!response.ok || !response.body) {
@@ -417,6 +465,50 @@ export default function ReadingPage(): React.ReactElement {
                 style={{ borderColor: 'var(--border-subtle)', '--tw-ring-color': 'var(--gold-main)' } as React.CSSProperties}
               />
             )}
+
+            {/* Number selection */}
+            <div className="mt-5 mb-2">
+              <p style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
+                textTransform: 'uppercase', color: 'var(--gold-main)', marginBottom: 12,
+              }}>
+                Số Liệu Đưa Vào Bài Đọc
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                {NUMBER_OPTIONS.map(({ key, label }) => {
+                  const checked = selectedNumbers.includes(key)
+                  return (
+                    <label
+                      key={key}
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, minHeight: 36, cursor: 'pointer' }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => handleNumberToggle(key)}
+                        className="sr-only"
+                      />
+                      <div style={{
+                        width: 18, height: 18, borderRadius: 4, flexShrink: 0,
+                        border: checked ? '2px solid var(--gold-main)' : '1.5px solid var(--color-border)',
+                        backgroundColor: checked ? 'var(--gold-bg)' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        pointerEvents: 'none',
+                      }}>
+                        {checked && (
+                          <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6l3 3 5-5" stroke="var(--gold-main)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <span style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+                        {label}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
 
             <button
               type="button"
