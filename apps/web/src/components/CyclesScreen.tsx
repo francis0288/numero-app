@@ -143,16 +143,18 @@ function CycleChart({ yearPoints }: { yearPoints: YearPoint[] }) {
 
         return (
           <g key={i}>
+            {/* Glow ring — rendered first so it sits behind dot and label */}
+            {p.isCurrent && (
+              <circle cx={cx} cy={pyCy} r={r + 2}
+                fill="none" stroke={gold} strokeWidth={1} opacity={0.35} />
+            )}
+
             {/* World Year dot */}
             <circle cx={cx} cy={wyCy} r={p.isCurrent ? 4 : 2.5}
               fill={purple} opacity={0.85} />
 
             {/* Personal Year dot */}
             <circle cx={cx} cy={pyCy} r={r} fill={gold} />
-            {p.isCurrent && (
-              <circle cx={cx} cy={pyCy} r={r + 3}
-                fill="none" stroke={gold} strokeWidth={1} opacity={0.35} />
-            )}
 
             {/* PY value label */}
             <text
