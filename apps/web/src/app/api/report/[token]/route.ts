@@ -29,6 +29,10 @@ export async function GET(
     return NextResponse.json({ error: 'not_ready' }, { status: 404 })
   }
 
+  if (reading.isPrivate) {
+    return NextResponse.json({ error: 'Bài đọc này là nội bộ và không thể chia sẻ.' }, { status: 403 })
+  }
+
   const birthDateStr = client.dateOfBirth.toISOString().split('T')[0]
 
   const profile: NumerologyProfile = reading.profileJSON

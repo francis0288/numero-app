@@ -55,6 +55,8 @@ model Reading {
   aiNarrative     String?
   editedNarrative String?
   tone            String    @default("warm")
+  readingMode     String    @default("warm") @map("reading_mode")
+  isPrivate       Boolean   @default(false)  @map("is_private")
   status          String    @default("draft")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

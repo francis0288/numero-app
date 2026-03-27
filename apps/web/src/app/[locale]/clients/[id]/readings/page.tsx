@@ -13,11 +13,14 @@ const LANG_DISPLAY: Record<string, string> = {
   vi: '🇻🇳 Tiếng Việt',
 }
 
-const TONE_LABELS: Record<string, string> = {
-  warm: 'Ấm áp',
-  analytical: 'Phân tích',
-  spiritual: 'Tâm linh',
-  practical: 'Thực tiễn',
+const MODE_LABELS: Record<string, string> = {
+  book:       'Theo Sách',
+  warm:       'Ấm Áp',
+  practical:  'Thực Tiễn',
+  truth:      'Sự Thật',
+  // legacy tone values
+  analytical: 'Phân Tích',
+  spiritual:  'Tâm Linh',
 }
 
 export default async function ReadingsPage({
@@ -127,8 +130,17 @@ export default async function ReadingsPage({
                         {LANG_DISPLAY[r.language] ?? r.language}
                       </span>
                       <span style={{ fontSize: 11, color: 'var(--color-mid)' }}>
-                        {TONE_LABELS[r.tone] ?? r.tone}
+                        {MODE_LABELS[r.readingMode ?? r.tone] ?? r.readingMode ?? r.tone}
                       </span>
+                      {r.isPrivate && (
+                        <span style={{
+                          fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 8,
+                          backgroundColor: 'color-mix(in srgb, #1C1A14 8%, transparent)',
+                          color: 'var(--color-mid)',
+                        }}>
+                          🔒 Riêng tư
+                        </span>
+                      )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {r.status === 'finalised' ? (

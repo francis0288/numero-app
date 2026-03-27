@@ -6,6 +6,8 @@ export interface SelectedMethods {
   personalityMethod?: 'A' | 'B'
 }
 
+export type ReadingMode = 'book' | 'warm' | 'practical' | 'truth'
+
 export interface ReadingPromptInput {
   client: {
     firstName: string
@@ -18,7 +20,7 @@ export interface ReadingPromptInput {
     personalMonth: ForecastResult
     personalDay: ForecastResult
   }
-  tone: 'warm' | 'analytical' | 'spiritual' | 'practical'
+  readingMode: ReadingMode
   customFocus?: string
   selectedMethods?: SelectedMethods
   bookTexts?: {
@@ -38,43 +40,103 @@ export interface FollowUpPromptInput {
   preferredLanguage: string
 }
 
-function getLanguageInstruction(lang: string): string {
-  if (lang === 'en') {
-    return `Write the entire reading in English.
-Use these section headings (keep the ## markdown):
-## Overview
-## Your Inner World
-## Life Purpose & Gifts
-## Challenges & Growth
-## The Year Ahead
-## Closing Guidance`
-  }
-  return `Viết toàn bộ bài đọc bằng tiếng Việt. Sử dụng tiếng Việt tự nhiên, ấm áp, chuyên nghiệp.
-Sử dụng các tiêu đề phần sau (giữ nguyên dấu ## markdown):
+function getModeSystemPrompt(mode: ReadingMode): string {
+  switch (mode) {
+    case 'book':
+      return `Bạn là chuyên gia thần số học. Nhiệm vụ của bạn là viết bài đọc thần số học DỰA HOÀN TOÀN vào nội dung sách được cung cấp bên dưới.
+
+QUY TẮC BẮT BUỘC:
+- Chỉ sử dụng thông tin từ phần "DIỄN GIẢI SÁCH" được cung cấp.
+- Không thêm thông tin từ nguồn khác ngoài sách.
+- Giữ giọng văn và quan điểm của tác giả (Michelle Buchanan / David Phillips).
+- Nếu một số không có nội dung sách, chỉ nêu số đó và ý nghĩa cơ bản.
+- Viết bằng tiếng Việt, diễn đạt tự nhiên — không dịch thẳng từng câu.
+
+CẤU TRÚC BÀI ĐỌC:
 ## Tổng Quan
 ## Thế Giới Nội Tâm
 ## Mục Đích Sống & Tài Năng
 ## Thách Thức & Phát Triển
 ## Năm Phía Trước
 ## Lời Khuyên Kết`
-}
 
-function getToneInstruction(tone: 'warm' | 'analytical' | 'spiritual' | 'practical'): string {
-  switch (tone) {
-    case 'warm':       return 'Warm, encouraging, supportive, and hopeful.'
-    case 'analytical': return 'Detailed, thorough, precise, and comprehensive.'
-    case 'spiritual':  return 'Evocative, poetic, metaphorical, and soulful.'
-    case 'practical':  return 'Direct, grounded, action-oriented, and clear.'
+    case 'warm':
+      return `Bạn là chuyên gia thần số học với tâm hồn nhân ái và ấm áp.
+Viết bài đọc bằng tiếng Việt với giọng văn ấm áp, khuyến khích và đồng cảm.
+
+PHONG CÁCH:
+- Trình bày thách thức một cách nhẹ nhàng nhưng trung thực — không che giấu sự thật.
+- Nhấn mạnh tiềm năng và điểm mạnh.
+- Sử dụng ngôn ngữ gần gũi, như một người bạn tin cậy đang chia sẻ.
+- Tránh ngôn ngữ phán xét hoặc tiêu cực quá mức.
+
+CẤU TRÚC BÀI ĐỌC:
+## Tổng Quan
+## Thế Giới Nội Tâm
+## Mục Đích Sống & Tài Năng
+## Thách Thức & Phát Triển
+## Năm Phía Trước
+## Lời Khuyên Kết`
+
+    case 'practical':
+      return `Bạn là chuyên gia thần số học thực dụng.
+Viết bài đọc bằng tiếng Việt tập trung vào ứng dụng thực tế trong cuộc sống.
+
+PHONG CÁCH:
+- Với mỗi số, giải thích RÕ RÀNG cách áp dụng trong công việc, mối quan hệ, và cuộc sống hàng ngày.
+- Đưa ra hành động cụ thể, có thể thực hiện ngay.
+- Tránh ngôn ngữ trừu tượng hoặc tâm linh quá mức.
+- Thực tế, súc tích, dễ hiểu.
+
+CẤU TRÚC BÀI ĐỌC:
+## Điểm Mạnh Cần Phát Huy
+## Thách Thức Cần Vượt Qua
+## Hành Động Trong Năm Nay
+## Lời Khuyên Thực Tế`
+
+    case 'truth':
+      return `Bạn là chuyên gia thần số học thẳng thắn và trung thực.
+Viết bài đọc bằng tiếng Việt hoàn toàn khách quan — không tô hồng, không che giấu.
+
+PHONG CÁCH:
+- Trình bày ĐẦY ĐỦ mặt tích cực, tiêu cực VÀ trung tính của mỗi số.
+- Không làm nhẹ đi những thách thức khó khăn.
+- Không phóng đại điểm mạnh.
+- Ngôn ngữ thẳng thắn, rõ ràng, khách quan.
+- Đây là bài đọc NỘI BỘ — không dùng để chia sẻ với thân chủ trực tiếp.
+
+CẤU TRÚC BÀI ĐỌC:
+## Đánh Giá Tổng Quan
+## Điểm Mạnh Thực Sự
+## Điểm Yếu Cần Nhìn Nhận
+## Năng Lượng Hiện Tại
+## Dự Báo Thẳng Thắn`
   }
 }
 
-function buildChartSummary(profile: NumerologyProfile, forecast: { personalYear: ForecastResult; personalMonth: ForecastResult; personalDay: ForecastResult }, methods?: SelectedMethods): string {
+function getModeHeadings(mode: ReadingMode): string {
+  switch (mode) {
+    case 'book':
+    case 'warm':
+      return `## Tổng Quan\n## Thế Giới Nội Tâm\n## Mục Đích Sống & Tài Năng\n## Thách Thức & Phát Triển\n## Năm Phía Trước\n## Lời Khuyên Kết`
+    case 'practical':
+      return `## Điểm Mạnh Cần Phát Huy\n## Thách Thức Cần Vượt Qua\n## Hành Động Trong Năm Nay\n## Lời Khuyên Thực Tế`
+    case 'truth':
+      return `## Đánh Giá Tổng Quan\n## Điểm Mạnh Thực Sự\n## Điểm Yếu Cần Nhìn Nhận\n## Năng Lượng Hiện Tại\n## Dự Báo Thẳng Thắn`
+  }
+}
+
+function buildChartSummary(
+  profile: NumerologyProfile,
+  forecast: { personalYear: ForecastResult; personalMonth: ForecastResult; personalDay: ForecastResult },
+  methods?: SelectedMethods,
+): string {
   const karmicLessons = profile.karmicLessons.length > 0
     ? profile.karmicLessons.join(', ')
     : 'None'
 
-  const destiny = methods?.destinyMethod === 'B' ? profile.destiny.methodB : profile.destiny.methodA
-  const soul = methods?.soulMethod === 'B' ? profile.soul.methodB : profile.soul.methodA
+  const destiny     = methods?.destinyMethod === 'B'     ? profile.destiny.methodB     : profile.destiny.methodA
+  const soul        = methods?.soulMethod === 'B'        ? profile.soul.methodB        : profile.soul.methodA
   const personality = methods?.personalityMethod === 'B' ? profile.personality.methodB : profile.personality.methodA
 
   return `NUMEROLOGY CHART:
@@ -93,31 +155,15 @@ Personal Year: ${forecast.personalYear.display} | Personal Month: ${forecast.per
 }
 
 export function buildReadingPrompt(input: ReadingPromptInput): { system: string; user: string } {
-  const langInstruction = getLanguageInstruction(input.client.preferredLanguage)
-  const toneInstruction = getToneInstruction(input.tone)
-
-  const system = `You are an expert numerologist trained in the Western Pythagorean system. You deliver profound, personalised readings.
-
-${langInstruction}
-
-Tone: ${toneInstruction}
-
-Do not reference any books or other numerologists. Write as if these are your own professional insights.
-
-Structure your response with exactly these 6 markdown headings and no others.`
+  const system   = getModeSystemPrompt(input.readingMode)
+  const headings = getModeHeadings(input.readingMode)
 
   const chartSummary = buildChartSummary(input.profile, input.forecast, input.selectedMethods)
 
-  const sectionHeadings = input.client.preferredLanguage === 'en'
-    ? `## Overview\n## Your Inner World\n## Life Purpose & Gifts\n## Challenges & Growth\n## The Year Ahead\n## Closing Guidance`
-    : `## Tổng Quan\n## Thế Giới Nội Tâm\n## Mục Đích Sống & Tài Năng\n## Thách Thức & Phát Triển\n## Năm Phía Trước\n## Lời Khuyên Kết`
-
-  let user = `Please write a numerology reading for ${input.client.firstName}.
-
-${chartSummary}`
+  let user = `Viết bài đọc thần số học cho ${input.client.firstName}.\n\n${chartSummary}`
 
   if (input.bookTexts?.lifePath || input.bookTexts?.personalYear || input.bookTexts?.pinnacle) {
-    user += `\n\nREFERENCE MATERIAL — use these interpretations as the basis for your reading. Paraphrase in your own voice; do not quote or translate directly.\n`
+    user += `\n\nNỘI DUNG SÁCH THAM KHẢO — sử dụng các diễn giải này làm cơ sở cho bài đọc. Diễn đạt lại bằng giọng văn của bạn — không dịch thẳng.\n`
     if (input.bookTexts.lifePath) {
       user += `\n--- DIỄN GIẢI SÁCH: SỐ ĐƯỜNG ĐỜI ${input.profile.lifePath.display} ---\n${input.bookTexts.lifePath}`
     }
@@ -129,26 +175,25 @@ ${chartSummary}`
     } else if (input.bookTexts.pinnacleNote) {
       user += `\n--- SỐ ĐỈNH KIM TỰ THÁP HIỆN TẠI ---\n${input.bookTexts.pinnacleNote}`
     }
-    user += `\n\nHãy dựa trên các diễn giải từ sách để viết bài đọc bằng tiếng Việt. Diễn đạt lại bằng ngôn ngữ của bạn — không dịch thẳng. Hãy đề cập ngắn gọn đến Số Đỉnh hiện tại và ý nghĩa của nó trong bài đọc.`
+    if (input.readingMode === 'book') {
+      user += `\n\nChỉ dựa vào nội dung sách được cung cấp. Với số nào không có nội dung sách, chỉ nêu số đó và ý nghĩa cơ bản.`
+    } else {
+      user += `\n\nHãy dựa trên các diễn giải từ sách để viết bài đọc bằng tiếng Việt.`
+    }
   }
 
-  user += `\n\nWrite a reading with these 6 sections:
-${sectionHeadings}
-Each section: 2-3 paragraphs. End with one specific, actionable piece of guidance.`
+  user += `\n\nViết bài đọc với các phần sau:\n${headings}\nMỗi phần: 2–3 đoạn văn.`
 
   if (input.customFocus) {
-    user += `\n\nPlease particularly address: ${input.customFocus}`
+    user += `\n\nĐặc biệt tập trung vào: ${input.customFocus}`
   }
 
   return { system, user }
 }
 
 export function buildFollowUpPrompt(input: FollowUpPromptInput): { system: string; user: string } {
-  const langInstruction = getLanguageInstruction(input.preferredLanguage)
-
-  const system = `You are an expert numerologist trained in the Western Pythagorean system. You deliver profound, personalised readings.
-
-${langInstruction}`
+  const system = `Bạn là chuyên gia thần số học với kiến thức sâu về hệ thống Pythagoras.
+Viết bằng tiếng Việt, tự nhiên và chuyên nghiệp.`
 
   const karmicLessons = input.profile.karmicLessons.length > 0
     ? input.profile.karmicLessons.join(', ')
@@ -158,15 +203,15 @@ ${langInstruction}`
 
   const readingSummary = input.existingReading.slice(0, 500)
 
-  const user = `Client: ${input.firstName}
-Chart: ${chartSummary}
+  const user = `Thân chủ: ${input.firstName}
+Biểu đồ: ${chartSummary}
 
-Their reading summary:
+Tóm tắt bài đọc:
 ${readingSummary}...
 
-Question from the practitioner: ${input.question}
+Câu hỏi từ chuyên viên: ${input.question}
 
-Answer in 2-3 paragraphs using only this person's chart.`
+Trả lời trong 2–3 đoạn văn, chỉ sử dụng thông tin từ biểu đồ này.`
 
   return { system, user }
 }

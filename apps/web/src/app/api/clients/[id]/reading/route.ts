@@ -13,7 +13,7 @@ import {
   getActivePeak,
   calculateWorldYearNumber,
 } from '@numero-app/core'
-import type { NumerologyProfile } from '@numero-app/core'
+import type { NumerologyProfile, ReadingMode } from '@numero-app/core'
 
 export async function POST(
   req: Request,
@@ -33,9 +33,11 @@ export async function POST(
     return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 })
   }
 
-  const body = await req.json() as { tone?: string; customFocus?: string; selectedNumbers?: string[] }
-  const tone = (body.tone as 'warm' | 'analytical' | 'spiritual' | 'practical') || 'warm'
+  const body = await req.json() as { tone?: string; readingMode?: string; customFocus?: string; selectedNumbers?: string[]; additionalInstructions?: string }
+  const readingMode = (['book','warm','practical','truth'].includes(body.readingMode ?? '') ? body.readingMode : 'warm') as ReadingMode
+  const isPrivate = readingMode === 'truth'
   const customFocus = body.customFocus
+  const additionalInstructions = body.additionalInstructions
   const DEFAULT_KEYS = ['life_path','destiny','soul','personality','personal_year','pinnacle','essence','missing_numbers']
   const sel = new Set<string>(body.selectedNumbers ?? DEFAULT_KEYS)
 
@@ -142,7 +144,7 @@ export async function POST(
     },
     profile,
     forecast,
-    tone,
+    readingMode,
     customFocus,
     selectedMethods: {
       destinyMethod: (client.destinyMethod as 'A' | 'B') ?? 'A',
@@ -186,6 +188,10 @@ export async function POST(
   }
   prompts.user += '\n\nHãy đề cập đến các số được cung cấp trong bài đọc. Viết bằng tiếng Việt, diễn đạt tự nhiên — không liệt kê số liệu một cách máy móc.'
 
+  if (additionalInstructions) {
+    prompts.user += `\n\nHướng dẫn bổ sung từ chuyên viên:\n${additionalInstructions}`
+  }
+
   // Count existing readings to determine version
   const readingCount = await prisma.reading.count({
     where: { clientId: client.id },
@@ -197,7 +203,9 @@ export async function POST(
       clientId: client.id,
       version: readingCount + 1,
       status: 'draft',
-      tone,
+      tone: readingMode,
+      readingMode,
+      isPrivate,
       language,
       profileJSON,
       aiNarrative: '',

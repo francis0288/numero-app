@@ -4,8 +4,70 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
-type Tone = 'warm' | 'analytical' | 'spiritual' | 'practical'
+type ReadingMode = 'book' | 'warm' | 'practical' | 'truth'
 type Status = 'draft' | 'finalised' | null
+
+interface ModeOption {
+  value: ReadingMode
+  label: string
+  sublabel: string
+  icon: React.ReactElement
+  isPrivate?: boolean
+}
+
+// Numbers that have MB book text in the DB (used for book-mode warning)
+const KEYS_WITH_BOOK_TEXT = new Set<NumberKey>(['life_path', 'personal_year', 'pinnacle'])
+
+const READING_MODES: ModeOption[] = [
+  {
+    value: 'book',
+    label: 'Theo Sách',
+    sublabel: 'Dựa hoàn toàn vào Michelle Buchanan & David Phillips',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
+  {
+    value: 'warm',
+    label: 'Ấm Áp',
+    sublabel: 'Nhân ái, trình bày thách thức nhẹ nhàng nhưng trung thực',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+      </svg>
+    ),
+  },
+  {
+    value: 'practical',
+    label: 'Thực Tiễn',
+    sublabel: 'Tập trung vào hành động cụ thể trong cuộc sống thực tế',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+  {
+    value: 'truth',
+    label: 'Sự Thật',
+    sublabel: 'Thẳng thắn, đầy đủ tích cực · tiêu cực · trung tính. Chỉ xem nội bộ.',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+    ),
+    isPrivate: true,
+  },
+]
+
+const MODE_DESCRIPTIONS: Record<ReadingMode, string> = {
+  book:      'Bài đọc sẽ dựa hoàn toàn vào nội dung sách Michelle Buchanan & David Phillips.',
+  warm:      'Bài đọc được viết với giọng ấm áp, trình bày trung thực nhưng nhẹ nhàng.',
+  practical: 'Bài đọc tập trung vào hành động cụ thể và cách áp dụng thực tế.',
+  truth:     '🔒 Bài đọc thẳng thắn toàn diện. Sẽ được lưu nội bộ, không thể chia sẻ.',
+}
 
 type NumberKey =
   | 'life_path' | 'destiny' | 'soul' | 'personality' | 'personal_year'
@@ -76,7 +138,10 @@ export default function ReadingPage(): React.ReactElement {
   const params = useParams()
   const id = params.id as string
 
-  const [tone, setTone] = useState<Tone>('warm')
+  const [readingMode, setReadingMode] = useState<ReadingMode>('warm')
+  const [isPrivate, setIsPrivate] = useState(false)
+  const [showBookModal, setShowBookModal] = useState(false)
+  const [bookModalInstructions, setBookModalInstructions] = useState('')
   const [selectedNumbers, setSelectedNumbers] = useState<NumberKey[]>(DEFAULT_SELECTION)
   const [customFocus, setCustomFocus] = useState('')
   const [showCustomFocus, setShowCustomFocus] = useState(false)
@@ -112,14 +177,16 @@ export default function ReadingPage(): React.ReactElement {
         const readingRes = await fetch(`/api/clients/${id}/reading/${latest.id}`)
         if (readingRes.ok) {
           const readingData = await readingRes.json() as {
-            reading: { aiNarrative: string | null; editedNarrative: string | null }
+            reading: { aiNarrative: string | null; editedNarrative: string | null; isPrivate?: boolean; readingMode?: string }
             firstName: string
             shareToken?: string
           }
           setClientName(readingData.firstName)
           const narrative = readingData.reading.editedNarrative ?? readingData.reading.aiNarrative ?? ''
           setStreamedText(narrative)
-          if (latest.status === 'finalised' && readingData.shareToken) {
+          const priv = readingData.reading.isPrivate ?? false
+          setIsPrivate(priv)
+          if (latest.status === 'finalised' && readingData.shareToken && !priv) {
             setShareToken(readingData.shareToken)
           }
         }
@@ -167,18 +234,24 @@ export default function ReadingPage(): React.ReactElement {
     })
   }
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (additionalInstructions?: string) => {
     console.log('handleGenerate called, clientId:', id)
     setIsStreaming(true)
     setStreamedText('')
     setReadingId(null)
     setStatus(null)
+    setIsPrivate(readingMode === 'truth')
 
     try {
       const response = await fetch(`/api/clients/${id}/reading`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tone, customFocus: showCustomFocus ? customFocus : undefined, selectedNumbers }),
+        body: JSON.stringify({
+          readingMode,
+          customFocus: showCustomFocus ? customFocus : undefined,
+          selectedNumbers,
+          additionalInstructions,
+        }),
       })
 
       if (!response.ok || !response.body) {
@@ -364,15 +437,21 @@ export default function ReadingPage(): React.ReactElement {
       setReadingId(null)
       setStatus(null)
       setVersion(null)
+      setIsPrivate(false)
     }
   }
 
-  const tones: Array<{ value: Tone; label: string }> = [
-    { value: 'warm', label: '✨ Ấm Áp' },
-    { value: 'analytical', label: '📊 Phân Tích' },
-    { value: 'spiritual', label: '🌙 Tâm Linh' },
-    { value: 'practical', label: '⚡ Thực Tế' },
-  ]
+  const handleGenerateClick = () => {
+    if (readingMode === 'book') {
+      const missing = selectedNumbers.filter(k => !KEYS_WITH_BOOK_TEXT.has(k))
+      if (missing.length > 0) {
+        setBookModalInstructions('')
+        setShowBookModal(true)
+        return
+      }
+    }
+    void handleGenerate()
+  }
 
   const showGenerationPanel = !streamedText && !isStreaming
   const showReadingDisplay = streamedText || isStreaming
@@ -424,27 +503,61 @@ export default function ReadingPage(): React.ReactElement {
           >
             <h2 className="font-medium text-lg mb-5" style={{ color: 'var(--gold-main)' }}>Tạo Bản Đọc AI</h2>
 
-            {/* Tone selector */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {tones.map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => setTone(value)}
-                  className={
-                    tone === value
-                      ? 'text-white rounded-full px-4 py-2 text-sm font-medium'
-                      : 'border rounded-full px-4 py-2 text-sm cursor-pointer'
-                  }
-                  style={
-                    tone === value
-                      ? { backgroundColor: 'var(--gold-main)' }
-                      : { backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', color: 'var(--text-muted)' }
-                  }
-                >
-                  {label}
-                </button>
-              ))}
+            {/* Mode cards 2×2 */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              {READING_MODES.map((mode) => {
+                const selected = readingMode === mode.value
+                return (
+                  <button
+                    key={mode.value}
+                    onClick={() => setReadingMode(mode.value)}
+                    style={{
+                      position: 'relative',
+                      textAlign: 'left',
+                      padding: '12px 14px',
+                      borderRadius: 12,
+                      border: `1.5px solid ${selected ? '#C4922A' : 'rgba(28,22,10,0.12)'}`,
+                      backgroundColor: selected ? 'rgba(196,146,42,0.06)' : 'transparent',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {mode.isPrivate && (
+                      <span style={{
+                        position: 'absolute', top: 8, right: 8,
+                        fontSize: 9, fontWeight: 600, color: 'var(--color-mid)',
+                        backgroundColor: 'rgba(28,22,10,0.07)', borderRadius: 6,
+                        padding: '2px 5px',
+                      }}>
+                        🔒 Riêng tư
+                      </span>
+                    )}
+                    <div style={{ color: selected ? '#C4922A' : 'var(--color-mid)', marginBottom: 6 }}>
+                      {mode.icon}
+                    </div>
+                    <div style={{
+                      fontFamily: 'Georgia, serif', fontSize: 15, fontWeight: 500,
+                      color: 'var(--color-dark)', marginBottom: 3,
+                    }}>
+                      {mode.label}
+                    </div>
+                    <div style={{
+                      fontSize: 11, color: 'var(--color-mid)', lineHeight: 1.4,
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    } as React.CSSProperties}>
+                      {mode.sublabel}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
+
+            {/* Mode description */}
+            <p style={{
+              fontSize: 12, color: 'var(--color-mid)', marginBottom: 16,
+              paddingLeft: 4, lineHeight: 1.5,
+            }}>
+              {MODE_DESCRIPTIONS[readingMode]}
+            </p>
 
             {/* Custom focus */}
             {!showCustomFocus ? (
@@ -512,7 +625,7 @@ export default function ReadingPage(): React.ReactElement {
 
             <button
               type="button"
-              onClick={() => void handleGenerate()}
+              onClick={handleGenerateClick}
               className="w-full mt-6 text-white rounded-xl py-3 font-medium transition-colors"
               style={{ backgroundColor: 'var(--gold-main)' }}
             >
@@ -663,7 +776,7 @@ export default function ReadingPage(): React.ReactElement {
                 >
                   Hỏi đáp thêm →
                 </Link>
-                {status !== 'finalised' && !isStreaming && !isTranslating && readingId && (
+                {status !== 'finalised' && !isStreaming && !isTranslating && readingId && !isPrivate && (
                   <button
                     onClick={() => void handleFinalise()}
                     className="text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
@@ -677,8 +790,16 @@ export default function ReadingPage(): React.ReactElement {
           </div>
         )}
 
+        {/* Private reading indicator */}
+        {status === 'finalised' && isPrivate && (
+          <div className="rounded-2xl p-6 mt-6" style={{ backgroundColor: 'rgba(28,22,10,0.04)', border: '1px solid rgba(28,22,10,0.12)' }}>
+            <p className="font-medium mb-1" style={{ color: 'var(--color-dark)' }}>🔒 Bài đọc nội bộ</p>
+            <p className="text-sm" style={{ color: 'var(--color-mid)' }}>Riêng tư · Không thể chia sẻ</p>
+          </div>
+        )}
+
         {/* Share panel — shown after finalising */}
-        {status === 'finalised' && shareToken && !isRevoked && (
+        {status === 'finalised' && !isPrivate && shareToken && !isRevoked && (
           <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mt-6">
             <p className="text-green-700 font-medium mb-3">✓ Đã hoàn tất bản đọc</p>
             <div
@@ -743,7 +864,7 @@ export default function ReadingPage(): React.ReactElement {
         )}
 
         {/* Revoked state */}
-        {status === 'finalised' && isRevoked && (
+        {status === 'finalised' && !isPrivate && isRevoked && (
           <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6">
             <p className="text-red-600 font-medium mb-1">🔒 Liên kết đã bị thu hồi</p>
             <p className="text-red-400 text-sm mb-4">Khách hàng không thể truy cập báo cáo. Tạo liên kết mới để chia sẻ lại.</p>
@@ -758,6 +879,83 @@ export default function ReadingPage(): React.ReactElement {
           </div>
         )}
       </main>
+
+      {/* Book mode warning modal */}
+      {showBookModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 200,
+          backgroundColor: 'rgba(0,0,0,0.45)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 16,
+        }}>
+          <div style={{
+            backgroundColor: 'var(--bg-card)', borderRadius: 20,
+            padding: 24, maxWidth: 460, width: '100%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+          }}>
+            <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-dark)', margin: '0 0 8px' }}>
+              Thiếu dữ liệu sách
+            </h3>
+            <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 10px' }}>
+              Các số sau chưa có nội dung từ sách:
+            </p>
+            <ul style={{ margin: '0 0 14px', padding: '0 0 0 18px' }}>
+              {selectedNumbers
+                .filter(k => !KEYS_WITH_BOOK_TEXT.has(k))
+                .map(k => (
+                  <li key={k} style={{ fontSize: 13, color: 'var(--color-dark)', marginBottom: 3 }}>
+                    {NUMBER_OPTIONS.find(o => o.key === k)?.label ?? k}
+                  </li>
+                ))}
+            </ul>
+            <p style={{ fontSize: 13, color: 'var(--color-mid)', margin: '0 0 8px' }}>
+              Bạn có thể nhập hướng dẫn bổ sung cho các số này:
+            </p>
+            <textarea
+              value={bookModalInstructions}
+              onChange={(e) => setBookModalInstructions(e.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder="Ví dụ: Với Số Linh Hồn, hãy dựa vào ý nghĩa chung của số đó..."
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                border: '1px solid var(--color-border)', borderRadius: 10,
+                padding: '8px 12px', fontSize: 13, resize: 'none',
+                color: 'var(--color-dark)', backgroundColor: 'var(--bg-tertiary)',
+                outline: 'none', fontFamily: 'var(--font-ui)',
+              }}
+            />
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', textAlign: 'right', margin: '3px 0 16px' }}>
+              {bookModalInstructions.length}/500
+            </p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowBookModal(false)}
+                style={{
+                  border: '1px solid var(--color-border)', borderRadius: 10,
+                  padding: '9px 18px', fontSize: 13, cursor: 'pointer',
+                  color: 'var(--color-mid)', backgroundColor: 'transparent',
+                }}
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={() => {
+                  setShowBookModal(false)
+                  void handleGenerate(bookModalInstructions || undefined)
+                }}
+                style={{
+                  backgroundColor: 'var(--gold-main)', color: 'white',
+                  border: 'none', borderRadius: 10, padding: '9px 18px',
+                  fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                }}
+              >
+                Tiếp Tục Tạo Bài Đọc
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

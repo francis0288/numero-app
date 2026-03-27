@@ -20,10 +20,13 @@ export async function POST(
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  await prisma.reading.update({
+  const reading = await prisma.reading.update({
     where: { id: params.readingId },
     data: { status: 'finalised' },
   })
 
-  return NextResponse.json({ shareToken: client.shareToken, readingId: params.readingId })
+  return NextResponse.json({
+    shareToken: reading.isPrivate ? null : client.shareToken,
+    readingId: params.readingId,
+  })
 }
