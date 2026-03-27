@@ -76,7 +76,7 @@ export function ProfileMethodSections({
   // Detail rows using selected methods
   const detailRows = [
     { num: lifePath.display, val: lifePath.value, isMaster: lifePath.isMasterNumber, title: 'Đường Đời', sub: lifePathSub, workings: lifePath.workings, methodNote: '' },
-    { num: selectedDestiny.display, val: selectedDestiny.value, isMaster: selectedDestiny.isMasterNumber, title: 'Vận Mệnh', sub: 'Sứ mệnh tiềm ẩn trong tên khai sinh', workings: selectedDestiny.workings, methodNote: methodLabel(methods.destinyMethod) },
+    { num: selectedDestiny.display, val: selectedDestiny.value, isMaster: selectedDestiny.isMasterNumber, title: 'Sứ Mệnh', sub: 'Sứ mệnh tiềm ẩn trong tên khai sinh', workings: selectedDestiny.workings, methodNote: methodLabel(methods.destinyMethod) },
     { num: selectedSoul.display, val: selectedSoul.value, isMaster: selectedSoul.isMasterNumber, title: 'Linh Hồn', sub: 'Khao khát và động lực nội tâm', workings: selectedSoul.workings, methodNote: methodLabel(methods.soulMethod) },
     { num: selectedPersonality.display, val: selectedPersonality.value, isMaster: selectedPersonality.isMasterNumber, title: 'Nhân Cách', sub: 'Ấn tượng bên ngoài với thế giới', workings: selectedPersonality.workings, methodNote: methodLabel(methods.personalityMethod) },
     { num: maturity.display, val: maturity.value, isMaster: maturity.isMasterNumber, title: 'Trưởng Thành', sub: 'Tiềm năng cuối cuộc đời', workings: maturity.workings, methodNote: '' },
@@ -111,7 +111,7 @@ export function ProfileMethodSections({
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             {[
               { nr: lifePath, label: 'Đường Đời' },
-              { nr: selectedDestiny, label: 'Vận Mệnh' },
+              { nr: selectedDestiny, label: 'Sứ Mệnh' },
               { nr: selectedSoul, label: 'Linh Hồn' },
             ].map(({ nr, label }) => {
               const capped = Math.min(nr.value, 9)
@@ -226,7 +226,7 @@ export function ProfileMethodSections({
       {/* ── Two Method Cards ── */}
       <div style={{ padding: '0 16px 14px' }}>
         <TwoMethodCard
-          title="Số Vận Mệnh"
+          title="Số Sứ Mệnh"
           methodA={destiny.methodA}
           methodB={destiny.methodB}
           selected={methods.destinyMethod}

@@ -467,7 +467,7 @@ export default async function ProfilePage({
               {profile.bridge.display}
             </p>
             <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-              Kết nối Đường Đời & Vận Mệnh
+              Kết nối Đường Đời & Sứ Mệnh
             </p>
             <WorkingsBlock workings={profile.bridge.workings} />
           </div>

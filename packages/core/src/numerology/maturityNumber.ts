@@ -24,7 +24,7 @@ export function calculateMaturity(
   const totalPart = compound === value
     ? `${lpBase}+${destBase}=${value}`
     : `${lpBase}+${destBase}=${compound}→${reductionChain(compound)}`
-  const workings = `Đường Đời(${lpLabel}) + Vận Mệnh(${destLabel}) = ${totalPart}`
+  const workings = `Đường Đời(${lpLabel}) + Sứ Mệnh(${destLabel}) = ${totalPart}`
 
   return makeResult(compound, value, workings)
 }

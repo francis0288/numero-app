@@ -228,7 +228,7 @@ export function ReportClient({
 
   const CORE_CARDS = [
     { key: 'lifePath', label: 'Đường Đời', result: profile.lifePath },
-    { key: 'destiny', label: 'Vận Mệnh', result: profile.destiny.methodA },
+    { key: 'destiny', label: 'Sứ Mệnh', result: profile.destiny.methodA },
     { key: 'soul', label: 'Linh Hồn', result: profile.soul.methodA },
     { key: 'personality', label: 'Nhân Cách', result: profile.personality.methodA },
     { key: 'maturity', label: 'Trưởng Thành', result: profile.maturity },
@@ -352,7 +352,7 @@ export function ReportClient({
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
 
             <div style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 12, padding: 24 }}>
-              <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Chỉ Số Tên — Số Vận Mệnh</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>Chỉ Số Tên — Số Sứ Mệnh</p>
               <div style={{ fontSize: 56, fontWeight: 700, color: 'var(--gold-main)', lineHeight: 1, marginBottom: 12 }}>{profile.destiny.methodA.display}</div>
               {destinyInterp?.title && <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 12px' }}>{destinyInterp.title}</p>}
               {destinyInterp?.overview && <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.8, margin: 0 }}>{destinyInterp.overview}</p>}
@@ -368,8 +368,8 @@ export function ReportClient({
               </p>
               <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.8, margin: '0 0 12px' }}>
                 {isolationNumber === 0
-                  ? 'Vận mệnh bên ngoài và linh hồn bên trong của bạn hoàn toàn hòa hợp — một sự kết hợp hiếm có và mạnh mẽ giữa mục đích và khao khát.'
-                  : 'Khoảng cách giữa vận mệnh bên ngoài và linh hồn bên trong của bạn cho thấy nơi cần phát triển và hòa hợp nhất.'}
+                  ? 'Sứ mệnh bên ngoài và linh hồn bên trong của bạn hoàn toàn hòa hợp — một sự kết hợp hiếm có và mạnh mẽ giữa mục đích và khao khát.'
+                  : 'Khoảng cách giữa sứ mệnh bên ngoài và linh hồn bên trong của bạn cho thấy nơi cần phát triển và hòa hợp nhất.'}
               </p>
               {isolationNumber > 0 && interpretations[`life_path_${isolationNumber}`]?.overview && (
                 <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
@@ -587,7 +587,7 @@ export function ReportClient({
               ) : (
                 <>
                   <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.8, margin: '0 0 16px' }}>
-                    Với Đường Đời {profile.lifePath.display} và Vận Mệnh {profile.destiny.methodA.display}, bạn mang một bản thiết kế độc nhất cho kiếp này — sự kết hợp của tài năng, bài học và mục đích hoàn toàn là của riêng bạn.
+                    Với Đường Đời {profile.lifePath.display} và Sứ Mệnh {profile.destiny.methodA.display}, bạn mang một bản thiết kế độc nhất cho kiếp này — sự kết hợp của tài năng, bài học và mục đích hoàn toàn là của riêng bạn.
                   </p>
                   <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.8, margin: 0 }}>
                     Khi bạn trải qua Năm Cá Nhân {pyCurr.display} trong năm {currentYear}, đây là lời mời để bạn bước vào đầy đủ tiềm năng của mình. Hãy tin tưởng vào trí tuệ của các con số, đón nhận hành trình, và biết rằng mỗi bước bạn đi là một phần của kế hoạch được sắp xếp hoàn hảo.

@@ -260,7 +260,7 @@ export function ClientList({
                       </span>
                     </div>
                     <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, fontFamily: 'var(--font-ui)' }}>
-                      {formatDateShortVI(client.dateOfBirth)} · Đường Đời {client.lifePathDisplay} · Vận Mệnh {client.destinyDisplay}
+                      {formatDateShortVI(client.dateOfBirth)} · Đường Đời {client.lifePathDisplay} · Sứ Mệnh {client.destinyDisplay}
                     </p>
                   </div>
 
