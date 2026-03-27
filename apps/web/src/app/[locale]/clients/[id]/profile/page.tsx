@@ -338,7 +338,117 @@ export default async function ProfilePage({
           initialMethods={initialMethods}
         />
 
-        {/* ── CHU KỲ CÁ NHÂN & THẾ GIỚI ── */}
+        {/* ── 8. SỐ THÁI ĐỘ + SỐ KẾT NỐI (side by side) ── */}
+        <div style={{ padding: '0 16px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{
+            backgroundColor: 'var(--color-white)', borderRadius: 16,
+            border: '0.5px solid var(--color-border)', padding: '16px',
+          }}>
+            <SectionLabel title="Số Thái Độ" style={{ marginBottom: 10 }} />
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 6px', lineHeight: 1 }}>
+              {profile.attitude.display}
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
+              Thái độ & ấn tượng đầu tiên
+            </p>
+            <WorkingsBlock workings={profile.attitude.workings} />
+          </div>
+          <div style={{
+            backgroundColor: 'var(--color-white)', borderRadius: 16,
+            border: '0.5px solid var(--color-border)', padding: '16px',
+          }}>
+            <SectionLabel title="Số Kết Nối" style={{ marginBottom: 10 }} />
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 6px', lineHeight: 1 }}>
+              {profile.bridge.display}
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
+              Kết nối Đường Đời & Sứ Mệnh
+            </p>
+            <WorkingsBlock workings={profile.bridge.workings} />
+          </div>
+        </div>
+
+        {/* ── 9. BIỂU ĐỒ NGÀY SINH ── */}
+        <BirthChartGrid
+          birthDay={client.dateOfBirth.getDate()}
+          birthMonth={client.dateOfBirth.getMonth() + 1}
+          birthYear={client.dateOfBirth.getFullYear()}
+          firstName={client.firstName}
+          middleName={client.middleName ?? ''}
+          lastName={client.lastName}
+          isolatedDigits={profile.isolationNumbers}
+        />
+
+        {/* ── SỐ TÊN MẸ (if exists) ── */}
+        {profile.motherName && (
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{
+              backgroundColor: 'var(--color-white)', borderRadius: 16,
+              border: '0.5px solid var(--color-border)', padding: '16px',
+            }}>
+              <SectionLabel title="Số Tên Mẹ" style={{ marginBottom: 10 }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: 0, lineHeight: 1, flexShrink: 0 }}>
+                  {profile.motherName.display}
+                </p>
+                <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, lineHeight: 1.4, fontFamily: 'var(--font-ui)', flex: 1 }}>
+                  Ảnh hưởng của mẹ lên biểu đồ số học
+                </p>
+              </div>
+              <WorkingsBlock workings={profile.motherName.workings} />
+            </div>
+          </div>
+        )}
+
+        {/* ── 10. BÀI HỌC NHÂN QUẢ ── */}
+        {profile.karmicLessons.length > 0 && (
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{
+              backgroundColor: 'var(--color-white)', borderRadius: 16,
+              border: '0.5px solid var(--color-border)', padding: 16,
+            }}>
+              <SectionLabel title="Bài Học Nhân Quả" style={{ marginBottom: 12 }} />
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                {profile.karmicLessons.map((num) => {
+                  const kKey = `karmic_lesson_${num}`
+                  const kInterp = interpMap[kKey]
+                  const kContent = kInterp ? JSON.parse(kInterp.baseText) : null
+                  const detailPath = locale === 'en'
+                    ? `/clients/${id}/numbers/${kKey}`
+                    : `/${locale}/clients/${id}/numbers/${kKey}`
+                  return (
+                    <a key={num} href={detailPath} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textDecoration: 'none' }}>
+                      <div style={{
+                        width: 44, height: 44, borderRadius: 12,
+                        backgroundColor: 'var(--gold-bg)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-gold)',
+                      }}>
+                        {num}
+                      </div>
+                      {kContent?.title && (
+                        <p style={{ fontSize: 9, color: 'var(--color-mid)', textAlign: 'center', maxWidth: 60, margin: 0, fontFamily: 'var(--font-ui)', lineHeight: 1.3 }}>
+                          {kContent.title.split(' — ')[0].replace('Karmic Lesson ', '')}
+                        </p>
+                      )}
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 11. SỐ ĐỈNH — Buchanan + Phillips ── */}
+        <PinnacleSection
+          clientId={id}
+          buchananPeaks={buchananPeaks}
+          phillipsPeaks={phillipsPeaks}
+          phillipsBaseNumbers={pyramidPeaks.baseNumbers}
+          initialSystem={initialPinnacleSystem}
+        />
+
+        {/* ── 12. CHU KỲ CÁ NHÂN & THẾ GIỚI ── */}
         <div style={{
           margin: '0 16px 14px',
           borderRadius: 20,
@@ -355,7 +465,7 @@ export default async function ProfilePage({
           />
         </div>
 
-        {/* ── 3. Dark forecast card ── */}
+        {/* ── 13. SỐ NĂM CÁ NHÂN forecast card ── */}
         <div style={{
           backgroundColor: 'var(--bg-primary)', borderRadius: 20,
           margin: '0 16px 14px', padding: '18px 20px',
@@ -419,93 +529,7 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ── 4. Reading CTA ── */}
-        <div style={{ padding: '0 16px 20px', display: 'flex', gap: 10, alignItems: 'center' }}>
-          <a
-            href={readingPath}
-            style={{
-              flex: 1, backgroundColor: 'var(--color-gold)', color: 'var(--bg-card)',
-              borderRadius: 12, padding: '11px 16px', fontSize: 14, fontWeight: 600,
-              textAlign: 'center', textDecoration: 'none', fontFamily: 'var(--font-ui)',
-            }}
-          >
-            {readingCount === 0 ? 'Tạo Bài Đọc AI →' : 'Xem Bài Đọc →'}
-          </a>
-          <a
-            href={locale === 'en' ? `/clients/${id}/edit` : `/${locale}/clients/${id}/edit`}
-            style={{
-              border: '0.5px solid var(--color-border)', color: 'var(--color-mid)',
-              borderRadius: 12, padding: '11px 16px', fontSize: 14,
-              textDecoration: 'none', fontFamily: 'var(--font-ui)',
-            }}
-          >
-            Sửa
-          </a>
-        </div>
-
-        {/* ── 9. SỐ THÁI ĐỘ + SỐ KẾT NỐI (side by side) ── */}
-        <div style={{ padding: '0 16px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 16,
-            border: '0.5px solid var(--color-border)', padding: '16px',
-          }}>
-            <SectionLabel title="Số Thái Độ" style={{ marginBottom: 10 }} />
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 6px', lineHeight: 1 }}>
-              {profile.attitude.display}
-            </p>
-            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-              Thái độ & ấn tượng đầu tiên
-            </p>
-            <WorkingsBlock workings={profile.attitude.workings} />
-          </div>
-          <div style={{
-            backgroundColor: 'var(--color-white)', borderRadius: 16,
-            border: '0.5px solid var(--color-border)', padding: '16px',
-          }}>
-            <SectionLabel title="Số Kết Nối" style={{ marginBottom: 10 }} />
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: '0 0 6px', lineHeight: 1 }}>
-              {profile.bridge.display}
-            </p>
-            <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: '0 0 8px', lineHeight: 1.4, fontFamily: 'var(--font-ui)' }}>
-              Kết nối Đường Đời & Sứ Mệnh
-            </p>
-            <WorkingsBlock workings={profile.bridge.workings} />
-          </div>
-        </div>
-
-        {/* ── 10. SỐ TÊN MẸ (if exists) ── */}
-        {profile.motherName && (
-          <div style={{ padding: '0 16px 14px' }}>
-            <div style={{
-              backgroundColor: 'var(--color-white)', borderRadius: 16,
-              border: '0.5px solid var(--color-border)', padding: '16px',
-            }}>
-              <SectionLabel title="Số Tên Mẹ" style={{ marginBottom: 10 }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 400, color: 'var(--color-dark)', margin: 0, lineHeight: 1, flexShrink: 0 }}>
-                  {profile.motherName.display}
-                </p>
-                <p style={{ fontSize: 11, color: 'var(--color-mid)', margin: 0, lineHeight: 1.4, fontFamily: 'var(--font-ui)', flex: 1 }}>
-                  Ảnh hưởng của mẹ lên biểu đồ số học
-                </p>
-              </div>
-              <WorkingsBlock workings={profile.motherName.workings} />
-            </div>
-          </div>
-        )}
-
-        {/* ── 11. BIỂU ĐỒ NGÀY SINH ── */}
-        <BirthChartGrid
-          birthDay={client.dateOfBirth.getDate()}
-          birthMonth={client.dateOfBirth.getMonth() + 1}
-          birthYear={client.dateOfBirth.getFullYear()}
-          firstName={client.firstName}
-          middleName={client.middleName ?? ''}
-          lastName={client.lastName}
-          isolatedDigits={profile.isolationNumbers}
-        />
-
-        {/* ── 12. SỐ TINH CHẤT ── */}
+        {/* ── 14. SỐ TINH CHẤT ── */}
         <div style={{ padding: '0 16px 14px' }}>
           <div style={{
             backgroundColor: 'var(--color-white)', borderRadius: 16,
@@ -548,53 +572,29 @@ export default async function ProfilePage({
           </div>
         </div>
 
-        {/* ── 12b. SỐ ĐỈNH — Buchanan + Phillips side by side ── */}
-        <PinnacleSection
-          clientId={id}
-          buchananPeaks={buchananPeaks}
-          phillipsPeaks={phillipsPeaks}
-          phillipsBaseNumbers={pyramidPeaks.baseNumbers}
-          initialSystem={initialPinnacleSystem}
-        />
-
-        {/* ── 13. BÀI HỌC NHÂN QUẢ ── */}
-        {profile.karmicLessons.length > 0 && (
-          <div style={{ padding: '0 16px 14px' }}>
-            <div style={{
-              backgroundColor: 'var(--color-white)', borderRadius: 16,
-              border: '0.5px solid var(--color-border)', padding: 16,
-            }}>
-              <SectionLabel title="Bài Học Nhân Quả" style={{ marginBottom: 12 }} />
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                {profile.karmicLessons.map((num) => {
-                  const kKey = `karmic_lesson_${num}`
-                  const kInterp = interpMap[kKey]
-                  const kContent = kInterp ? JSON.parse(kInterp.baseText) : null
-                  const detailPath = locale === 'en'
-                    ? `/clients/${id}/numbers/${kKey}`
-                    : `/${locale}/clients/${id}/numbers/${kKey}`
-                  return (
-                    <a key={num} href={detailPath} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textDecoration: 'none' }}>
-                      <div style={{
-                        width: 44, height: 44, borderRadius: 12,
-                        backgroundColor: 'var(--gold-bg)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 500, color: 'var(--color-gold)',
-                      }}>
-                        {num}
-                      </div>
-                      {kContent?.title && (
-                        <p style={{ fontSize: 9, color: 'var(--color-mid)', textAlign: 'center', maxWidth: 60, margin: 0, fontFamily: 'var(--font-ui)', lineHeight: 1.3 }}>
-                          {kContent.title.split(' — ')[0].replace('Karmic Lesson ', '')}
-                        </p>
-                      )}
-                    </a>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* ── 15. Xem Bài Đọc ── */}
+        <div style={{ padding: '0 16px 20px', display: 'flex', gap: 10, alignItems: 'center' }}>
+          <a
+            href={readingPath}
+            style={{
+              flex: 1, backgroundColor: 'var(--color-gold)', color: 'var(--bg-card)',
+              borderRadius: 12, padding: '11px 16px', fontSize: 14, fontWeight: 600,
+              textAlign: 'center', textDecoration: 'none', fontFamily: 'var(--font-ui)',
+            }}
+          >
+            {readingCount === 0 ? 'Tạo Bài Đọc AI →' : 'Xem Bài Đọc →'}
+          </a>
+          <a
+            href={locale === 'en' ? `/clients/${id}/edit` : `/${locale}/clients/${id}/edit`}
+            style={{
+              border: '0.5px solid var(--color-border)', color: 'var(--color-mid)',
+              borderRadius: 12, padding: '11px 16px', fontSize: 14,
+              textDecoration: 'none', fontFamily: 'var(--font-ui)',
+            }}
+          >
+            Sửa
+          </a>
+        </div>
 
         {/* ── Share ── */}
         {hasFinalised && shareUrl && (
@@ -603,7 +603,7 @@ export default async function ProfilePage({
           </div>
         )}
 
-        {/* ── 14. Footer actions ── */}
+        {/* ── 16. Footer actions ── */}
         <div style={{ padding: '4px 16px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href={dashboardPath} style={{ fontSize: 13, color: 'var(--color-mid)', textDecoration: 'none', fontFamily: 'var(--font-ui)' }}>
             ← Quay lại danh sách
