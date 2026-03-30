@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { randomBytes } from 'crypto'
 
 export async function POST(
   _req: Request,
@@ -25,8 +26,20 @@ export async function POST(
     data: { status: 'finalised' },
   })
 
-  return NextResponse.json({
-    shareToken: reading.isPrivate ? null : client.shareToken,
-    readingId: params.readingId,
-  })
+  // Private readings never get a share token
+  if (reading.isPrivate) {
+    return NextResponse.json({ shareToken: null, readingId: params.readingId })
+  }
+
+  // Use existing token or generate a new one
+  let shareToken = client.shareToken
+  if (!shareToken) {
+    shareToken = randomBytes(32).toString('hex')
+    await prisma.client.update({
+      where: { id: params.id },
+      data: { shareToken },
+    })
+  }
+
+  return NextResponse.json({ shareToken, readingId: params.readingId })
 }
