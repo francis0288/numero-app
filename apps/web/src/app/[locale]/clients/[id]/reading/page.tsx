@@ -744,7 +744,7 @@ export default function ReadingPage(): React.ReactElement {
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
                 className="w-full min-h-[500px] p-4 border rounded-xl font-mono text-sm resize-y focus:outline-none focus:ring-2"
-                style={{ borderColor: 'var(--border-subtle)', '--tw-ring-color': 'var(--gold-main)' } as React.CSSProperties}
+                style={{ borderColor: 'var(--border-subtle)', '--tw-ring-color': 'var(--gold-main)', color: '#1C1A14', backgroundColor: '#FFFFFF', fontSize: '14px', lineHeight: '1.7', fontFamily: '-apple-system, "Helvetica Neue", Arial, sans-serif' } as React.CSSProperties}
               />
             ) : (
               <div>
