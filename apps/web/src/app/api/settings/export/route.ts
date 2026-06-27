@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server'
 import { getCurrentUserId } from '@/lib/current-user'
 import { prisma } from '@/lib/prisma'
 
