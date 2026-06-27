@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
 import { calculateFullProfile, stripVietnamese } from '@numero-app/core'
 
 const createClientSchema = z.object({
@@ -15,13 +14,10 @@ const createClientSchema = z.object({
 })
 
 export async function GET() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const userId = await getCurrentUserId()
 
   const clients = await prisma.client.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     include: { _count: { select: { readings: true } } },
     orderBy: { createdAt: 'desc' },
   })
@@ -30,10 +26,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const userId = await getCurrentUserId()
 
   const body = await request.json()
   const parsed = createClientSchema.safeParse(body)
@@ -59,7 +52,7 @@ export async function POST(request: Request) {
 
   const client = await prisma.client.create({
     data: {
-      userId: session.user.id,
+      userId,
       firstName: ten,
       middleName: tenDem || null,
       lastName: ho,

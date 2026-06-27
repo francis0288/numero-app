@@ -96,7 +96,7 @@ export default function NewClientPage({ params: { locale } }: { params: { locale
     }
   }
 
-  const dashboardPath = locale === 'en' ? '/dashboard' : `/${locale}/dashboard`
+  const dashboardPath = locale === 'vi' ? '/dashboard' : `/${locale}/dashboard`
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--color-base)' }}>

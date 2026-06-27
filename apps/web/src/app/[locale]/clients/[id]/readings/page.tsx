@@ -1,7 +1,6 @@
 import React from 'react'
-import { getServerSession } from 'next-auth'
-import { redirect, notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
+import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { NavBar } from '@/components/NavBar'
 import { BottomNav } from '@/components/BottomNav'
@@ -28,13 +27,10 @@ export default async function ReadingsPage({
 }: {
   params: { locale: string; id: string }
 }) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    redirect(locale === 'en' ? '/login' : `/${locale}/login`)
-  }
+  const userId = await getCurrentUserId()
 
   const client = await prisma.client.findFirst({
-    where: { id, userId: session.user.id },
+    where: { id, userId },
   })
   if (!client) notFound()
 

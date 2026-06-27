@@ -1,5 +1,4 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
 import { prisma } from '@/lib/prisma'
 
 const VALID = ['A', 'B'] as const
@@ -9,13 +8,10 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
-  }
+  const userId = await getCurrentUserId()
 
   const client = await prisma.client.findFirst({
-    where: { id: params.id, userId: session.user.id },
+    where: { id: params.id, userId },
     select: { id: true },
   })
   if (!client) {

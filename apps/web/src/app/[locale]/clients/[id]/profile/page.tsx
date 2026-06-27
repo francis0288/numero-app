@@ -1,7 +1,6 @@
 import React from 'react'
-import { getServerSession } from 'next-auth'
-import { redirect, notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
+import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import {
   calculateFullProfile,
@@ -31,9 +30,6 @@ import { formatDateShortVI } from '@/lib/formatDate'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
-function loginPath(locale: string) {
-  return locale === 'en' ? '/login' : `/${locale}/login`
-}
 
 function getNumberKey(result: NumberResult): string {
   if (result.isKarmicDebt && result.karmicDebtNumber) return `karmic_debt_${result.karmicDebtNumber}`
@@ -113,11 +109,10 @@ export default async function ProfilePage({
 }: {
   params: { locale: string; id: string }
 }): Promise<React.ReactElement> {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect(loginPath(locale))
+  const userId = await getCurrentUserId()
 
   const client = await prisma.client.findFirst({
-    where: { id, userId: session.user.id },
+    where: { id, userId },
     include: { readings: { orderBy: { version: 'desc' }, take: 1 } },
   })
   if (!client) notFound()
@@ -227,8 +222,8 @@ export default async function ProfilePage({
     ? `${process.env.NEXTAUTH_URL ?? 'http://localhost:3001'}/report/${client.shareToken}`
     : null
 
-  const dashboardPath = locale === 'en' ? '/dashboard' : `/${locale}/dashboard`
-  const readingPath = locale === 'en' ? `/clients/${id}/reading` : `/${locale}/clients/${id}/reading`
+  const dashboardPath = locale === 'vi' ? '/dashboard' : `/${locale}/dashboard`
+  const readingPath = locale === 'vi' ? `/clients/${id}/reading` : `/${locale}/clients/${id}/reading`
 
   const fullName = [client.lastName, client.middleName, client.firstName].filter(Boolean).join(' ')
 

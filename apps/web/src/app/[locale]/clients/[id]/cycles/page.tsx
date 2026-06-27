@@ -1,7 +1,6 @@
 import React from 'react'
-import { getServerSession } from 'next-auth'
-import { redirect, notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
+import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { calculatePersonalYear, calculateWorldYearNumber } from '@numero-app/core'
 import { getInterpretation } from '@/lib/numerology/getInterpretation'
@@ -9,9 +8,6 @@ import { NavBar } from '@/components/NavBar'
 import { BottomNav } from '@/components/BottomNav'
 import { CyclesScreen } from '@/components/CyclesScreen'
 
-function loginPath(locale: string) {
-  return locale === 'en' ? '/login' : `/${locale}/login`
-}
 
 export interface YearPoint {
   year: number
@@ -29,11 +25,10 @@ export default async function CyclesPage({
 }) {
   const { locale, id } = params
 
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect(loginPath(locale))
+  const userId = await getCurrentUserId()
 
   const client = await prisma.client.findFirst({
-    where: { id, userId: session.user.id },
+    where: { id, userId },
     select: {
       id: true,
       firstName: true,

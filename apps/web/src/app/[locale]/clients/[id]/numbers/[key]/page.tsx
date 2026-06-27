@@ -1,15 +1,11 @@
 import React from 'react'
-import { getServerSession } from 'next-auth'
-import { redirect, notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
+import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { calculateFullProfile } from '@numero-app/core'
 import { NavBar } from '@/components/NavBar'
 import { BottomNav } from '@/components/BottomNav'
 
-function loginPath(locale: string) {
-  return locale === 'en' ? '/login' : `/${locale}/login`
-}
 
 interface InterpContent {
   title: string
@@ -28,11 +24,10 @@ export default async function NumberDetailPage({
 }: {
   params: { locale: string; id: string; key: string }
 }): Promise<React.ReactElement> {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect(loginPath(locale))
+  const userId = await getCurrentUserId()
 
   const client = await prisma.client.findFirst({
-    where: { id, userId: session.user.id },
+    where: { id, userId },
   })
   if (!client) notFound()
 

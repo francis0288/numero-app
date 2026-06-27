@@ -1,22 +1,15 @@
 import React from 'react'
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
 import { prisma } from '@/lib/prisma'
 import { NavBar } from '@/components/NavBar'
 import { ClientList } from './ClientList'
 import { calculateFullProfile, calculatePersonalYear } from '@numero-app/core'
 
-function loginPath(locale: string) {
-  return locale === 'en' ? '/login' : `/${locale}/login`
-}
-
 export default async function DashboardPage({ params: { locale } }: { params: { locale: string } }): Promise<React.ReactElement> {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) redirect(loginPath(locale))
+  const userId = await getCurrentUserId()
 
   const clients = await prisma.client.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
     include: { _count: { select: { readings: true } } },
     orderBy: { createdAt: 'desc' },
   })

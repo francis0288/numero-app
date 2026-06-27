@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getCurrentUserId } from '@/lib/current-user'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const userId = await getCurrentUserId()
 
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } })
+  const user = await prisma.user.findUnique({ where: { id: userId } })
   if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   return NextResponse.json({
@@ -23,15 +19,12 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  const session = await getServerSession(authOptions)
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const userId = await getCurrentUserId()
 
   const body = await req.json() as { name?: string; brandingFooter?: string; phone?: string; brandingEmail?: string }
 
   const user = await prisma.user.update({
-    where: { id: session.user.id },
+    where: { id: userId },
     data: {
       ...(body.name !== undefined && { name: body.name }),
       ...(body.brandingFooter !== undefined && { brandingFooter: body.brandingFooter }),
